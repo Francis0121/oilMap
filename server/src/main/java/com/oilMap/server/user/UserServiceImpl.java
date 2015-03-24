@@ -19,4 +19,9 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
         return getSqlSession().selectOne("user.selectOne", pn);
     }
 
+    @Override
+    public void updatePassword(User user) {
+        getSqlSession().update("user.updatePassword", user);
+    }
+
 }

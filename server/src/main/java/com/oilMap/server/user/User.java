@@ -21,6 +21,11 @@ public class User {
     private String password;
 
     /**
+     * Update Password
+     */
+    private String updatePassword;
+
+    /**
      * Email address unique
      */
     private String email;
@@ -38,7 +43,11 @@ public class User {
 
     public User() {
     }
-
+    
+    public User(Integer pn) {
+        this.pn = pn;
+    }
+    
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -63,6 +72,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getUpdatePassword() {
+        return updatePassword;
+    }
+
+    public void setUpdatePassword(String updatePassword) {
+        this.updatePassword = updatePassword;
     }
 
     public void setPassword(String password) {
@@ -99,6 +116,7 @@ public class User {
                 "pn=" + pn +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", updatePassword='" + updatePassword + '\'' +
                 ", email='" + email + '\'' +
                 ", joinDate='" + joinDate + '\'' +
                 ", updateDate='" + updateDate + '\'' +

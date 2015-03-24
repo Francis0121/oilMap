@@ -23,4 +23,14 @@
           `pn` = #{value}
     </select>
     
+    <update id="updatePassword"  parameterType="User">
+        UPDATE
+          `user`
+        SET
+          `password` = #{updatePassword},
+          `updateDate` = SYSDATE()
+        WHERE
+          `pn` = #{pn}
+    </update>
+    
 </mapper>

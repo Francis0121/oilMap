@@ -47,7 +47,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`pn`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='사용자 개인 정보\r\n';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='사용자 개인 정보\r\n';
 
 /*Table structure for table `user_fuel` */
 
@@ -55,10 +55,11 @@ DROP TABLE IF EXISTS `user_fuel`;
 
 CREATE TABLE `user_fuel` (
   `userPn` int(11) NOT NULL COMMENT '사용자 고유번호',
-  `displacemeny` int(6) NOT NULL COMMENT '배기량',
+  `displacement` int(6) NOT NULL COMMENT '배기량',
   `cost` int(11) NOT NULL COMMENT '유류비용',
   `period` int(11) NOT NULL COMMENT '유류주기',
   `updateDate` datetime NOT NULL COMMENT '업데이트 날짜',
+  PRIMARY KEY (`period`),
   KEY `userPn` (`userPn`),
   CONSTRAINT `user_fuel_ibfk_1` FOREIGN KEY (`userPn`) REFERENCES `user` (`pn`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='유저 유류 정보';

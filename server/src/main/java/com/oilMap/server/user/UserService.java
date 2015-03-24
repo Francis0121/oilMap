@@ -14,10 +14,18 @@ public interface UserService {
     void insert(User user);
 
     /**
+     * Select one user 
      * @param pn 
      *  User primary key
      * @return
      *  User Object pn, username, password, email, joinDate, UpdateDate
      */
     User selectOne(Integer pn);
+
+    /**
+     * Update Password 
+     * @param user
+     *  password, updatePassword
+     */
+    void updatePassword(User user);
 }
