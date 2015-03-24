@@ -2,12 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="user">
     
+    <!-- User CRUD -->
     <insert id="insert" parameterType="User">
         INSERT INTO
           `user`
           ( `username`, `password`, `email`, `joinDate`, `updateDate`)
         VALUES
           ( #{username}, #{password}, #{email}, SYSDATE(), SYSDATE() )
+        <selectKey keyProperty="pn" resultType="Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
+    
+    <select id="selectOne" parameterType="Integer" resultType="User">
+        SELECT
+          `pn`, `username`, `password`, `email`, `joinDate`, `updateDate`
+        FROM
+          `user`
+        WHERE
+          `pn` = #{value}
+    </select>
     
 </mapper>

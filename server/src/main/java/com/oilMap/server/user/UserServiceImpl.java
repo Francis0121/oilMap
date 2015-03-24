@@ -13,5 +13,10 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
     public void insert(User user) {
         getSqlSession().insert("user.insert", user);
     }
-    
+
+    @Override
+    public User selectOne(Integer pn) {
+        return getSqlSession().selectOne("user.selectOne", pn);
+    }
+
 }
