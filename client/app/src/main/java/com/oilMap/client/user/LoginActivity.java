@@ -31,11 +31,9 @@ public class LoginActivity extends Activity {
                 }
                 break;
 
-            case R.id.btnCancel:
+            case R.id.btnRegister:
                 edittxt.setText("");
                 edittxt1.setText("");
-                String logincencel = "취소 : 아이디를 다시 입력하세요";
-                Toast.makeText(LoginActivity.this, logincencel, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
