@@ -18,18 +18,25 @@ public class MockUserServiceImpl implements UserService {
     
     @Override
     public void insert(User user) {
-        user.setPn(this.userPn);
-        this.userList.add(user);
+        User newUser = new User(user.getUsername(), user.getPassword(), user.getEmail());
+        newUser.setPn(userPn++);
+        this.userList.add(newUser);
+        
+        user.setPn(newUser.getPn());
     }
 
     @Override
     public User selectOne(Integer pn) {
+        if(userList.size() < pn){
+            return null;
+        }
         return userList.get(pn);
     }
 
     @Override
     public void updatePassword(User user) {
-
+        User updateUser = userList.get(user.getPn());
+        updateUser.setPassword(user.getPassword());
     }
 
     @Override
