@@ -33,4 +33,12 @@
           `pn` = #{pn}
     </update>
     
+    <delete id="delete" parameterType="User">
+        DELETE
+        FROM
+          `user`
+        WHERE
+          `pn` = #{pn}
+    </delete>
+    
 </mapper>

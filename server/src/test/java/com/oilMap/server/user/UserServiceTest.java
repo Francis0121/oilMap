@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/resources/spring/root-context.xml")
-public class UserTest {
+public class UserServiceTest {
 
+    @Qualifier("userServiceImpl")
     @Autowired
     private UserService userService;
     
@@ -25,6 +27,7 @@ public class UserTest {
     private User userOther;
     
     private User updateUser;
+    private User deleteUser;
     
     @Before
     public void Before() {
@@ -41,12 +44,6 @@ public class UserTest {
         User getUser = userService.selectOne(userOther.getPn());
         compareUser(userOther, getUser);
     }
-    
-    private void compareUser(User user, User getUser){
-        assertThat(getUser.getUsername(), is(user.getUsername()));
-        assertThat(getUser.getEmail(), is(user.getEmail()));
-        assertThat(getUser.getPassword(), is(user.getPassword()));
-    }
 
     @Test
     @Transactional
@@ -57,5 +54,21 @@ public class UserTest {
         
         User getUser = userService.selectOne(user.getPn());
         assertThat(getUser.getPassword(), is(updateUser.getUpdatePassword()));
+    }
+    
+    @Test
+    @Transactional
+    public void 사용자_삭제() throws Exception{
+        deleteUser = new User(user.getPn());
+        userService.delete(deleteUser);
+        
+        User getUser = userService.selectOne(user.getPn());
+        assertThat(null, is(getUser));
+    }
+
+    private void compareUser(User user, User getUser){
+        assertThat(getUser.getUsername(), is(user.getUsername()));
+        assertThat(getUser.getEmail(), is(user.getEmail()));
+        assertThat(getUser.getPassword(), is(user.getPassword()));
     }
 }
