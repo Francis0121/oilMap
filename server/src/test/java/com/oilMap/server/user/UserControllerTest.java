@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import sun.org.mozilla.javascript.internal.json.JsonParser;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -62,7 +63,8 @@ public class UserControllerTest {
                     .contentType(TestUtil.APPLICATION_JSON_UTF8)
                     .content(TestUtil.convertObjectToJsonBytes(this.insertUser)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.success").value(true));
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.pn").exists());
     }
 
     @Test

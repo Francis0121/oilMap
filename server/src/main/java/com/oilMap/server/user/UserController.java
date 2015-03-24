@@ -76,7 +76,7 @@ public class UserController {
         
         userService.insert(user);
         map.put("pn", user.getPn());
-        map.put("success", false);
+        map.put("success", true);
         return map;
     }
 
