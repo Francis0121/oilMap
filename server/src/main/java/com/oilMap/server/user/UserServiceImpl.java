@@ -24,4 +24,9 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
         getSqlSession().update("user.updatePassword", user);
     }
 
+    @Override
+    public void delete(User user) {
+        getSqlSession().delete("user.delete", user);
+    }
+
 }

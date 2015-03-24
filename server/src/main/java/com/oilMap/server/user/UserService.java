@@ -28,4 +28,11 @@ public interface UserService {
      *  password, updatePassword
      */
     void updatePassword(User user);
+
+    /**
+     * Delete user
+     * @param user
+     *  user pn
+     */
+    void delete(User user);
 }
