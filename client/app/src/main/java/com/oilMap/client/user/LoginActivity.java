@@ -1,5 +1,6 @@
 package com.oilMap.client.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
@@ -19,6 +20,7 @@ public class LoginActivity extends Activity {
         EditText edittxt1 = (EditText) findViewById(R.id.txtpw);
         String id = edittxt.getText().toString();
         String pw = edittxt1.getText().toString();
+
         switch (v.getId()) {
             // 클릭한 버튼의 아이디가 리턴된다.
             case R.id.btnLogin:
@@ -26,15 +28,21 @@ public class LoginActivity extends Activity {
                     String loginyes = "로그인에 성공하였습니다.";
                     Toast.makeText(LoginActivity.this, loginyes, Toast.LENGTH_SHORT).show();
                 }else{
-                    String loginno = "로그인에 실패하였습니다..";
+                    String loginno = "로그인에 실패하였습니다.";
                     Toast.makeText(LoginActivity.this, loginno, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.btnRegister:
-                edittxt.setText("");
-                edittxt1.setText("");
+                Intent userRegIntent = new Intent(this, UserRegisterActivity.class);
+                startActivity(userRegIntent);
                 break;
+
+            case R.id.btnFind:
+                Intent findInform = new Intent(this, FindInformationActivity.class);
+                startActivity(findInform);
+                break;
+
         }
     }
 }
