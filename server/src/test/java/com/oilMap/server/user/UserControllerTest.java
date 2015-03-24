@@ -16,6 +16,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import sun.org.mozilla.javascript.internal.json.JsonParser;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -39,13 +43,44 @@ public class UserControllerTest {
     @Autowired
     private UserService userService;
     private User user;
-
+    private User insertUser;
+    
     @Before
     public void Before() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         
         this.user = new User("Sung", "1q2w3e4r!", "sung@gmail.com");
         this.userService.insert(user);
+        
+        this.insertUser = new User("Jung", "1q2w3e4r!", "kkk@gmail.com");
+    }
+    
+    @Test
+    public void 사용자_입력() throws Exception{
+        mockMvc
+            .perform(post("/user/join")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(this.insertUser)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true));
+    }
+
+    @Test
+    public void 사용자_입력_이메일_아이디_비밀번호_없음() throws Exception{
+
+        mockMvc
+                .perform(post("/user/join")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new User())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.username").value("이름을 입력해주세요"))
+                .andExpect(jsonPath("$.messages.password").value("비밀번호를 입력해주세요"))
+                .andExpect(jsonPath("$.messages.email").value("이메일을 입력해주세요"));
+        
+        
+        
     }
 
     @Test
