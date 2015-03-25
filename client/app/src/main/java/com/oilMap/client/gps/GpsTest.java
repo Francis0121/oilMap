@@ -5,6 +5,4 @@ package com.oilMap.client.gps;
  */
 public class GpsTest {
 
-
-
 }
