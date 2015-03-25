@@ -43,4 +43,27 @@ public class MockUserServiceImpl implements UserService {
     public void delete(User user) {
 
     }
+
+    @Override
+    public Boolean selectIsExistUsername(String username) {
+        for(User user : userList){
+            String getUsername = user.getUsername();
+            if(getUsername.equals(username)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean selectIsExistEmail(String email) {
+        for(User user : userList){
+            String getEmail = user.getEmail();
+            if(getEmail.equals(email)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

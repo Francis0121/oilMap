@@ -46,6 +46,10 @@ public class UserController {
                 String email = user.getEmail();
                 if(email == null || email.length() == 0 || email.equals("")){
                     errors.rejectValue("email", "user.email.notEmpty");
+                }else{
+                   if(userService.selectIsExistEmail(email)){
+                       errors.rejectValue("email", "user.email.exist");
+                   }
                 }
                 
                 String password = user.getPassword();
@@ -56,6 +60,9 @@ public class UserController {
                 String username = user.getUsername();
                 if(username == null || username.length() == 0 || username.equals("")){
                     errors.rejectValue("username", "user.username.notEmpty");
+                    if(userService.selectIsExistUsername(username)){
+                        errors.rejectValue("username", "user.username.exist");
+                    }
                 }
             }
             

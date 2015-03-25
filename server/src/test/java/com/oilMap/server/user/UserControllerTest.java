@@ -1,5 +1,6 @@
 package com.oilMap.server.user;
 
+import com.oilMap.server.util.Message;
 import com.oilMap.server.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,9 @@ import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 public class UserControllerTest {
     
     private static Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
+    
+    @Autowired
+    private Message message;
     
     @Autowired
     protected WebApplicationContext wac;
@@ -77,11 +81,22 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.messages.username").value("이름을 입력해주세요"))
-                .andExpect(jsonPath("$.messages.password").value("비밀번호를 입력해주세요"))
-                .andExpect(jsonPath("$.messages.email").value("이메일을 입력해주세요"));
-        
-        
+                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.notEmpty")))
+                .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEmpty")))
+                .andExpect(jsonPath("$.messages.email").value(message.getValue("user.email.notEmpty")));
+    }
+    
+    @Test
+    public void 사용자_이미_존재() throws Exception{
+        mockMvc
+                .perform(post("/user/join")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.exist")))
+                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.email.exist")));
         
     }
 
