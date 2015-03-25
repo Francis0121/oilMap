@@ -1,5 +1,7 @@
-package com.oilMap.server.user;
+package com.oilMap.server.user.fuel;
 
+import com.oilMap.server.user.User;
+import com.oilMap.server.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

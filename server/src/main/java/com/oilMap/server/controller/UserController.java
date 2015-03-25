@@ -1,10 +1,11 @@
-package com.oilMap.server.user;
+package com.oilMap.server.controller;
 
+import com.oilMap.server.user.User;
+import com.oilMap.server.user.UserService;
 import com.oilMap.server.util.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.support.EncodedResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;

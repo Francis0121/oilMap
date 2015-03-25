@@ -1,5 +1,7 @@
-package com.oilMap.server.user;
+package com.oilMap.server.controller;
 
+import com.oilMap.server.user.User;
+import com.oilMap.server.user.UserService;
 import com.oilMap.server.util.Message;
 import com.oilMap.server.util.TestUtil;
 import org.junit.Before;

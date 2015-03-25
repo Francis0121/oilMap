@@ -1,4 +1,4 @@
-package com.oilMap.server.user;
+package com.oilMap.server.controller;
 
 import org.junit.Before;
 import org.junit.Test;

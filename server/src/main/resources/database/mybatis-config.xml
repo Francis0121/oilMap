@@ -3,5 +3,6 @@
 <configuration>
 	<typeAliases>
 		<typeAlias type="com.oilMap.server.user.User" alias="User"/>
+		<typeAlias type="com.oilMap.server.user.fuel.UserFuel" alias="UserFuel"/>
 	</typeAliases>
 </configuration>
