@@ -83,5 +83,18 @@ public class UserControllerFuelTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
     }
+
+    @Test
+    public void 유류정보가_존재하지_않는_업데이트_경우() throws Exception{
+        mockMvc
+                .perform(post("/user/fuel/update")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new UserFuel())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.displacement").value(message.getValue("userFuel.displacement.notEmpty")))
+                .andExpect(jsonPath("$.messages.cost").value(message.getValue("userFuel.cost.notEmpty")))
+                .andExpect(jsonPath("$.messages.period").value(message.getValue("userFuel.period.notEmpty")));
+    }
     
 }

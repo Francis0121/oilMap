@@ -29,7 +29,12 @@ public class MockUserFuelServiceImpl implements UserFuelService {
 
     @Override
     public void update(UserFuel userFuel) {
-
-        
+        for(UserFuel fuel : userFuels){
+            if(fuel.getUserPn().equals(userFuel.getUserPn())){
+                fuel.setCost(userFuel.getCost());
+                fuel.setDisplacement(userFuel.getDisplacement());
+                fuel.setPeriod(userFuel.getPeriod());
+            }
+        }
     }
 }
