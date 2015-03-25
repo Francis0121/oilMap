@@ -23,6 +23,11 @@ public class User {
     private String password;
 
     /**
+     * Password confirm 
+     */
+    private String confirmPassword;
+    
+    /**
      * Update Password
      */
     private String updatePassword;
@@ -55,6 +60,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public Integer getPn() {
@@ -119,6 +132,7 @@ public class User {
                 "pn=" + pn +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
                 ", updatePassword='" + updatePassword + '\'' +
                 ", email='" + email + '\'' +
                 ", joinDate='" + joinDate + '\'' +

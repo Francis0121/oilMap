@@ -33,6 +33,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value="/join", method = RequestMethod.POST)
     public Map<String, Object> join(@RequestBody User user, BindingResult result){
+        logger.debug(user.toString());
         Map<String, Object> map = new HashMap<String, Object>();
         new Validator(){
             @Override
@@ -53,13 +54,20 @@ public class UserController {
                 }
                 
                 String password = user.getPassword();
-                if(password == null || password.length() == 0 || password.equals("")){
+                String confirmPassword = user.getConfirmPassword();
+                if(     (password == null || password.length() == 0 || password.equals("")) || 
+                        (confirmPassword == null || confirmPassword.length() == 0 || confirmPassword.equals("")) ){
                     errors.rejectValue("password", "user.password.notEmpty");
+                }else{
+                    if(!password.equals(confirmPassword)){
+                        errors.rejectValue("password", "user.password.notEqual");
+                    }
                 }
                 
                 String username = user.getUsername();
                 if(username == null || username.length() == 0 || username.equals("")){
                     errors.rejectValue("username", "user.username.notEmpty");
+                }else{
                     if(userService.selectIsExistUsername(username)){
                         errors.rejectValue("username", "user.username.exist");
                     }

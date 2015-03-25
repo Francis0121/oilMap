@@ -62,6 +62,7 @@ public class UserControllerTest {
     
     @Test
     public void 사용자_입력() throws Exception{
+        this.insertUser.setConfirmPassword(this.insertUser.getPassword());
         mockMvc
             .perform(post("/user/join")
                     .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -87,6 +88,18 @@ public class UserControllerTest {
     }
     
     @Test
+    public void 비밀번호_확인이_존재하지_않는_경우() throws Exception{
+        mockMvc
+                .perform(post("/user/join")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(user)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEmpty")));
+    }
+    
+    @Test
     public void 사용자_이미_존재() throws Exception{
         mockMvc
                 .perform(post("/user/join")
@@ -96,8 +109,25 @@ public class UserControllerTest {
                 .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.exist")))
-                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.email.exist")));
+                .andExpect(jsonPath("$.messages.email").value(message.getValue("user.email.exist")));
         
+    }
+    
+    @Test
+    public void 패스워드_확인() throws Exception{
+        User passwordUser = new User();
+        
+        passwordUser.setPassword("1234");
+        passwordUser.setConfirmPassword("2345");
+        
+        mockMvc
+                .perform(post("/user/join")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(passwordUser)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEqual")));
     }
 
     @Test
