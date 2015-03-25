@@ -35,4 +35,18 @@ public interface UserService {
      *  user pn
      */
     void delete(User user);
+
+    /**
+     * Email Exist check
+     * @param email
+     * @return
+     */
+    Boolean selectIsExistEmail(String email);
+
+    /**
+     * Username exist checkt
+     * @param username
+     * @return
+     */
+    Boolean selectIsExistUsername(String username);
 }

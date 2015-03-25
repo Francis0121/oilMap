@@ -40,5 +40,24 @@
         WHERE
           `pn` = #{pn}
     </delete>
+
+    <!-- is Exist check -->
+    <select id="selectIsExistEmail" parameterType="String" resultType="Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          `user`
+        WHERE
+          `email` = #{value}
+    </select>
+    
+    <select id="selectIsExistUsername" parameterType="String" resultType="Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          `user`
+        WHERE  
+          `username` = #{username}
+    </select>
     
 </mapper>

@@ -29,4 +29,16 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
         getSqlSession().delete("user.delete", user);
     }
 
+    @Override
+    public Boolean selectIsExistUsername(String username) {
+        int count = getSqlSession().selectOne("user.selectIsExistUsername", username);
+        return count > 0 ? true : false;
+    }
+
+    @Override
+    public Boolean selectIsExistEmail(String email) {
+        int count = getSqlSession().selectOne("user.selectIsExistEmail", email);
+        return count > 0 ? true : false;
+    }
+
 }

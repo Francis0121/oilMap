@@ -65,6 +65,27 @@ public class UserServiceTest {
         User getUser = userService.selectOne(user.getPn());
         assertThat(null, is(getUser));
     }
+    
+    @Test
+    @Transactional
+    public void 이메일_존재() throws Exception{
+        
+        Boolean isExist = userService.selectIsExistEmail(user.getEmail());
+        assertThat(isExist, is(true));
+
+        isExist = userService.selectIsExistEmail("asd@naver.com");
+        assertThat(isExist, is(false));
+    }
+    
+    @Test
+    @Transactional
+    public void 유저이름_존재() throws Exception{
+        Boolean isExist = userService.selectIsExistUsername(user.getUsername());
+        assertThat(isExist, is(true));
+        
+        isExist = userService.selectIsExistUsername("hell");
+        assertThat(isExist, is(false));
+    }
 
     private void compareUser(User user, User getUser){
         assertThat(getUser.getUsername(), is(user.getUsername()));
