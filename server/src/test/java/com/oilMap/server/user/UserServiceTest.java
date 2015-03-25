@@ -3,6 +3,8 @@ package com.oilMap.server.user;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -10,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -18,6 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/resources/spring/root-context.xml")
 public class UserServiceTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
     @Qualifier("userServiceImpl")
     @Autowired
@@ -85,6 +90,22 @@ public class UserServiceTest {
         
         isExist = userService.selectIsExistUsername("hell");
         assertThat(isExist, is(false));
+    }
+    
+    @Test
+    @Transactional
+    public void 새로운_비밀번호_생성() throws Exception{
+        String newPassword = userService.updateNewPassword(user);
+        assertThat(null, not(newPassword));
+        logger.debug("New Password "+newPassword);
+        
+        user.setPassword(newPassword);
+        User getUser = userService.selectOne(user.getPn());
+        compareUser(user, getUser);
+        
+        user.setEmail("");
+        newPassword = userService.updateNewPassword(user);
+        assertThat(null, is(newPassword));
     }
 
     private void compareUser(User user, User getUser){

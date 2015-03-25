@@ -166,8 +166,31 @@ public class UserControllerTest {
         mockMvc.perform(post("/user/updatePassword")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(user)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.success").value(false));
+    }
+    
+    @Test
+    public void 새로운_비밀번호_생성() throws Exception{
+        
+        mockMvc.perform(post("/user/updateNewPassword")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(user)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.newPassword").exists());
+
+        user.setEmail("");
+        
+        mockMvc.perform(post("/user/updateNewPassword")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(user)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.success").value(false));
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages").value(message.getValue("user.newPassword.notEqual")));
+
     }
 }

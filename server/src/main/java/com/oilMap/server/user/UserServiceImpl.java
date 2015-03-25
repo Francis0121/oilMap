@@ -36,6 +36,22 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
     }
 
     @Override
+    public String updateNewPassword(User user) {
+        User isUser = getSqlSession().selectOne("user.updateNewPassword", user);
+        if(isUser == null || isUser.getPn() == null) {
+            return null;
+        }
+        
+        String newPassword = "";
+        for (int j = 0; j < 8; j++) {
+            newPassword += (char)((Math.random() * 26) + 97);
+        }
+        isUser.setUpdatePassword(newPassword);
+        updatePassword(isUser);
+        return newPassword;
+    }
+
+    @Override
     public Boolean selectIsExistEmail(String email) {
         int count = getSqlSession().selectOne("user.selectIsExistEmail", email);
         return count > 0 ? true : false;

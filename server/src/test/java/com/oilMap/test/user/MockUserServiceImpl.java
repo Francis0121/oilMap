@@ -2,6 +2,8 @@ package com.oilMap.test.user;
 
 import com.oilMap.server.user.User;
 import com.oilMap.server.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
  */
 @Service("userServiceImpl")
 public class MockUserServiceImpl implements UserService {
+    
+    private static Logger logger = LoggerFactory.getLogger(MockUserServiceImpl.class);
     
     private Integer userPn = 0;
     private List<User> userList = new ArrayList<User>();
@@ -53,6 +57,22 @@ public class MockUserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    @Override
+    public String updateNewPassword(User user) {
+        String email = user.getEmail();
+        String username = user.getUsername();
+        for(User u : userList){
+            String getEmail = u.getEmail();
+            String getUsername = u.getUsername();
+            if(getEmail.equals(email) && getUsername.equals(username)){
+                u.setPassword("0p9o8i@");
+                logger.debug("Set new Password");
+                return "0p9o8i@";
+            }
+        }
+        return null;
     }
 
     @Override

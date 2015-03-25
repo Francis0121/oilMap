@@ -120,12 +120,25 @@ public class UserController {
         }
         
         logger.debug("get updatePassword " + user);
-        
         userService.updatePassword(user);
-        
-        
         model.put("success", true);
         return model;
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/updateNewPassword", method = RequestMethod.POST)
+    public Map<String, Object> updateNewPassword(@RequestBody User user){
+        Map<String, Object> map = new HashMap<String, Object>();
+        String newPassword = userService.updateNewPassword(user);
+        if(newPassword == null){
+            map.put("success", false);
+            map.put("messages", message.getValue("user.newPassword.notEqual"));
+            return map;
+        }
+        
+        map.put("success", true);
+        map.put("newPassword", newPassword);
+        return map;
     }
     
 }

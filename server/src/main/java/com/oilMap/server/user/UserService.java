@@ -49,4 +49,12 @@ public interface UserService {
      * @return
      */
     Boolean selectIsExistUsername(String username);
+
+
+    /**
+     * 새로운 패스워드 생성 및 업데이트
+     * @param user
+     * @return 새로운 비밀번호
+     */
+    String updateNewPassword(User user);
 }

@@ -60,4 +60,15 @@
           `username` = #{username}
     </select>
     
+    <select id="updateNewPassword" parameterType="User" resultType="User">
+        SELECT
+          `pn`, `username`, `password`, `email`, `joinDate`, `updateDate`
+        FROM
+          `user`
+        WHERE
+          `username` = #{username}
+        AND
+          `email` = #{email}
+    </select>
+    
 </mapper>
