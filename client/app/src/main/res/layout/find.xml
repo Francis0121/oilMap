@@ -8,13 +8,30 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/findPw"
-        android:hint="가입시 E-mail 주소 입력"
+        android:id="@+id/findID"
+        android:hint="가입시 ID 입력"
         android:singleLine="true"
         android:lines="1"
         />
 
     <TextView android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="left"
+        />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/findEmail"
+        android:hint="가입시 E-mail 주소 입력"
+        android:singleLine="true"
+        android:lines="1"
+        />
+
+    <TextView android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
