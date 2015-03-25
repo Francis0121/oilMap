@@ -3,6 +3,7 @@ package com.oilMap.client.user;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,6 +15,17 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK :
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
     public void mOnClick(View v) {
         // View v 에 어떤정보를 클릭했는가 하는 정보가 들어있다.
         EditText edittxt = (EditText) findViewById(R.id.txtid);
