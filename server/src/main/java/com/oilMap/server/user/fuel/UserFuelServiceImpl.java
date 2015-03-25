@@ -8,4 +8,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserFuelServiceImpl extends SqlSessionDaoSupport implements UserFuelService {
+
+    @Override
+    public void insert(UserFuel userFuel) {
+        getSqlSession().insert("userFuel.insert", userFuel);
+    }
+
+    @Override
+    public UserFuel selectOne(Integer userPn) {
+        return getSqlSession().selectOne("userFuel.selectOne", userPn);
+    }
+
+    @Override
+    public void update(UserFuel userFuel) {
+        getSqlSession().update("userFuel.update", userFuel);
+    }
 }
