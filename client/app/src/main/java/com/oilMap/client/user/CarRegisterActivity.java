@@ -32,6 +32,7 @@ public class CarRegisterActivity extends Activity {
             case R.id.btnRegComplete:
                 Intent complete = new Intent(this, LoginActivity.class);
                 startActivity(complete);
+                finish();
                 break;
         }
     }

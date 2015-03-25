@@ -1,9 +1,8 @@
 package com.oilMap.client.user;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,18 +10,27 @@ import android.widget.Toast;
 import com.oilMap.client.R;
 
 public class LoginActivity extends Activity {
+
+    private BackPressCloseHandler backPressCloseHandler;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        backPressCloseHandler = new BackPressCloseHandler(this);
     }
 
-    @Override
+    /*@Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         switch (keyCode){
             case KeyEvent.KEYCODE_BACK :
                 return true;
         }
         return super.onKeyDown(keyCode, event);
+    }*/
+
+    public  void onBackPressed(){
+        backPressCloseHandler.onBackpressed();
     }
 
 
@@ -48,11 +56,13 @@ public class LoginActivity extends Activity {
             case R.id.btnRegister:
                 Intent userRegIntent = new Intent(this, UserRegisterActivity.class);
                 startActivity(userRegIntent);
+                finish();
                 break;
 
             case R.id.btnFind:
                 Intent findInform = new Intent(this, FindInformationActivity.class);
                 startActivity(findInform);
+                finish();
                 break;
 
         }
