@@ -36,10 +36,13 @@ public class CarRegisterActivity extends Activity {
         EditText editCost = (EditText) findViewById(R.id.regCost);
         EditText editPeriod = (EditText) findViewById(R.id.regPeriod);
 
-        //userfuel.setDisplacement(editCar);
-        //userfuel.setCost();
-        //userfuel.setPeriod();
-        //int형으로 받는 걸 구현 해야함.
+        Integer intCar = Integer.parseInt("" + editCar.getText());
+        Integer intCost = Integer.parseInt("" + editCost.getText());
+        Integer intPeriod = Integer.parseInt("" + editPeriod.getText());
+
+        userfuel.setDisplacement(intCar);
+        userfuel.setCost(intCost);
+        userfuel.setPeriod(intPeriod);
 
         switch (v.getId()) {
             case R.id.btnRegComplete:
