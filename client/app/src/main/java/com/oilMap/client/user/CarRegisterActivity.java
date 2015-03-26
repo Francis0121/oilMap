@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
 
 import com.oilMap.client.R;
 
@@ -26,13 +27,27 @@ public class CarRegisterActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-
     public void mOnClick(View v){
+
+        EditText editCar = (EditText) findViewById(R.id.regCar);
+        EditText editCost = (EditText) findViewById(R.id.regCost);
+        EditText editPeriod = (EditText) findViewById(R.id.regPeriod);
+
+        String regCar = editCar.getText().toString();
+        String regCost = editCost.getText().toString();
+        String regPeriod = editPeriod.getText().toString();
+
         switch (v.getId()) {
             case R.id.btnRegComplete:
                 Intent complete = new Intent(this, LoginActivity.class);
                 startActivity(complete);
                 finish();
+                break;
+
+            case R.id.btnRegCarClear:
+                editCar.setText("");
+                editCost.setText("");
+                editPeriod.setText("");
                 break;
         }
     }
