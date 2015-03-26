@@ -13,6 +13,9 @@ import com.oilMap.client.R;
  * Created by 김현준 on 2015-03-25.
  */
 public class CarRegisterActivity extends Activity {
+
+    UserFuel userfuel = new UserFuel();
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.car_register);
@@ -33,9 +36,10 @@ public class CarRegisterActivity extends Activity {
         EditText editCost = (EditText) findViewById(R.id.regCost);
         EditText editPeriod = (EditText) findViewById(R.id.regPeriod);
 
-        String regCar = editCar.getText().toString();
-        String regCost = editCost.getText().toString();
-        String regPeriod = editPeriod.getText().toString();
+        //userfuel.setDisplacement(editCar);
+        //userfuel.setCost();
+        //userfuel.setPeriod();
+        //int형으로 받는 걸 구현 해야함.
 
         switch (v.getId()) {
             case R.id.btnRegComplete:

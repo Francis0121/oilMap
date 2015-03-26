@@ -42,6 +42,14 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    private class TestPost extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            return null;
+        }
+    }
     
     private class JsonAsyncTask extends AsyncTask<String, Void, String>{
 
@@ -74,7 +82,7 @@ public class MainActivity extends Activity {
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
                     ResponseEntity<Test> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Test.class);
-                    Test test = responseEntity.getBody();
+                    Test test = responseEntity.getBody(); //받는거임
 
                     return test.toString();
                 }else if(type.equals("post")){

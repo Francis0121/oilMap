@@ -12,6 +12,9 @@ import com.oilMap.client.R;
  * Created by 김현준 on 2015-03-25.
  */
 public class UserRegisterActivity extends Activity {
+
+    User user = new User();
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_register);
@@ -35,10 +38,10 @@ public class UserRegisterActivity extends Activity {
         EditText editRePW = (EditText) findViewById(R.id.regRePw);
         EditText editEmail = (EditText) findViewById(R.id.regEmail);
 
-        String regID = editID.getText().toString();
-        String regPW = editPW.getText().toString();
-        String regRePW = editRePW.getText().toString();
-        String regEmail = editEmail.getText().toString();
+        user.setUsername(editID.getText().toString());
+        user.setPassword(editPW.getText().toString());
+        user.setConfirmPassword(editRePW.getText().toString());
+        user.setEmail(editEmail.getText().toString());
 
         switch (v.getId()) {
             case R.id.btnRegNext:
