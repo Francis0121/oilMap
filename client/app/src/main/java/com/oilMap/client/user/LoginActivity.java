@@ -20,15 +20,6 @@ public class LoginActivity extends Activity {
         backPressCloseHandler = new BackPressCloseHandler(this);
     }
 
-    /*@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        switch (keyCode){
-            case KeyEvent.KEYCODE_BACK :
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }*/
-
     public  void onBackPressed(){
         backPressCloseHandler.onBackpressed();
     }
