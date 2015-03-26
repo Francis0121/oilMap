@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
+import com.oilMap.client.info.NavigationActivity;
 
 public class LoginActivity extends Activity {
 
@@ -38,6 +39,9 @@ public class LoginActivity extends Activity {
                 if ("guest".equals(id) && "1234".equals(pw)) {
                     String loginyes = "로그인에 성공하였습니다.";
                     Toast.makeText(LoginActivity.this, loginyes, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, NavigationActivity.class);
+                    startActivity(intent);
+                    finish();
                 }else{
                     String loginno = "로그인에 실패하였습니다.";
                     Toast.makeText(LoginActivity.this, loginno, Toast.LENGTH_SHORT).show();
