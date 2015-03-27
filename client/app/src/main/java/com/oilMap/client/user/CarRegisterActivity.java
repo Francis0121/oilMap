@@ -17,6 +17,10 @@ public class CarRegisterActivity extends Activity {
 
     UserFuel userfuel = new UserFuel();
 
+    int carInformInteger = 2000;
+    int costInformInteger = 20000;
+    int periodInformInteger = 5;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.car_register);
@@ -56,17 +60,9 @@ public class CarRegisterActivity extends Activity {
 
     public void mOnClick(View v){
 
-      /*  EditText editCar = (EditText) findViewById(R.id.regCar);
-        EditText editCost = (EditText) findViewById(R.id.regCost);
-        EditText editPeriod = (EditText) findViewById(R.id.regPeriod);
-
-        Integer intCar = Integer.parseInt("" + editCar.getText());
-        Integer intCost = Integer.parseInt("" + editCost.getText());
-        Integer intPeriod = Integer.parseInt("" + editPeriod.getText());*/
-
-        /*userfuel.setDisplacement( carInform.setAdapter(adapter1));
-        userfuel.setCost(intCost);
-        userfuel.setPeriod(intPeriod);*/
+        userfuel.setDisplacement(carInformInteger);
+        userfuel.setCost(costInformInteger);
+        userfuel.setPeriod(periodInformInteger);
 
         switch (v.getId()) {
             case R.id.btnRegComplete:
@@ -76,9 +72,9 @@ public class CarRegisterActivity extends Activity {
                 break;
 
             case R.id.btnRegCarClear:
-              /*  editCar.setText("");
-                editCost.setText("");
-                editPeriod.setText("");*/
+                Intent clear = new Intent(this, LoginActivity.class);
+                startActivity(clear);
+                finish();
                 break;
         }
     }
