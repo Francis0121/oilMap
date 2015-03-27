@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="car">
+        <item>2000CC</item>
+        <item>3000CC</item>
+        <item>4000CC</item>
+        <item>5000CC</item>
+    </string-array>
+
+    <string-array name="cost">
+        <item>10000</item>
+        <item>20000</item>
+        <item>30000</item>
+        <item>40000</item>
+    </string-array>
+
+    <string-array name="period">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+</resources>

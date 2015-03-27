@@ -5,15 +5,22 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal|center_vertical"
     >
-    <EditText
+
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/regCar"
+        android:prompt="@string/regCar_prompt"
+        />
+  <!--  <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/regCar"
         android:inputType="number"
-        android:hint="차종입력"
+        android:hint=""
         android:singleLine="true"
         android:lines="1"
-        />
+        />-->
 
     <TextView android:id="@+id/textView2"
         android:layout_width="wrap_content"
@@ -23,7 +30,13 @@
         android:layout_gravity="left"
         />
 
-    <EditText
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/regCost"
+        android:prompt="@string/regCost_prompt"
+        />
+    <!--<EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/regCost"
@@ -31,7 +44,7 @@
         android:hint="평균 유류비"
         android:singleLine="true"
         android:lines="1"
-        />
+        />-->
 
     <TextView android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -40,8 +53,14 @@
         android:layout_marginLeft="5dp"
         android:layout_gravity="left"
         />
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/regPeriod"
+        android:prompt="@string/regPeriod_prompt"
+        />
 
-    <EditText
+    <!--<EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/regPeriod"
@@ -49,7 +68,7 @@
         android:hint="주유 기간"
         android:singleLine="true"
         android:lines="1"
-        />
+        />-->
 
     <TextView android:id="@+id/textView4"
         android:layout_width="wrap_content"
