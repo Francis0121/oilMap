@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="car">
-        <item>2000CC</item>
-        <item>3000CC</item>
-        <item>4000CC</item>
-        <item>5000CC</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>4000</item>
+        <item>5000</item>
     </string-array>
 
     <string-array name="cost">
