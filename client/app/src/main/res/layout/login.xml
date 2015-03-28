@@ -52,7 +52,7 @@
 
         <EditText
             android:id="@+id/txtpw"
-            android:hint="비밀번호 입력하세요"
+            android:hint="비밀번호를 입력하세요"
             android:singleLine="true"
             android:lines="1"
             android:layout_width="fill_parent"
@@ -98,10 +98,18 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/checkAutoLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  자동 로그인"
+        android:layout_marginTop="20dp"
+        />
+
     <TextView android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="10dp"
         android:layout_gravity="left"
         />
