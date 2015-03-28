@@ -30,9 +30,9 @@ public class UserServiceImpl extends SqlSessionDaoSupport implements  UserServic
     }
 
     @Override
-    public Boolean selectIsExistUsername(String username) {
-        int count = getSqlSession().selectOne("user.selectIsExistUsername", username);
-        return count > 0 ? true : false;
+    public Integer selectIsExistUsername(String username) {
+        Integer pn = getSqlSession().selectOne("user.selectIsExistUsername", username);
+        return pn;
     }
 
     @Override

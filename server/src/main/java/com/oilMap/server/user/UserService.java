@@ -48,7 +48,7 @@ public interface UserService {
      * @param username
      * @return
      */
-    Boolean selectIsExistUsername(String username);
+    Integer selectIsExistUsername(String username);
 
 
     /**

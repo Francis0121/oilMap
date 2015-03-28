@@ -32,6 +32,71 @@ public class UserController {
     private Message message;
     
     @ResponseBody
+    @RequestMapping(value="/login", method = RequestMethod.POST)
+    public Map<String, Object> login(@RequestBody User user, BindingResult result){
+        logger.debug(user.toString());
+        Map<String, Object> map = new HashMap<String, Object>();
+        new Validator(){
+            @Override
+            public boolean supports(Class<?> aClass) {
+                return User.class.isAssignableFrom(aClass);
+            }
+
+            @Override
+            public void validate(Object object, Errors errors) {
+                User user = (User) object;
+                
+                String username = user.getUsername();
+                String password = user.getPassword();
+                Integer pn;
+                
+                // 아이디 입력 필요
+                if(username == null || username.length() == 0 || username.equals("")){
+                    errors.rejectValue("username", "user.username.notEmpty");
+                }else{
+                    // 아이디 존재하지않음
+                    pn = userService.selectIsExistUsername(username);
+                    if(pn == null){
+                        errors.rejectValue("username", "user.username.notExist");
+                    }else {
+                        user.setPn(pn);
+                        // 비밀번호틀림
+                        if (password != null && password.length() != 0 && !password.equals("")) {
+                            User getUser = userService.selectOne(pn);
+                            logger.debug(getUser.toString());
+                            if (!password.equals(getUser.getPassword())) {
+                                errors.rejectValue("password", "user.password.notEqual");
+                            }
+                        }
+                    }
+                }
+                
+                // 비밀번호 입력 필요
+                if (password == null || password.length() == 0 || password.equals("")) {
+                    errors.rejectValue("password", "user.password.notEmpty");
+                }
+            }
+        }.validate(user,result);
+        
+        if(result.hasErrors()){
+            map.put("success", false);
+
+            Map<String, String> messages = new HashMap<String, String>();
+            for(FieldError error : result.getFieldErrors()){
+                messages.put(error.getField(), message.getValue(error.getCode()));
+                logger.debug(error.getField() + message.getValue(error.getCode()));
+            }
+            logger.debug(messages.toString());
+            map.put("messages", messages);
+            return map;
+        }
+        
+        map.put("success", true);
+        map.put("pn", user.getPn());
+        return map;
+    }
+    
+    @ResponseBody
     @RequestMapping(value="/join", method = RequestMethod.POST)
     public Map<String, Object> join(@RequestBody User user, BindingResult result){
         logger.debug(user.toString());
@@ -69,7 +134,7 @@ public class UserController {
                 if(username == null || username.length() == 0 || username.equals("")){
                     errors.rejectValue("username", "user.username.notEmpty");
                 }else{
-                    if(userService.selectIsExistUsername(username)){
+                    if(userService.selectIsExistUsername(username) != null){
                         errors.rejectValue("username", "user.username.exist");
                     }
                 }

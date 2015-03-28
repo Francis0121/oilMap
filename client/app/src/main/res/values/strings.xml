@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Oil Map</string>
-    <string name="contextPath">http://192.168.43.127:8080</string>
+    <string name="contextPath">http://14.49.39.74:8080/</string>
     <string name="title_activity_navigation">NavigationActivity</string>
 
     <string name="regCar_prompt">차량CC</string>

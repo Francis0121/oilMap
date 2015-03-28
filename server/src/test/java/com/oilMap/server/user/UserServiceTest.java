@@ -85,11 +85,11 @@ public class UserServiceTest {
     @Test
     @Transactional
     public void 유저이름_존재() throws Exception{
-        Boolean isExist = userService.selectIsExistUsername(user.getUsername());
-        assertThat(isExist, is(true));
+        Integer pn = userService.selectIsExistUsername(user.getUsername());
+        assertThat(pn, is(user.getPn()));
         
-        isExist = userService.selectIsExistUsername("hell");
-        assertThat(isExist, is(false));
+        pn = userService.selectIsExistUsername("hell");
+        assertThat(null, is(pn));
     }
     
     @Test

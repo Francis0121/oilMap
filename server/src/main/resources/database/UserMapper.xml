@@ -53,7 +53,7 @@
     
     <select id="selectIsExistUsername" parameterType="String" resultType="Integer">
         SELECT
-          COUNT(*)
+          `pn`
         FROM
           `user`
         WHERE  
