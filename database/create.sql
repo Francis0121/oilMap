@@ -47,7 +47,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`pn`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='사용자 개인 정보\r\n';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='사용자 개인 정보\r\n';
 
 /*Table structure for table `user_fuel` */
 
