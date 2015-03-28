@@ -43,10 +43,24 @@ public class NavigationActivity extends Activity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment=null;
+        switch (position) {
+            case 0:
+                //myinfo
+                fragment=new MyInfo();
+                break;
+            case 1:
+                //oilinfo
+                fragment=new OilInfo();
+                break;
+            case 2:
+                //oilgraph
+                fragment=new Oilgraph();
+                break;
+        }
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
