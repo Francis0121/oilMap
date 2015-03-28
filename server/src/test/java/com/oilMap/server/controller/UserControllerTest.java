@@ -54,6 +54,54 @@ public class UserControllerTest {
     }
     
     @Test
+    public void 사용자_로그인() throws Exception{
+        User loginUser = new User("Sung2", "1q2w3e4r!", "kkk@gmail.com");
+        this.userService.insert(loginUser);
+        
+        mockMvc.perform(post("/user/login")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(loginUser)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.pn").value(loginUser.getPn()));
+    }
+    
+    @Test
+    public void 사용자_로그인_아이디_비밀번호_없음() throws Exception{
+        mockMvc.perform(post("/user/login")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(new User())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.notEmpty")))
+                .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEmpty")));
+    }
+
+    @Test
+    public void 사용자_입력_이메일_없음() throws Exception{
+        mockMvc
+                .perform(post("/user/login")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new User("Sung2", "1q2w3e4r!", ""))))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.notExist")));
+    }
+    
+    @Test
+    public void 사용자_비밀번호_틀림() throws Exception{
+        mockMvc
+                .perform(post("/user/login")
+                        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(new User("Sung", "as!", ""))))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEqual")));
+    }
+
+    @Test
     public void 사용자_입력() throws Exception{
         this.insertUser.setConfirmPassword(this.insertUser.getPassword());
         mockMvc
@@ -64,10 +112,10 @@ public class UserControllerTest {
             .andExpect(jsonPath("$.success").value(true))
             .andExpect(jsonPath("$.pn").exists());
     }
-
+    
     @Test
-    public void 사용자_입력_이메일_아이디_비밀번호_없음() throws Exception{
-
+    public void 사용자_아이디_비밀번호_일치_않음() throws Exception {
+        
         mockMvc
                 .perform(post("/user/join")
                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -78,6 +126,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.messages.username").value(message.getValue("user.username.notEmpty")))
                 .andExpect(jsonPath("$.messages.password").value(message.getValue("user.password.notEmpty")))
                 .andExpect(jsonPath("$.messages.email").value(message.getValue("user.email.notEmpty")));
+        
     }
     
     @Test

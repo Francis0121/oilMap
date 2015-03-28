@@ -49,14 +49,14 @@ public class MockUserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean selectIsExistUsername(String username) {
+    public Integer selectIsExistUsername(String username) {
         for(User user : userList){
             String getUsername = user.getUsername();
             if(getUsername.equals(username)){
-                return true;
+                return user.getPn();
             }
         }
-        return false;
+        return null;
     }
 
     @Override

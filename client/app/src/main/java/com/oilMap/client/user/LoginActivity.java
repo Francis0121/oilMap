@@ -2,17 +2,32 @@ package com.oilMap.client.user;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
+import com.oilMap.client.Test;
 import com.oilMap.client.info.NavigationActivity;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginActivity extends Activity {
 
     private BackPressCloseHandler backPressCloseHandler;
+    private String username =
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +75,43 @@ public class LoginActivity extends Activity {
                 finish();
                 break;
 
+        }
+    }
+
+    /**
+     * Login Async Task class
+     */
+    private class Login extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+
+
+                String url = getString(R.string.contextPath) + "/join";
+
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Test> responseEntity = restTemplate.postForEntity(url, new Test(200, "Post"), Test.class);
+                Test test = responseEntity.getBody();
+
+                return test.toString();
+
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                return "fail";
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
     }
 }
