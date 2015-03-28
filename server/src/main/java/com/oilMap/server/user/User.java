@@ -35,7 +35,6 @@ public class User {
     /**
      * Email address unique
      */
-    @NotEmpty
     private String email;
 
     /**
