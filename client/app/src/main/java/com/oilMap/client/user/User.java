@@ -9,6 +9,49 @@ public class User {
      */
     private Integer pn;
 
+    /**
+     * User name unique
+     */
+    private String username;
+
+    /**
+     * Password
+     */
+    private String password;
+
+    /**
+     * Password confirm
+     */
+    private String confirmPassword;
+
+    /**
+     * Update Password
+     */
+    private String updatePassword;
+
+    /**
+     * Email address unique
+     */
+    private String email;
+
+    /**
+     * join date
+     */
+    private String joinDate;
+
+    /**
+     * Update Date
+     */
+    private String updateDate;
+
+    public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Integer getPn() {
         return pn;
     }
@@ -72,39 +115,4 @@ public class User {
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
-
-    /**
-     * User name unique
-     */
-    private String username;
-
-    /**
-     * Password
-     */
-    private String password;
-
-    /**
-     * Password confirm
-     */
-    private String confirmPassword;
-
-    /**
-     * Update Password
-     */
-    private String updatePassword;
-
-    /**
-     * Email address unique
-     */
-    private String email;
-
-    /**
-     * join date
-     */
-    private String joinDate;
-
-    /**
-     * Update Date
-     */
-    private String updateDate;
 }

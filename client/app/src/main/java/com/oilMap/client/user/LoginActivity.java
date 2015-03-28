@@ -23,11 +23,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LoginActivity extends Activity {
 
     private BackPressCloseHandler backPressCloseHandler;
-    private String username =
+    private String username;
+    private String password;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,22 +47,14 @@ public class LoginActivity extends Activity {
         // View v 에 어떤정보를 클릭했는가 하는 정보가 들어있다.
         EditText edittxt = (EditText) findViewById(R.id.txtid);
         EditText edittxt1 = (EditText) findViewById(R.id.txtpw);
-        String id = edittxt.getText().toString();
-        String pw = edittxt1.getText().toString();
+        username = edittxt.getText().toString();
+        password = edittxt1.getText().toString();
 
         switch (v.getId()) {
             // 클릭한 버튼의 아이디가 리턴된다.
             case R.id.btnLogin:
-                if ("guest".equals(id) && "1234".equals(pw)) {
-                    String loginyes = "로그인에 성공하였습니다.";
-                    Toast.makeText(LoginActivity.this, loginyes, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, NavigationActivity.class);
-                    startActivity(intent);
-                    finish();
-                }else{
-                    String loginno = "로그인에 실패하였습니다.";
-                    Toast.makeText(LoginActivity.this, loginno, Toast.LENGTH_SHORT).show();
-                }
+                User user = new User(username, password);
+                new LoginAsyncTask().execute(user);
                 break;
 
             case R.id.btnRegister:
@@ -81,7 +75,7 @@ public class LoginActivity extends Activity {
     /**
      * Login Async Task class
      */
-    private class Login extends AsyncTask<String, Void, String>{
+    private class LoginAsyncTask extends AsyncTask<User, Void, Map<String, Object>>{
 
         @Override
         protected void onPreExecute() {
@@ -89,29 +83,42 @@ public class LoginActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected Map<String, Object> doInBackground(User... users) {
+
+            if(users[0] == null){
+                return null;
+            }
 
             try {
-
-
-                String url = getString(R.string.contextPath) + "/join";
-
+                String url = getString(R.string.contextPath) + "/user/login";
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<Test> responseEntity = restTemplate.postForEntity(url, new Test(200, "Post"), Test.class);
-                Test test = responseEntity.getBody();
-
-                return test.toString();
+                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, users[0], Map.class);
+                Map<String, Object> messages = responseEntity.getBody();
+                return messages;
 
             } catch (Exception e) {
                 Log.e("Error", e.getMessage(), e);
-                return "fail";
+                return null;
             }
-            return null;
+
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(Map<String, Object> map) {
+            super.onPostExecute(map);
+            Log.d("login", map.toString());
+
+            if((Boolean)map.get("success")){
+                String loginyes = "로그인에 성공하였습니다.";
+                Toast.makeText(LoginActivity.this, loginyes, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, NavigationActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                String loginno = "로그인에 실패하였습니다." + map.get("messages").toString();
+                Toast.makeText(LoginActivity.this, loginno, Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 }
