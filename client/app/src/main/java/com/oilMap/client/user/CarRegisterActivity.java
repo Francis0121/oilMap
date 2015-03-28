@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.oilMap.client.R;
 
@@ -13,9 +14,39 @@ import com.oilMap.client.R;
  * Created by 김현준 on 2015-03-25.
  */
 public class CarRegisterActivity extends Activity {
+
+    UserFuel userfuel = new UserFuel();
+
+    int carInformInteger = 2000;
+    int costInformInteger = 20000;
+    int periodInformInteger = 5;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.car_register);
+
+        Spinner carInform = (Spinner)findViewById(R.id.regCar);
+        ArrayAdapter adapter1 = ArrayAdapter.createFromResource(
+                this, R.array.car, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        carInform.setAdapter(adapter1);
+
+
+        Spinner costInform = (Spinner)findViewById(R.id.regCost);
+        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
+                this, R.array.cost, android.R.layout.simple_spinner_item);
+        adapter2.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        costInform.setAdapter(adapter2);
+
+        Spinner periodInform = (Spinner)findViewById(R.id.regPeriod);
+        ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
+                this, R.array.period, android.R.layout.simple_spinner_item);
+        adapter3.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item);
+        periodInform.setAdapter(adapter3);
+
     }
 
     @Override
@@ -29,13 +60,9 @@ public class CarRegisterActivity extends Activity {
 
     public void mOnClick(View v){
 
-        EditText editCar = (EditText) findViewById(R.id.regCar);
-        EditText editCost = (EditText) findViewById(R.id.regCost);
-        EditText editPeriod = (EditText) findViewById(R.id.regPeriod);
-
-        String regCar = editCar.getText().toString();
-        String regCost = editCost.getText().toString();
-        String regPeriod = editPeriod.getText().toString();
+        userfuel.setDisplacement(carInformInteger);
+        userfuel.setCost(costInformInteger);
+        userfuel.setPeriod(periodInformInteger);
 
         switch (v.getId()) {
             case R.id.btnRegComplete:
@@ -45,9 +72,9 @@ public class CarRegisterActivity extends Activity {
                 break;
 
             case R.id.btnRegCarClear:
-                editCar.setText("");
-                editCost.setText("");
-                editPeriod.setText("");
+                Intent clear = new Intent(this, LoginActivity.class);
+                startActivity(clear);
+                finish();
                 break;
         }
     }
