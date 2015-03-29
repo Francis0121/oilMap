@@ -10,19 +10,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
-import com.oilMap.client.Test;
 import com.oilMap.client.info.NavigationActivity;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class LoginActivity extends Activity {
