@@ -45,7 +45,7 @@ public class GpsMain extends Activity {
                 Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
                 //LocationManager 에 리스너 등록
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);      // GPS tlsgh
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);      // GPS 신호
                 locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
             }
         });
@@ -94,7 +94,7 @@ public class GpsMain extends Activity {
             distance =location1.distanceTo(location2);
             // 두지점의 시간간격
             if(lastTime !=0.0)
-                timeInterval=(loc.getTime() - lastTime)/1000; // sec
+                timeInterval=(loc.getTime() - lastTime)/1000; // sec 문제있음!!!!!
             lastTime=loc.getTime();
 
             if(timeInterval > 0) {
