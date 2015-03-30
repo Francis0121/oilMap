@@ -14,19 +14,25 @@ import com.oilMap.client.R;
 
 /**
  * Created by 정성진 on 2015-03-25.
+ * Revised by 나홍철 on 2015-03-31.
  */
 public class GpsMain extends Activity {
 
     Button GpsStartButton;
     Button GpsFinishButton;
 
+    // GPS 신호를 처리하는 Location Manager
+    LocationManager locManager; // 위치 매니저 생성
+    LocationListener locListener; // GPS 신호 리스너 생성
+
     public void onCreate(Bundle savedInstanceState) {
+        // 생성자
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_main);
 
-        //Use the LocationManager class to obtain GPS locations
-        final LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        final LocationListener mlocListener = new MyLocationListener(); //리스너 정의
+        // Location manager
+        locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locListener = new MyLocationListener();
 
         //버튼 정의
         GpsStartButton = (Button)findViewById(R.id.GpsStartButton);
@@ -38,9 +44,9 @@ public class GpsMain extends Activity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
-                //LocationManager에 리스너 등록
-                mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
-                mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mlocListener); //네트워크 위치 제공자
+                //LocationManager 에 리스너 등록
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);      // GPS tlsgh
+                locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
             }
         });
 
@@ -49,61 +55,77 @@ public class GpsMain extends Activity {
 
             @Override
             public void onClick(View v) {
-                mlocManager.removeUpdates(mlocListener);
+                locManager.removeUpdates(locListener);
             }
         });
+    }
+
+    // 프로그램 종료시 GPS 끈다. --> 실제 프로그램에서는??
+    protected void onStop() {
+        locManager.removeUpdates(locListener);
+        locListener = null;
+        super.onStop();
     }
 
 
     //Class MyLocationListener
     public class MyLocationListener implements LocationListener {
 
-        //Slat : Start Latitude, Slon : Start Longitude, Elat : End Latitude, Elon : End Longitude
-        double Slat=0.0, Slon=0.0, Elat=0.0, Elon=0.0, speed=0.0, distance=0.0;
+        //sLat : Start Latitude, sLon : Start Longitude, eLat : End Latitude, eLon : End Longitude
+        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0, speed=0.0, distance=0.0
+                , sumDistance=0.0, timeInterval=0.0 ,lastTime=0.0;
 
         @Override
         public void onLocationChanged(Location loc) {
-
+            // 위치 변화시 사용
             Location location1 = new Location("1"), location2 = new Location("2");
-            Slat = Elat;
-            Slon = Elon;
-            Elat = loc.getLatitude();
-            Elon = loc.getLongitude();
+            sLat = eLat;
+            sLon = eLon;
+            eLat = loc.getLatitude();
+            eLon = loc.getLongitude();
 
             //location1에 이전 latitude, longitude 로설정.
             //location2에 현재 latitude, longitude 로설정.
-            location1.setLatitude(Slat);
-            location1.setLongitude(Slon);
-            location2.setLatitude(Elat);
-            location2.setLongitude(Elon);
+            location1.setLatitude(sLat);
+            location1.setLongitude(sLon);
+            location2.setLatitude(eLat);
+            location2.setLongitude(eLon);
 
-            speed = loc.getSpeed();
+            distance =location1.distanceTo(location2);
+            // 두지점의 시간간격
+            if(lastTime !=0.0)
+                timeInterval=(loc.getTime() - lastTime)/1000; // sec
+            lastTime=loc.getTime();
 
-            if(Slat != 0.0) { //Slat, Slon 가 처음에 0.0으로 되어있으므로
-                distance += location1.distanceTo(location2); //거리 계산
+            if(timeInterval > 0) {
+                speed = distance / timeInterval;
 
-                String Text = "Speed = " + speed + "\nDistance = " + distance + "m";
+                if (sLat != 0.0) { //Slat, Slon 가 처음에 0.0으로 되어있으므로
+                    sumDistance += distance/1000; // 총 거리 계산 단위 km
 
-                Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
+                    String Text = "Time Interval(s) = "+ timeInterval +"\nDistance(m) = " + distance
+                            + "\nSpeed(m/s) = " + speed + "\nSum of Distance(km) = " + sumDistance;
+
+                    Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_LONG).show();
+                }
             }
-
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
+            // 프로바이더 상태가 변경됨
         }
 
         @Override
         public void onProviderEnabled(String provider) {
+            // 프로바이더가 활성화됨
             Toast.makeText(getApplicationContext(), "GPS Enabled", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onProviderDisabled(String provider) {
+            // 프로바이더가 비활성화됨
             Toast.makeText(getApplicationContext(), "GPS Disabled", Toast.LENGTH_LONG).show();
         }
     }
-
-
 }
