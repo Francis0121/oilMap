@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     
     Button getBtn;
     Button postBtn;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
