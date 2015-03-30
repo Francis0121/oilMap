@@ -6,10 +6,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
+import com.oilMap.client.gps.GpsMain;
 import com.oilMap.client.info.NavigationActivity;
 
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,18 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
 
         backPressCloseHandler = new BackPressCloseHandler(this);
+
+        ///gps 테스트 해볼수 있게 임시로
+        //////////////////////////////////////////////////////
+        Button gpsTestBtn = (Button) findViewById(R.id.gpsTestBtn);
+        gpsTestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gps_exe = new Intent(getApplicationContext(), GpsMain.class);
+                startActivity(gps_exe);
+            }
+        });
+        /////////////////////////////////////////////////////////////
     }
 
     public  void onBackPressed(){
