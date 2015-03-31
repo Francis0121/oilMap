@@ -45,7 +45,7 @@ public class GpsMain extends Activity {
                 Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
                 //LocationManager 에 리스너 등록
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);      // GPS 신호
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
                 locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
             }
         });
@@ -72,8 +72,9 @@ public class GpsMain extends Activity {
     public class MyLocationListener implements LocationListener {
 
         //sLat : Start Latitude, sLon : Start Longitude, eLat : End Latitude, eLon : End Longitude
-        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0, speed=0.0, distance=0.0
-                , sumDistance=0.0, timeInterval=0.0 ,lastTime=0.0;
+        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0, speed=0.0;
+        double distance=0.0, sumDistance=0.0, timeInterval=0.0 ;
+        long lastTime=0;
 
         @Override
         public void onLocationChanged(Location loc) {
@@ -92,18 +93,19 @@ public class GpsMain extends Activity {
             location2.setLongitude(eLon);
 
             distance =location1.distanceTo(location2);
+
             // 두지점의 시간간격
             if(lastTime !=0.0)
-                timeInterval=(loc.getTime() - lastTime)/1000; // sec 문제있음!!!!!
-            lastTime=loc.getTime();
+                timeInterval=(loc.getTime() - lastTime)/1000; // 두 위치의 시간차이를 구한다.
+            lastTime=loc.getTime(); // 현위치의 시간정보를 저장한다.
 
             if(timeInterval > 0) {
                 speed = distance / timeInterval;
 
-                if (sLat != 0.0) { //Slat, Slon 가 처음에 0.0으로 되어있으므로
+                if (sLat != 0.0) { //sㅣat, sLon 가 처음에 0.0으로 되어있으므로
                     sumDistance += distance/1000; // 총 거리 계산 단위 km
 
-                    String Text = "Time Interval(s) = "+ timeInterval +"\nDistance(m) = " + distance
+                    String Text = "\nTime Interval(s) = "+ timeInterval +"\nDistance(m) = " + distance
                             + "\nSpeed(m/s) = " + speed + "\nSum of Distance(km) = " + sumDistance;
 
                     Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_LONG).show();
