@@ -100,13 +100,13 @@ public class GpsMain extends Activity {
             lastTime=loc.getTime(); // 현위치의 시간정보를 저장한다.
 
             if(timeInterval > 0) {
-                speed = distance / timeInterval;
+                speed = (distance / timeInterval)*(3600/1000);
 
                 if (sLat != 0.0) { //sㅣat, sLon 가 처음에 0.0으로 되어있으므로
                     sumDistance += distance/1000; // 총 거리 계산 단위 km
 
                     String Text = "\nTime Interval(s) = "+ timeInterval +"\nDistance(m) = " + distance
-                            + "\nSpeed(m/s) = " + speed + "\nSum of Distance(km) = " + sumDistance;
+                            + "\nSpeed(km/h) = " + speed + "\nSum of Distance(km) = " + sumDistance;
 
                     Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_LONG).show();
                 }
