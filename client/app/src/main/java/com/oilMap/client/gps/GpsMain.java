@@ -38,6 +38,13 @@ public class GpsMain extends Activity {
         GpsStartButton = (Button)findViewById(R.id.GpsStartButton);
         GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
 
+        /////////////////////////////////////////////////////GPS AUTO START for TEST//////////////////////
+        Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
+
+        //LocationManager 에 리스너 등록
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+        //////////////////////////////////////////////////////////////////////////////////////////
+
         //START 버튼 눌렀을 때 gps 신호 받기 시작
         GpsStartButton.setOnClickListener(new View.OnClickListener() { //START 버튼 눌렀을 때
             @Override
@@ -72,9 +79,13 @@ public class GpsMain extends Activity {
     public class MyLocationListener implements LocationListener {
 
         //sLat : Start Latitude, sLon : Start Longitude, eLat : End Latitude, eLon : End Longitude
-        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0, speed=0.0;
-        double distance=0.0, sumDistance=0.0, timeInterval=0.0 ;
-        long lastTime=0;
+        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0;
+        // distance : 거리 , SumDistance : 총거리, timeInterval : 두신호간 시간차이 , lastTimeInterval : 이전신호 시간차이 저장
+        double distance=0.0, sumDistance=0.0, timeInterval=0.0, lastTimeInterval=0.0;
+        // spped : 현재속도, lastSpeed : 이전 속도 , acc : 가속도
+        double speed=0.0 , lastSpeed=0.0 , acc=0.0;
+        // lastTime 이전신호 시간, nowTime : 현재시간
+        long lastTime=0, nowTime=0;
 
         @Override
         public void onLocationChanged(Location loc) {
@@ -93,24 +104,35 @@ public class GpsMain extends Activity {
             location2.setLongitude(eLon);
 
             distance =location1.distanceTo(location2);
+            nowTime=loc.getTime();
 
             // 두지점의 시간간격
             if(lastTime !=0.0)
-                timeInterval=(loc.getTime() - lastTime)/1000; // 두 위치의 시간차이를 구한다.
-            lastTime=loc.getTime(); // 현위치의 시간정보를 저장한다.
+                timeInterval=(nowTime - lastTime)/1000; // 두 위치의 시간차이를 구한다.
 
             if(timeInterval > 0) {
-                speed = (distance / timeInterval)*(3600/1000);
+                speed = (distance / timeInterval);  // m/s
 
                 if (sLat != 0.0) { //sㅣat, sLon 가 처음에 0.0으로 되어있으므로
                     sumDistance += distance/1000; // 총 거리 계산 단위 km
 
-                    String Text = "\nTime Interval(s) = "+ timeInterval +"\nDistance(m) = " + distance
-                            + "\nSpeed(km/h) = " + speed + "\nSum of Distance(km) = " + sumDistance;
+                    // (avg) a = (v2-v1)/(t2-t1) => t2-t1 은 두속도간 시간차이이므로
+                    // 이전 속도에 사용된 시간차와 현재 속도의 시간차를 더하면된다.
+                    acc = (speed - lastSpeed)/(lastTimeInterval + timeInterval);
+                   // String Text = acc+"\n"+speed+"\n"+lastSpeed+"\n"+nowTime+"\n"+lastTime;
+
+                    String Text = "\nTime Interval(s) = "+ timeInterval +"\nDistance(m) = " +  Double.parseDouble(String.format("%.2f",distance))
+                            + "\nSpeed(km/h) = " + Double.parseDouble(String.format("%.2f",speed*(3600/1000)))
+                            + "\nAcceleration(km/h) = " + Double.parseDouble(String.format("%.4f",acc*(3600/1000)))
+                            + "\nSum of Distance(km) = " +  Double.parseDouble(String.format("%.2f",sumDistance));
 
                     Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_LONG).show();
                 }
             }
+
+            lastTime=nowTime;
+            lastSpeed=speed;
+            lastTimeInterval = timeInterval; // 현위치의 시간정보를 저장한다.
         }
 
         @Override
