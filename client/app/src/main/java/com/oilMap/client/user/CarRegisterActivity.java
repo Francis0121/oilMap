@@ -2,13 +2,21 @@ package com.oilMap.client.user;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.oilMap.client.R;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-03-25.
@@ -17,9 +25,9 @@ public class CarRegisterActivity extends Activity {
 
     UserFuel userfuel = new UserFuel();
 
-    int carInformInteger = 2000;
-    int costInformInteger = 20000;
-    int periodInformInteger = 5;
+    private int carInformInteger = 2000;
+    private int costInformInteger = 20000;
+    private int periodInformInteger = 5;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,16 +74,62 @@ public class CarRegisterActivity extends Activity {
 
         switch (v.getId()) {
             case R.id.btnRegComplete:
-                Intent complete = new Intent(this, LoginActivity.class);
-                startActivity(complete);
-                finish();
+                UserFuel userFuel = new UserFuel(carInformInteger, costInformInteger, periodInformInteger);
+                new CarRegisterAsyncTask().execute(userFuel);
                 break;
 
             case R.id.btnRegCarClear:
+                String carRegLate = "추후 차량등록 후 이용하세요.";
+                Toast.makeText(CarRegisterActivity.this, carRegLate, Toast.LENGTH_SHORT).show();
                 Intent clear = new Intent(this, LoginActivity.class);
                 startActivity(clear);
                 finish();
                 break;
+        }
+    }
+
+    private class CarRegisterAsyncTask extends AsyncTask<UserFuel, Void, Map<String, Object>>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Map<String, Object> doInBackground(UserFuel... users) {
+
+            if(users[0] == null){
+                return null;
+            }
+
+            try {
+                String url = getString(R.string.contextPath) + "/user/fuel/update";
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, users[0], Map.class);
+                Map<String, Object> messages = responseEntity.getBody();
+                return messages;
+
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, Object> map) {
+            super.onPostExecute(map);
+            Log.d("fuel/update", map.toString());
+
+            if((Boolean)map.get("success")){
+                String carRegYes = "차량 등록에 성공하였습니다.";
+                Toast.makeText(CarRegisterActivity.this, carRegYes, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CarRegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                String carRegNo = "차량 등록에 실패하였습니다." + map.get("messages").toString();
+                Toast.makeText(CarRegisterActivity.this, carRegNo, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
