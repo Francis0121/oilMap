@@ -82,7 +82,7 @@ public class UserRegisterActivity extends Activity {
             }
 
             try {
-                String url = getString(R.string.contextPath) + "/user/login";
+                String url = getString(R.string.contextPath) + "/user/join";
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, users[0], Map.class);
                 Map<String, Object> messages = responseEntity.getBody();
