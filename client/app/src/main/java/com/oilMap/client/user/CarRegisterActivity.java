@@ -12,7 +12,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
-import com.oilMap.client.info.NavigationActivity;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -77,12 +76,11 @@ public class CarRegisterActivity extends Activity {
             case R.id.btnRegComplete:
                 UserFuel userFuel = new UserFuel(carInformInteger, costInformInteger, periodInformInteger);
                 new CarRegisterAsyncTask().execute(userFuel);
-                Intent complete = new Intent(this, LoginActivity.class);
-                startActivity(complete);
-                finish();
                 break;
 
             case R.id.btnRegCarClear:
+                String carRegLate = "추후 차량등록 후 이용하세요.";
+                Toast.makeText(CarRegisterActivity.this, carRegLate, Toast.LENGTH_SHORT).show();
                 Intent clear = new Intent(this, LoginActivity.class);
                 startActivity(clear);
                 finish();
@@ -125,7 +123,7 @@ public class CarRegisterActivity extends Activity {
             if((Boolean)map.get("success")){
                 String carRegYes = "차량 등록에 성공하였습니다.";
                 Toast.makeText(CarRegisterActivity.this, carRegYes, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(CarRegisterActivity.this, NavigationActivity.class);
+                Intent intent = new Intent(CarRegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }else{
