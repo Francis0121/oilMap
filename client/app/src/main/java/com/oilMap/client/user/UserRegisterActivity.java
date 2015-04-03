@@ -130,7 +130,7 @@ public class UserRegisterActivity extends Activity {
                         idView.setTextColor(0xffff0000);
                     }
 
-                    if(RegMap.get("username") == null) {
+                    else {
                         TextView idView = (TextView) findViewById(R.id.IDView);
                         idView.setVisibility(View.INVISIBLE);
                     }
@@ -142,8 +142,8 @@ public class UserRegisterActivity extends Activity {
                         PwView.setTextColor(0xffff0000);
                     }
 
-                    if(RegMap.get("password") == null){
-                        TextView PwView = (TextView) findViewById(R.id.IDView);
+                    else{
+                        TextView PwView = (TextView) findViewById(R.id.PWView);
                         PwView.setVisibility(View.INVISIBLE);
                     }
 
@@ -154,8 +154,8 @@ public class UserRegisterActivity extends Activity {
                         EmailView.setTextColor(0xffff0000);
                     }
 
-                    if(RegMap.get("email") == null){
-                        TextView EmailView = (TextView) findViewById(R.id.IDView);
+                    else{
+                        TextView EmailView = (TextView) findViewById(R.id.EmailView);
                         EmailView.setVisibility(View.INVISIBLE);
                     }
                 }
