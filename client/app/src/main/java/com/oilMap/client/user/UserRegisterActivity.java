@@ -1,4 +1,5 @@
 package com.oilMap.client.user;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class UserRegisterActivity extends Activity {
 
     User user = new User();
-    private boolean keySuccess = false;
+    public boolean keySuccess = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +57,6 @@ public class UserRegisterActivity extends Activity {
         switch (v.getId()) {
             case R.id.btnRegNext:
                 new UserRegisterAsyncTask().execute(user);
-                Intent carRegIntent = new Intent(this, CarRegisterActivity.class);
-                if(keySuccess) {
-                    startActivity(carRegIntent);
-                    finish();
-                }
                 break;
 
             case R.id.btnRegUserClear:
@@ -68,6 +64,15 @@ public class UserRegisterActivity extends Activity {
                 editPW.setText("");
                 editRePW.setText("");
                 editEmail.setText("");
+
+                TextView idView = (TextView) findViewById(R.id.IDView);
+                idView.setVisibility(View.INVISIBLE);
+
+                TextView PWView = (TextView) findViewById(R.id.PWView);
+                PWView.setVisibility(View.INVISIBLE);
+
+                TextView EmailView = (TextView) findViewById(R.id.EmailView);
+                EmailView.setVisibility(View.INVISIBLE);
                 break;
         }
     }
@@ -105,26 +110,55 @@ public class UserRegisterActivity extends Activity {
             Log.d("join", map.toString());
 
             if((Boolean)map.get("success")){
-                keySuccess = true;
                 String joinYes = "회원가입에 성공하였습니다";
                 Toast.makeText(UserRegisterActivity.this, joinYes, Toast.LENGTH_SHORT).show();
+                Intent carRegIntent = new Intent(UserRegisterActivity.this, CarRegisterActivity.class);
+                startActivity(carRegIntent);
                 finish();
             }
             else{
+
                 map.get("messages");
-                Map<String,Object> regMap = (Map<String, Object>) map.get("messages");
+                Map<String,Object> RegMap = (Map<String, Object>) map.get("messages");
 
-                TextView idView = (TextView) findViewById(R.id.IDView);
-                idView.setText(regMap.get("username").toString());
-                idView.setTextColor(0xffff0000);
+                if(RegMap != null){
 
-                TextView pwView = (TextView) findViewById(R.id.PWView);
-                pwView.setText(regMap.get("password").toString());
-                pwView.setTextColor(0xffff0000);
+                    if(RegMap.get("username") != null){
+                        TextView idView = (TextView) findViewById(R.id.IDView);
+                        idView.setVisibility(View.VISIBLE);
+                        idView.setText(RegMap.get("username").toString());
+                        idView.setTextColor(0xffff0000);
+                    }
 
-                TextView emilView = (TextView) findViewById(R.id.EmailView);
-                emilView.setText(regMap.get("email").toString());
-                emilView.setTextColor(0xffff0000);
+                    if(RegMap.get("username") == null) {
+                        TextView idView = (TextView) findViewById(R.id.IDView);
+                        idView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(RegMap.get("password") != null) {
+                        TextView PwView = (TextView) findViewById(R.id.PWView);
+                        PwView.setVisibility(View.VISIBLE);
+                        PwView.setText(RegMap.get("password").toString());
+                        PwView.setTextColor(0xffff0000);
+                    }
+
+                    if(RegMap.get("password") == null){
+                        TextView PwView = (TextView) findViewById(R.id.IDView);
+                        PwView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(RegMap.get("email") != null){
+                        TextView EmailView = (TextView) findViewById(R.id.EmailView);
+                        EmailView.setVisibility(View.VISIBLE);
+                        EmailView.setText(RegMap.get("email").toString());
+                        EmailView.setTextColor(0xffff0000);
+                    }
+
+                    if(RegMap.get("email") == null){
+                        TextView EmailView = (TextView) findViewById(R.id.IDView);
+                        EmailView.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         }
     }
