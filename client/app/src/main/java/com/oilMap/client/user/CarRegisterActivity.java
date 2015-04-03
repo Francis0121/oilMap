@@ -132,12 +132,6 @@ public class CarRegisterActivity extends Activity {
                 String carRegNo = "차량 등록에 실패하였습니다." + map.get("messages").toString();
                 Toast.makeText(CarRegisterActivity.this, carRegNo, Toast.LENGTH_SHORT).show();
             }
-
         }
-
-
     }
-
-
-
 }
