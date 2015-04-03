@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class UserRegisterActivity extends Activity {
 
     User user = new User();
+    private boolean keySuccess = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +57,10 @@ public class UserRegisterActivity extends Activity {
             case R.id.btnRegNext:
                 new UserRegisterAsyncTask().execute(user);
                 Intent carRegIntent = new Intent(this, CarRegisterActivity.class);
-                startActivity(carRegIntent);
-                finish();
+                if(keySuccess) {
+                    startActivity(carRegIntent);
+                    finish();
+                }
                 break;
 
             case R.id.btnRegUserClear:
@@ -98,15 +102,30 @@ public class UserRegisterActivity extends Activity {
         @Override
         protected void onPostExecute(Map<String, Object> map) {
             super.onPostExecute(map);
-            Log.d("login", map.toString());
+            Log.d("join", map.toString());
 
             if((Boolean)map.get("success")){
+                keySuccess = true;
+                String joinYes = "회원가입에 성공하였습니다";
+                Toast.makeText(UserRegisterActivity.this, joinYes, Toast.LENGTH_SHORT).show();
                 finish();
-            }else{
-                Toast.makeText(UserRegisterActivity.this, "No", Toast.LENGTH_SHORT).show();
-
             }
+            else{
+                map.get("messages");
+                Map<String,Object> regMap = (Map<String, Object>) map.get("messages");
 
+                TextView idView = (TextView) findViewById(R.id.IDView);
+                idView.setText(regMap.get("username").toString());
+                idView.setTextColor(0xffff0000);
+
+                TextView pwView = (TextView) findViewById(R.id.PWView);
+                pwView.setText(regMap.get("password").toString());
+                pwView.setTextColor(0xffff0000);
+
+                TextView emilView = (TextView) findViewById(R.id.EmailView);
+                emilView.setText(regMap.get("email").toString());
+                emilView.setTextColor(0xffff0000);
+            }
         }
     }
 }
