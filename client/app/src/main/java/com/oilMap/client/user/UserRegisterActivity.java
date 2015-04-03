@@ -24,7 +24,7 @@ import java.util.Map;
 public class UserRegisterActivity extends Activity {
 
     User user = new User();
-    public boolean keySuccess = false;
+    String userKey;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +113,7 @@ public class UserRegisterActivity extends Activity {
                 String joinYes = "회원가입에 성공하였습니다";
                 Toast.makeText(UserRegisterActivity.this, joinYes, Toast.LENGTH_SHORT).show();
                 Intent carRegIntent = new Intent(UserRegisterActivity.this, CarRegisterActivity.class);
+                carRegIntent.putExtra("userPn", (Integer)map.get("pn"));
                 startActivity(carRegIntent);
                 finish();
             }

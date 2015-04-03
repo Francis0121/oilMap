@@ -74,7 +74,9 @@ public class CarRegisterActivity extends Activity {
 
         switch (v.getId()) {
             case R.id.btnRegComplete:
-                UserFuel userFuel = new UserFuel(carInformInteger, costInformInteger, periodInformInteger);
+                UserFuel userFuel = new UserFuel(userfuel.getDisplacement(), userfuel.getCost(), userfuel.getPeriod());
+                Intent CarReg = getIntent();
+                userFuel.setUserPn(CarReg.getExtras().getInt("userPn"));
                 new CarRegisterAsyncTask().execute(userFuel);
                 break;
 
