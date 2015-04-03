@@ -114,7 +114,7 @@ public class UserControllerTest {
     }
     
     @Test
-    public void 사용자_아이디_비밀번호_일치_않음() throws Exception {
+    public void 사용자_아이디_비밀번호_빈_않음() throws Exception {
         
         mockMvc
                 .perform(post("/user/join")
