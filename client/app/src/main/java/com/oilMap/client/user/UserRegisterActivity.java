@@ -24,7 +24,6 @@ import java.util.Map;
 public class UserRegisterActivity extends Activity {
 
     User user = new User();
-    String userKey;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
