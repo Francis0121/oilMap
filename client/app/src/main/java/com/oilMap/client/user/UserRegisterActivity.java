@@ -1,4 +1,5 @@
 package com.oilMap.client.user;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class UserRegisterActivity extends Activity {
 
     User user = new User();
+    String userKey;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +57,6 @@ public class UserRegisterActivity extends Activity {
         switch (v.getId()) {
             case R.id.btnRegNext:
                 new UserRegisterAsyncTask().execute(user);
-                Intent carRegIntent = new Intent(this, CarRegisterActivity.class);
-                startActivity(carRegIntent);
-                finish();
                 break;
 
             case R.id.btnRegUserClear:
@@ -64,6 +64,15 @@ public class UserRegisterActivity extends Activity {
                 editPW.setText("");
                 editRePW.setText("");
                 editEmail.setText("");
+
+                TextView idView = (TextView) findViewById(R.id.IDView);
+                idView.setVisibility(View.INVISIBLE);
+
+                TextView PWView = (TextView) findViewById(R.id.PWView);
+                PWView.setVisibility(View.INVISIBLE);
+
+                TextView EmailView = (TextView) findViewById(R.id.EmailView);
+                EmailView.setVisibility(View.INVISIBLE);
                 break;
         }
     }
@@ -82,7 +91,7 @@ public class UserRegisterActivity extends Activity {
             }
 
             try {
-                String url = getString(R.string.contextPath) + "/user/login";
+                String url = getString(R.string.contextPath) + "/user/join";
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, users[0], Map.class);
                 Map<String, Object> messages = responseEntity.getBody();
@@ -98,15 +107,60 @@ public class UserRegisterActivity extends Activity {
         @Override
         protected void onPostExecute(Map<String, Object> map) {
             super.onPostExecute(map);
-            Log.d("login", map.toString());
+            Log.d("join", map.toString());
 
             if((Boolean)map.get("success")){
+                String joinYes = "회원가입에 성공하였습니다";
+                Toast.makeText(UserRegisterActivity.this, joinYes, Toast.LENGTH_SHORT).show();
+                Intent carRegIntent = new Intent(UserRegisterActivity.this, CarRegisterActivity.class);
+                carRegIntent.putExtra("userPn", (Integer)map.get("pn"));
+                startActivity(carRegIntent);
                 finish();
-            }else{
-                Toast.makeText(UserRegisterActivity.this, "No", Toast.LENGTH_SHORT).show();
-
             }
+            else{
 
+                map.get("messages");
+                Map<String,Object> RegMap = (Map<String, Object>) map.get("messages");
+
+                if(RegMap != null){
+
+                    if(RegMap.get("username") != null){
+                        TextView idView = (TextView) findViewById(R.id.IDView);
+                        idView.setVisibility(View.VISIBLE);
+                        idView.setText(RegMap.get("username").toString());
+                        idView.setTextColor(0xffff0000);
+                    }
+
+                    else {
+                        TextView idView = (TextView) findViewById(R.id.IDView);
+                        idView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(RegMap.get("password") != null) {
+                        TextView PwView = (TextView) findViewById(R.id.PWView);
+                        PwView.setVisibility(View.VISIBLE);
+                        PwView.setText(RegMap.get("password").toString());
+                        PwView.setTextColor(0xffff0000);
+                    }
+
+                    else{
+                        TextView PwView = (TextView) findViewById(R.id.PWView);
+                        PwView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(RegMap.get("email") != null){
+                        TextView EmailView = (TextView) findViewById(R.id.EmailView);
+                        EmailView.setVisibility(View.VISIBLE);
+                        EmailView.setText(RegMap.get("email").toString());
+                        EmailView.setTextColor(0xffff0000);
+                    }
+
+                    else{
+                        TextView EmailView = (TextView) findViewById(R.id.EmailView);
+                        EmailView.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
         }
     }
 }

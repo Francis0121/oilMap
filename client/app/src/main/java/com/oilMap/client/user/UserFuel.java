@@ -19,6 +19,16 @@ public class UserFuel {
      */
     private Integer cost;
 
+    public UserFuel(){
+
+    }
+
+    public UserFuel(int displacement, int cost, int period) {
+        this.displacement = displacement;
+        this.cost = cost;
+        this.period = period;
+    }
+
     public Integer getUserPn() {
         return userPn;
     }
