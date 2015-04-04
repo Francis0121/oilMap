@@ -110,6 +110,17 @@ public class FindInformationActivity extends Activity {
             //입력정보 오류 or 등록되지 않은 정보
             else{
 
+                if(map.get("messages") != null){
+                    TextView newPasswordView = (TextView) findViewById(R.id.newPasswordView);
+                    newPasswordView.setVisibility(View.VISIBLE);
+                    newPasswordView.setText(map.get("messages").toString());
+                    newPasswordView.setTextColor(0xffff0000);
+                }
+
+                else{
+                    TextView newPasswordView = (TextView) findViewById(R.id.newPasswordView);
+                    newPasswordView.setVisibility(View.INVISIBLE);
+                }
             }
         }
     }
