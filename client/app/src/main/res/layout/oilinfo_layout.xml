@@ -3,24 +3,137 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="30일간 사용기록"
+        android:id="@+id/textView11"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:textSize="30dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button3"
-        android:layout_gravity="center_horizontal" />
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/oilbtn"
+            android:layout_marginTop="47dp"
+            android:layout_marginLeft="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            android:onClick="onClick"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="이동 거리:"
+            android:id="@+id/textView12"
+            android:layout_alignTop="@+id/oilbtn"
+            android:layout_toEndOf="@+id/oilbtn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="주유 비용:"
+            android:id="@+id/textView13"
+            android:layout_alignBottom="@+id/oilbtn"
+            android:layout_toStartOf="@+id/distance" />
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/rapidbtn"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="30dp"
+            android:layout_alignEnd="@+id/oilbtn"
+            android:onClick="onClick"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="급출발:"
+            android:id="@+id/textView14"
+            android:layout_alignTop="@+id/rapidbtn"
+            android:layout_toEndOf="@+id/rapidbtn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="급가속:"
+            android:id="@+id/textView15"
+            android:layout_below="@+id/textView14"
+            android:layout_toStartOf="@+id/start" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="급정지:"
+            android:id="@+id/textView16"
+            android:layout_alignTop="@+id/stop"
+            android:layout_toStartOf="@+id/stop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/distance"
+            android:layout_alignTop="@+id/textView12"
+            android:layout_toEndOf="@+id/textView12"
+            android:text="30km"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="30000원"
+            android:id="@+id/money"
+            android:layout_alignBottom="@+id/oilbtn"
+            android:layout_toEndOf="@+id/textView13"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="1회"
+            android:id="@+id/start"
+            android:layout_above="@+id/textView15"
+            android:layout_toEndOf="@+id/textView14"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="1회"
+            android:id="@+id/upspeed"
+            android:layout_alignTop="@+id/textView15"
+            android:layout_toEndOf="@+id/textView15"
+            android:visibility="invisible" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="1회"
+            android:id="@+id/stop"
+            android:layout_below="@+id/textView15"
+            android:layout_toEndOf="@+id/textView15"
+            android:visibility="invisible" />
+    </RelativeLayout>
 </LinearLayout>
