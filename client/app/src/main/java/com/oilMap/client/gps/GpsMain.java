@@ -1,5 +1,6 @@
 package com.oilMap.client.gps;
 
+import android.location.Criteria;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -39,10 +40,22 @@ public class GpsMain extends Activity {
         GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
 
         /////////////////////////////////////////////////////GPS AUTO START for TEST//////////////////////
-        Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "GPS Auto Start\nfor TEST", Toast.LENGTH_SHORT).show();
+
+        Criteria criteria = new Criteria();
+        // 정확도
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        // 전원 소비량
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        // 속도
+        criteria.setSpeedRequired(true);
+        // 위치 정보를 얻어 오는데 들어가는 금전적 비용
+        criteria.setCostAllowed(true);
+        String bsetProvider = locManager.getBestProvider(criteria, true);
 
         //LocationManager 에 리스너 등록
-        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+        locManager.requestLocationUpdates(bsetProvider, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+
         //////////////////////////////////////////////////////////////////////////////////////////
 
         //START 버튼 눌렀을 때 gps 신호 받기 시작
