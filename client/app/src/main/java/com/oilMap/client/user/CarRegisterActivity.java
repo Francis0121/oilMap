@@ -40,6 +40,8 @@ public class CarRegisterActivity extends Activity {
                 android.R.layout.simple_spinner_dropdown_item);
         carInform.setAdapter(adapter1);
 
+        carInformInteger = Integer.parseInt(carInform.getSelectedItem().toString());
+
 
         Spinner costInform = (Spinner)findViewById(R.id.regCost);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
@@ -48,6 +50,8 @@ public class CarRegisterActivity extends Activity {
                 android.R.layout.simple_spinner_dropdown_item);
         costInform.setAdapter(adapter2);
 
+        costInformInteger = Integer.parseInt(costInform.getSelectedItem().toString());
+
         Spinner periodInform = (Spinner)findViewById(R.id.regPeriod);
         ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
                 this, R.array.period, android.R.layout.simple_spinner_item);
@@ -55,6 +59,7 @@ public class CarRegisterActivity extends Activity {
                 android.R.layout.simple_spinner_dropdown_item);
         periodInform.setAdapter(adapter3);
 
+        periodInformInteger = Integer.parseInt(periodInform.getSelectedItem().toString());
     }
 
     @Override
