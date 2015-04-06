@@ -1,6 +1,5 @@
 package com.oilMap.client.gps;
 
-import android.location.Criteria;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +20,6 @@ import java.text.SimpleDateFormat;
  */
 public class GpsMain extends Activity {
 
-    Button GpsStartButton;
     Button GpsFinishButton;
 
     // GPS 신호를 처리하는 Location Manager
@@ -40,28 +38,31 @@ public class GpsMain extends Activity {
         //버튼 정의
         GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
 
-        //final String provider = locManager.getBestProvider(new Criteria(), true);
-
         /////////////////////////////////////////////////////GPS AUTO START//////////////////////
         Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
         //LocationManager 에 리스너 등록
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
-        //locManager.requestLocationUpdates(provider, 1000, 1, locListener);
-        //////////////////////////////////////////////////////////////////////////////////////////
 
         /*
-        //START 버튼 눌렀을 때 gps 신호 받기 시작
-        GpsStartButton.setOnClickListener(new View.OnClickListener() { //START 버튼 눌렀을 때
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
+        /////////////////////////////////////////////////////GPS AUTO START for TEST//////////////////////
+        Toast.makeText(getApplicationContext(), "GPS Auto Start\nfor TEST", Toast.LENGTH_SHORT).show();
 
-                //LocationManager 에 리스너 등록
-                //locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
-                //locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
-            }
-        });
+        Criteria criteria = new Criteria();
+        // 정확도
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        // 전원 소비량
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        // 속도
+        criteria.setSpeedRequired(true);
+        // 위치 정보를 얻어 오는데 들어가는 금전적 비용
+        criteria.setCostAllowed(true);
+        String bsetProvider = locManager.getBestProvider(criteria, true);
+
+        //LocationManager 에 리스너 등록
+        locManager.requestLocationUpdates(bsetProvider, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+
+        //////////////////////////////////////////////////////////////////////////////////////////
         */
 
         //FINISH 버튼 누르면 gps 수신 종료
@@ -100,7 +101,6 @@ public class GpsMain extends Activity {
         double distance=0.0, sumDistance=0.0;
         double speed=0.0;
         long lastTime=0, nowTime=0;
-
         String txt = "\0";
 
         @Override
@@ -113,7 +113,7 @@ public class GpsMain extends Activity {
             eLon = loc.getLongitude();
 
             lastTime = nowTime;
-            nowTime = loc.getTime() + 90000;
+            nowTime = loc.getTime();
 
             //location1에 이전 latitude, longitude 로설정.
             //location2에 현재 latitude, longitude 로설정.
@@ -123,7 +123,7 @@ public class GpsMain extends Activity {
             location2.setLongitude(eLon);
 
             //시작 위치가 초기화값이 아니고, 속도값이 존재할 경우
-            if((sLat != 0.0) && (loc.hasSpeed() == true)) {
+            if((sLat != 0.0) && loc.hasSpeed()) {
 
                 speed = loc.getSpeed() * 3600/1000;
 

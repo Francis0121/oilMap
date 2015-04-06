@@ -14,7 +14,7 @@
         android:lines="1"
         />
 
-    <TextView android:id="@+id/textView2"
+    <TextView android:id="@+id/IDView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -50,7 +50,7 @@
         android:password="true"
         />
 
-    <TextView android:id="@+id/textView4"
+    <TextView android:id="@+id/PWView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -67,11 +67,19 @@
         android:lines="1"
         />
 
-    <TextView android:id="@+id/textView5"
+    <TextView android:id="@+id/EmailView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="left"
+        />
+
+    <TextView android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_gravity="left"
         />
 

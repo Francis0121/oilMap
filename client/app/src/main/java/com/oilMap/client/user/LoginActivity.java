@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
@@ -106,7 +107,6 @@ public class LoginActivity extends Activity {
                 Log.e("Error", e.getMessage(), e);
                 return null;
             }
-
         }
 
         @Override
@@ -121,10 +121,36 @@ public class LoginActivity extends Activity {
                 startActivity(intent);
                 finish();
             }else{
-                String loginno = "로그인에 실패하였습니다." + map.get("messages").toString();
-                Toast.makeText(LoginActivity.this, loginno, Toast.LENGTH_SHORT).show();
-            }
 
+                map.get("messages");
+                Map<String,Object> loginMap = (Map<String, Object>) map.get("messages");
+
+                if(loginMap != null){
+
+                    if(loginMap.get("username") != null){
+                        TextView idView = (TextView) findViewById(R.id.loginIdView);
+                        idView.setVisibility(View.VISIBLE);
+                        idView.setText(loginMap.get("username").toString());
+                        idView.setTextColor(0xffff0000);
+                    }
+                    else{
+                        TextView idView = (TextView) findViewById(R.id.loginIdView);
+                        idView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(loginMap.get("password") != null){
+                        TextView pwView = (TextView) findViewById(R.id.loginPwView);
+                        pwView.setVisibility(View.VISIBLE);
+                        pwView.setText(loginMap.get("password").toString());
+                        pwView.setTextColor(0xffff0000);
+
+                    }
+                    else{
+                        TextView pwView = (TextView) findViewById(R.id.loginPwView);
+                        pwView.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
         }
     }
 }

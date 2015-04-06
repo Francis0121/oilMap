@@ -2,6 +2,8 @@ package com.oilMap.server.controller;
 
 import com.oilMap.server.user.User;
 import com.oilMap.server.user.UserService;
+import com.oilMap.server.user.fuel.UserFuel;
+import com.oilMap.server.user.fuel.UserFuelService;
 import com.oilMap.server.util.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ public class UserController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserFuelService userFuelService;
     
     @Autowired
     private Message message;
@@ -156,6 +161,7 @@ public class UserController {
         }
         
         userService.insert(user);
+        userFuelService.insert(new UserFuel(user.getPn(), 0, 0, 0));
         map.put("pn", user.getPn());
         map.put("success", true);
         return map;
