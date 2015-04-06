@@ -11,7 +11,7 @@ import com.oilMap.client.R;
 /**
  * Created by 김현준 on 2015-04-07.
  */
-public class ModifyPasswordActivity extends Fragment {
+public class ModifyPasswordFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
 

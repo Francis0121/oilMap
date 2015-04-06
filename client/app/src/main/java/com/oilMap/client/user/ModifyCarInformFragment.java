@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by 김현준 on 2015-04-07.
  */
-public class ModifyCarInformActivity extends Fragment {
+public class ModifyCarInformFragment extends Fragment {
 
     UserFuel userfuel = new UserFuel();
     User user = new User();
@@ -36,25 +36,31 @@ public class ModifyCarInformActivity extends Fragment {
         View view = inflater.inflate(R.layout.car_register, container, false);
 
         Spinner carInform = (Spinner) view.findViewById(R.id.regCar);
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(
+        ArrayAdapter adapter1 = ArrayAdapter.createFromResource(
                 getActivity().getBaseContext(), R.array.car, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         carInform.setAdapter(adapter1);
 
+        carInformInteger = Integer.parseInt(carInform.getSelectedItem().toString());
+
         Spinner costInform = (Spinner) view.findViewById(R.id.regCost);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(
+        ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
                 getActivity().getBaseContext(), R.array.cost, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         costInform.setAdapter(adapter2);
 
+        costInformInteger = Integer.parseInt(costInform.getSelectedItem().toString());
+
         Spinner periodInform = (Spinner) view.findViewById(R.id.regPeriod);
-        ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(
+        ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
                 getActivity().getBaseContext(), R.array.period, android.R.layout.simple_spinner_item);
         adapter3.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         periodInform.setAdapter(adapter3);
+
+        periodInformInteger = Integer.parseInt(periodInform.getSelectedItem().toString());
 
         return view;
     }
