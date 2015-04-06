@@ -1,5 +1,6 @@
 package com.oilMap.client.gps;
 
+import android.location.Criteria;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.oilMap.client.R;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Created by 정성진 on 2015-03-25.
@@ -35,16 +38,19 @@ public class GpsMain extends Activity {
         locListener = new MyLocationListener();
 
         //버튼 정의
-        GpsStartButton = (Button)findViewById(R.id.GpsStartButton);
         GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
 
-        /////////////////////////////////////////////////////GPS AUTO START for TEST//////////////////////
+        //final String provider = locManager.getBestProvider(new Criteria(), true);
+
+        /////////////////////////////////////////////////////GPS AUTO START//////////////////////
         Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
         //LocationManager 에 리스너 등록
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+        //locManager.requestLocationUpdates(provider, 1000, 1, locListener);
         //////////////////////////////////////////////////////////////////////////////////////////
 
+        /*
         //START 버튼 눌렀을 때 gps 신호 받기 시작
         GpsStartButton.setOnClickListener(new View.OnClickListener() { //START 버튼 눌렀을 때
             @Override
@@ -52,10 +58,11 @@ public class GpsMain extends Activity {
                 Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
                 //LocationManager 에 리스너 등록
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
-                locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
+                //locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
+                //locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locListener); //네트워크 위치 제공자
             }
         });
+        */
 
         //FINISH 버튼 누르면 gps 수신 종료
         GpsFinishButton.setOnClickListener(new View.OnClickListener() { //FINISH 버튼 눌렀을 때
@@ -78,6 +85,7 @@ public class GpsMain extends Activity {
     //Class MyLocationListener
     public class MyLocationListener implements LocationListener {
 
+        /*
         //sLat : Start Latitude, sLon : Start Longitude, eLat : End Latitude, eLon : End Longitude
         double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0;
         // distance : 거리 , SumDistance : 총거리, timeInterval : 두신호간 시간차이 , lastTimeInterval : 이전신호 시간차이 저장
@@ -86,6 +94,14 @@ public class GpsMain extends Activity {
         double speed=0.0 , lastSpeed=0.0 , acc=0.0;
         // lastTime 이전신호 시간, nowTime : 현재시간
         long lastTime=0, nowTime=0;
+        */
+
+        double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0;
+        double distance=0.0, sumDistance=0.0;
+        double speed=0.0;
+        long lastTime=0, nowTime=0;
+
+        String txt = "\0";
 
         @Override
         public void onLocationChanged(Location loc) {
@@ -96,6 +112,9 @@ public class GpsMain extends Activity {
             eLat = loc.getLatitude();
             eLon = loc.getLongitude();
 
+            lastTime = nowTime;
+            nowTime = loc.getTime() + 90000;
+
             //location1에 이전 latitude, longitude 로설정.
             //location2에 현재 latitude, longitude 로설정.
             location1.setLatitude(sLat);
@@ -103,6 +122,29 @@ public class GpsMain extends Activity {
             location2.setLatitude(eLat);
             location2.setLongitude(eLon);
 
+            //시작 위치가 초기화값이 아니고, 속도값이 존재할 경우
+            if((sLat != 0.0) && (loc.hasSpeed() == true)) {
+
+                speed = loc.getSpeed() * 3600/1000;
+
+                if(speed == 0.0)
+                    distance = 0.0;
+                else
+                    distance = location1.distanceTo(location2);
+
+                sumDistance += distance;
+
+                txt = "distance = " + distance +
+                        "\nsumDistance = " + sumDistance +
+                        "\nnowTime = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(nowTime) +
+                        "\nspeed = " + speed + "km/h";
+
+                Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(getApplicationContext(), "no value!", Toast.LENGTH_SHORT).show();
+
+            /*
             distance =location1.distanceTo(location2);
             nowTime=loc.getTime();
 
@@ -133,6 +175,8 @@ public class GpsMain extends Activity {
             lastTime=nowTime;
             lastSpeed=speed;
             lastTimeInterval = timeInterval; // 현위치의 시간정보를 저장한다.
+
+            */
         }
 
         @Override
