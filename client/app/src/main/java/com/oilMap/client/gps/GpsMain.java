@@ -39,7 +39,7 @@ public class GpsMain extends Activity {
         GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
 
         /////////////////////////////////////////////////////GPS AUTO START//////////////////////
-        Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "reception start!", Toast.LENGTH_SHORT).show();
 
         //LocationManager 에 리스너 등록
         locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);      // GPS 신호 1000(1초) 1m
@@ -107,42 +107,46 @@ public class GpsMain extends Activity {
         public void onLocationChanged(Location loc) {
             // 위치 변화시 사용
             Location location1 = new Location("1"), location2 = new Location("2");
-            sLat = eLat;
-            sLon = eLon;
-            eLat = loc.getLatitude();
-            eLon = loc.getLongitude();
 
-            lastTime = nowTime;
-            nowTime = loc.getTime();
+            //속도값이 존재할 경우
+            if(loc.getAccuracy()<=25 && loc.hasSpeed()) {
 
-            //location1에 이전 latitude, longitude 로설정.
-            //location2에 현재 latitude, longitude 로설정.
-            location1.setLatitude(sLat);
-            location1.setLongitude(sLon);
-            location2.setLatitude(eLat);
-            location2.setLongitude(eLon);
+                sLat = eLat;
+                sLon = eLon;
+                eLat = loc.getLatitude();
+                eLon = loc.getLongitude();
 
-            //시작 위치가 초기화값이 아니고, 속도값이 존재할 경우
-            if((sLat != 0.0) && loc.hasSpeed()) {
+                lastTime = nowTime;
+                nowTime = loc.getTime();
 
-                speed = loc.getSpeed() * 3600/1000;
+                //location1에 이전 latitude, longitude 로설정.
+                //location2에 현재 latitude, longitude 로설정.
+                location1.setLatitude(sLat);
+                location1.setLongitude(sLon);
+                location2.setLatitude(eLat);
+                location2.setLongitude(eLon);
 
-                if(speed == 0.0)
-                    distance = 0.0;
-                else
-                    distance = location1.distanceTo(location2);
+                //시작 위치가 초기화값이 아닌경우
+                if(sLat != 0.0) {
+                    speed = loc.getSpeed() * 3600 / 1000; // m/s 를 km/h 로 바꾸기 위해
 
-                sumDistance += distance;
+                    if (speed == 0.0)
+                        distance = 0.0;
+                    else
+                        distance = location1.distanceTo(location2);
 
-                txt = "distance = " + distance +
-                        "\nsumDistance = " + sumDistance +
-                        "\nnowTime = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(nowTime) +
-                        "\nspeed = " + speed + "km/h";
+                    sumDistance += distance;
 
-                Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+                    txt = "distance = " + distance + "m" +
+                            "\nsumDistance = " + sumDistance + "m" +
+                            "\nnowTime = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(nowTime) +
+                            "\nspeed = " + speed + "km/h";
+
+                    Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+                }
             }
             else
-                Toast.makeText(getApplicationContext(), "no value!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "waiting...", Toast.LENGTH_SHORT).show();
 
             /*
             distance =location1.distanceTo(location2);
