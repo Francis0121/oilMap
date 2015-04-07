@@ -1,12 +1,12 @@
 package com.oilMap.client.user;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -19,59 +19,53 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 /**
- * Created by 김현준 on 2015-03-25.
+ * Created by 김현준 on 2015-04-07.
  */
-public class CarRegisterActivity extends Activity {
+public class ModifyCarInformFragment extends Fragment {
 
     UserFuel userfuel = new UserFuel();
+    User user = new User();
 
     private int carInformInteger = 2000;
     private int costInformInteger = 20000;
     private int periodInformInteger = 5;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.car_register);
 
-        Spinner carInform = (Spinner)findViewById(R.id.regCar);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
+
+        View view = inflater.inflate(R.layout.car_register, container, false);
+
+        Spinner carInform = (Spinner) view.findViewById(R.id.regCar);
         ArrayAdapter adapter1 = ArrayAdapter.createFromResource(
-                this, R.array.car, android.R.layout.simple_spinner_item);
+                getActivity().getBaseContext(), R.array.car, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         carInform.setAdapter(adapter1);
 
         carInformInteger = Integer.parseInt(carInform.getSelectedItem().toString());
 
-
-        Spinner costInform = (Spinner)findViewById(R.id.regCost);
+        Spinner costInform = (Spinner) view.findViewById(R.id.regCost);
         ArrayAdapter adapter2 = ArrayAdapter.createFromResource(
-                this, R.array.cost, android.R.layout.simple_spinner_item);
+                getActivity().getBaseContext(), R.array.cost, android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         costInform.setAdapter(adapter2);
 
         costInformInteger = Integer.parseInt(costInform.getSelectedItem().toString());
 
-        Spinner periodInform = (Spinner)findViewById(R.id.regPeriod);
+        Spinner periodInform = (Spinner) view.findViewById(R.id.regPeriod);
         ArrayAdapter adapter3 = ArrayAdapter.createFromResource(
-                this, R.array.period, android.R.layout.simple_spinner_item);
+                getActivity().getBaseContext(), R.array.period, android.R.layout.simple_spinner_item);
         adapter3.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         periodInform.setAdapter(adapter3);
 
         periodInformInteger = Integer.parseInt(periodInform.getSelectedItem().toString());
+
+        return view;
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        switch (keyCode){
-            case KeyEvent.KEYCODE_BACK :
-                return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void mOnClick(View v){
+    public void mOnClick(View v) {
 
         userfuel.setDisplacement(carInformInteger);
         userfuel.setCost(costInformInteger);
@@ -80,22 +74,18 @@ public class CarRegisterActivity extends Activity {
         switch (v.getId()) {
             case R.id.btnRegComplete:
                 UserFuel userFuel = new UserFuel(userfuel.getDisplacement(), userfuel.getCost(), userfuel.getPeriod());
-                Intent CarReg = getIntent();
-                userFuel.setUserPn(CarReg.getExtras().getInt("userPn"));
+                userFuel.setUserPn(user.getPn());
                 new CarRegisterAsyncTask().execute(userFuel);
                 break;
 
             case R.id.btnRegCarClear:
                 String carRegLate = "추후 차량등록 후 이용하세요.";
-                Toast.makeText(CarRegisterActivity.this, carRegLate, Toast.LENGTH_SHORT).show();
-                Intent clear = new Intent(this, LoginActivity.class);
-                startActivity(clear);
-                finish();
+                Toast.makeText(getActivity(), carRegLate, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
-    private class CarRegisterAsyncTask extends AsyncTask<UserFuel, Void, Map<String, Object>>{
+    private class CarRegisterAsyncTask extends AsyncTask<UserFuel, Void, Map<String, Object>> {
 
         @Override
         protected void onPreExecute() {
@@ -129,13 +119,10 @@ public class CarRegisterActivity extends Activity {
 
             if((Boolean)map.get("success")){
                 String carRegYes = "차량 등록에 성공하였습니다.";
-                Toast.makeText(CarRegisterActivity.this, carRegYes, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(CarRegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                Toast.makeText(getActivity(), carRegYes, Toast.LENGTH_SHORT).show();
             }else{
                 String carRegNo = "차량 등록에 실패하였습니다." + map.get("messages").toString();
-                Toast.makeText(CarRegisterActivity.this, carRegNo, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), carRegNo, Toast.LENGTH_SHORT).show();
             }
         }
     }
