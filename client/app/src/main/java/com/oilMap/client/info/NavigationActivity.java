@@ -164,5 +164,4 @@ public class NavigationActivity extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
 }
