@@ -84,7 +84,7 @@ public class Oilgraph extends Fragment {
         // X,Y축 스크롤 여부 ON/OFF
         renderer.setPanEnabled(false, false);
         // ZOOM기능 ON/OFF
-        renderer.setZoomEnabled(false, false);
+        renderer.setZoomEnabled(true, true);
         // ZOOM 비율
         renderer.setZoomRate(1.0f);
         // 막대간 간격

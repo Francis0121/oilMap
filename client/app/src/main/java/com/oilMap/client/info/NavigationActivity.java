@@ -49,18 +49,30 @@ public class NavigationActivity extends Activity
         Fragment fragment=null;
         switch (position) {
             case 0:
-                //myinfo
-                fragment=new MyInfo();
+                //mainpage
+                mTitle="메인페이지";
+                fragment=new MainPage();
                 break;
             case 1:
-                //oilinfo
-                fragment=new OilInfo();
+                //myinfo
+                mTitle="사용자정보";
+                fragment=new MyInfo();
                 break;
             case 2:
+                //oilinfo
+                mTitle="사용자기록";
+                fragment=new OilInfo();
+                break;
+            case 3:
                 //oilgraph
+                mTitle="통계차트";
                 fragment=new Oilgraph();
                 break;
         }
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
@@ -69,12 +81,15 @@ public class NavigationActivity extends Activity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.title_section0);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_section1);
                 break;
             case 3:
+                mTitle = getString(R.string.title_section2);
+                break;
+            case 4:
                 mTitle = getString(R.string.title_section3);
                 break;
         }
