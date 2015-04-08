@@ -99,14 +99,16 @@ public class GpsMain extends Activity {
 
         double sLat=0.0, sLon=0.0, eLat=0.0, eLon=0.0;
         double distance=0.0, sumDistance=0.0;
-        double speed=0.0;
+        double speed=0.0, lastSpeed=0.0;
         long lastTime=0, nowTime=0;
+        char alert;
         String txt = "\0";
 
         @Override
         public void onLocationChanged(Location loc) {
             // 위치 변화시 사용
             Location location1 = new Location("1"), location2 = new Location("2");
+            alert = 'N';
 
             //속도값이 존재할 경우
             if(loc.getAccuracy()<=25 && loc.hasSpeed()) {
@@ -130,7 +132,14 @@ public class GpsMain extends Activity {
                 if(sLat != 0.0) {
                     speed = loc.getSpeed() * 3600 / 1000; // m/s 를 km/h 로 바꾸기 위해
 
-                    if (speed == 0.0)
+                    if(lastSpeed != 0.0) {
+                        // 가속도 +10 이상 -10 이상 급!
+                        if ((lastSpeed - speed) / (nowTime - lastTime) > 10 || (lastSpeed - speed) / (nowTime - lastTime) < -10)
+                            alert = 'Y';
+                    }
+
+
+                    if (speed == 0.0) ////////////////?????????????????????????????????????
                         distance = 0.0;
                     else
                         distance = location1.distanceTo(location2);
@@ -140,9 +149,13 @@ public class GpsMain extends Activity {
                     txt = "distance = " + distance + "m" +
                             "\nsumDistance = " + sumDistance + "m" +
                             "\nnowTime = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(nowTime) +
-                            "\nspeed = " + speed + "km/h";
+                            "\nspeed = " + speed + "km/h" +
+                            "\nalert = " + alert;
 
                     Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+
+
+                    lastSpeed=speed;
                 }
             }
             else
