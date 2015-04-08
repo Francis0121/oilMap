@@ -8,6 +8,7 @@
     <string name="regCost_prompt">평균 유류비</string>
     <string name="regPeriod_prompt">주유 기간</string>
 
+    <string name="title_section0">메인페이지</string>
     <string name="title_section1">내 정보</string>
     <string name="title_section2">주유정보</string>
     <string name="title_section3">주유차트</string>
@@ -15,7 +16,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Example action</string>
+    <string name="move_home">홈 화면 이동</string>
 
     <string name="action_settings">Settings</string>
 </resources>

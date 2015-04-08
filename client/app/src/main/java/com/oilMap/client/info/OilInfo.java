@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.oilMap.client.R;
@@ -21,11 +22,17 @@ public class OilInfo extends Fragment implements View.OnClickListener{
 
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View rootView= inflater.inflate(R.layout.oilinfo_layout, container, false);
+
+        ImageButton oilbutton= (ImageButton) rootView.findViewById(R.id.oilbtn);
+        ImageButton rapidbutton= (ImageButton) rootView.findViewById(R.id.rapidbtn);
+        oilbutton.setOnClickListener(this);
+        rapidbutton.setOnClickListener(this);
         totaldistance=(TextView) rootView.findViewById(R.id.distance);
         totalmoney=(TextView) rootView.findViewById(R.id.money);
         rapidstart=(TextView) rootView.findViewById(R.id.start);
         rapidupspeed=(TextView) rootView.findViewById(R.id.upspeed);
         rapidstop=(TextView) rootView.findViewById(R.id.stop);
+
         return rootView;
     }
 
