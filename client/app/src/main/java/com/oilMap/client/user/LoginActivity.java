@@ -76,6 +76,11 @@ public class LoginActivity extends Activity {
                 finish();
                 break;
 
+            case R.id.btnGoogleLogin:
+                Intent googleLogin = new Intent(this, GoogleLoginTest.class);
+                startActivity(googleLogin);
+                finish();
+                break;
         }
     }
 
