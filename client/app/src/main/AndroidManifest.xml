@@ -32,7 +32,7 @@
         </activity>
         <activity android:name=".gps.GpsMain" >
         </activity>
-        <activity android:name=".user.GoogleLoginTest">
+        <activity android:name=".userTest.GoogleLoginTest">
         </activity>
         <activity
             android:name=".info.NavigationActivity"

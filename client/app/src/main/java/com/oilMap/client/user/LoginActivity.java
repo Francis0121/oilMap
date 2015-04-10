@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.oilMap.client.R;
 import com.oilMap.client.gps.GpsMain;
 import com.oilMap.client.info.NavigationActivity;
+import com.oilMap.client.userTest.GoogleLoginTest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
