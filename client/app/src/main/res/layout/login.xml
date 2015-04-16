@@ -126,7 +126,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="gps test"
+        android:text="gps/bluetooth test"
         android:id="@+id/gpsTestBtn" />
 
     <LinearLayout

@@ -6,10 +6,23 @@
     >
 
     <TextView
+        android:id="@+id/textMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hello_world" />
+
+    <LinearLayout
+        android:id="@+id/layoutInput"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textMessage" >
+    </LinearLayout>
+
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="\n\n"
-        />
+        android:text="\n\n"/>
     <Button
         android:id="@+id/GpsFinishButton"
         android:layout_width="fill_parent"

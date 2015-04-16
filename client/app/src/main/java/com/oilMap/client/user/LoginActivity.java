@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
+import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.gps.GpsMain;
 import com.oilMap.client.info.NavigationActivity;
 import com.oilMap.client.userTest.GoogleLoginTest;
@@ -40,7 +41,9 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent gps_exe = new Intent(getApplicationContext(), GpsMain.class);
+                Intent blue_exe = new Intent(getApplicationContext(), Bluetooth_reception.class);
                 startActivity(gps_exe);
+                startActivity(blue_exe);
             }
         });
         /////////////////////////////////////////////////////////////
