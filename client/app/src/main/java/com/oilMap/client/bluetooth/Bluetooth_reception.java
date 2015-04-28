@@ -17,6 +17,9 @@ import android.widget.*;
 
 import com.oilMap.client.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
 
     static final int ACTION_ENABLE_BT = 101;
@@ -382,12 +385,23 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     // 입력 스트림에서 데이터를 읽는다
                     bytes = mmInStream.read(buffer);
                     String strBuf = new String(buffer, 0, bytes);
+
+                    //////////////////////////////////////////////////////////////////
+                    DataParsing i = new DataParsing();
+                    i.dataP(strBuf);
+
                     showMessage("Receive: " + strBuf);
+                    //Obd o = new Obd();
+                    //showMessage("Receive: " + o.getSpeed());
+                    ///////////////////////////////////////////////////////////////////
+
                     SystemClock.sleep(1);
                 }
                 catch (IOException e) {
                     showMessage("Socket disconneted");
                     break;
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }
