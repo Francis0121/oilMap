@@ -1,14 +1,12 @@
 package com.oilMap.client.bluetooth;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by 정성진 on 2015-04-28.
  */
-public class DataParsing{
+public class DataParsing {
 
     Obd obd = new Obd();
 
@@ -35,8 +33,7 @@ public class DataParsing{
         obd.setTime(jsonOb.getLong("time"));
         obd.setNumOfAcceleration(jsonOb.getInt("numOfAcceleration"));
         obd.setNumOfDeceleration(jsonOb.getInt("numOfDeceleration"));
-        //////////////////////////////////////////
-
+        /////////////////////////////////////////
     }
 
 }

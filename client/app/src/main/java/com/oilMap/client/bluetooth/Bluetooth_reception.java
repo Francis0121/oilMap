@@ -23,6 +23,7 @@ import org.json.JSONObject;
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
 
     static final int ACTION_ENABLE_BT = 101;
+    public DataParsing i = new DataParsing(); ////////////////////////////
 
     TextView mTextMsg;
     BluetoothAdapter mBA;
@@ -387,13 +388,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     String strBuf = new String(buffer, 0, bytes);
 
                     //////////////////////////////////////////////////////////////////
-                    DataParsing i = new DataParsing();
                     i.dataP(strBuf);
+                    ///////////////////////////////////////////////////////////////////
 
                     showMessage("Receive: " + strBuf);
-                    //Obd o = new Obd();
-                    //showMessage("Receive: " + o.getSpeed());
-                    ///////////////////////////////////////////////////////////////////
 
                     SystemClock.sleep(1);
                 }

@@ -40,9 +40,9 @@ public class LoginActivity extends Activity {
         gpsTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gps_exe = new Intent(getApplicationContext(), GpsMain.class);
+                //Intent gps_exe = new Intent(getApplicationContext(), GpsMain.class);
                 Intent blue_exe = new Intent(getApplicationContext(), Bluetooth_reception.class);
-                startActivity(gps_exe);
+                //startActivity(gps_exe);
                 startActivity(blue_exe);
             }
         });

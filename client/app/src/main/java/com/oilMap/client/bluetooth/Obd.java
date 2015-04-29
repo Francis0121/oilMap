@@ -1,11 +1,9 @@
 package com.oilMap.client.bluetooth;
 
-import java.io.Serializable;
-
 /**
  * Created by 정성진 on 2015-04-27.
  */
-public class Obd implements Serializable {
+public class Obd{
 
     private double distance;
     private double speed;
