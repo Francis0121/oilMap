@@ -21,10 +21,12 @@
 
         <Button
             android:id="@+id/greet_me_button"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/greet_me"
-            android:onClick="greetTheUser"/>
+            android:text="@string/googleLogin"
+            android:onClick="greetTheUser"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:focusableInTouchMode="true"/>
 
         <TextView
             android:id="@+id/message"

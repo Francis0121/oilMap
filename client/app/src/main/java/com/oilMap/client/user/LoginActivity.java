@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
-import com.oilMap.client.auth.AuthActivity;
+import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.info.NavigationActivity;
 
@@ -30,6 +30,10 @@ public class LoginActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        Intent intent = getIntent();
+        Auth auth = intent.getParcelableExtra("auth");
+        Log.d("Login", auth.toString());
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -77,12 +81,6 @@ public class LoginActivity extends Activity {
                 Intent findInform = new Intent(this, FindInformationActivity.class);
                 startActivity(findInform);
                 finish();
-                break;
-
-            case R.id.btnGoogleLogin:
-                Intent intent = new Intent(this, AuthActivity.class);
-                intent.putExtra(AuthActivity.TYPE_KEY, AuthActivity.Type.FOREGROUND.name());
-                startActivity(intent);
                 break;
         }
     }

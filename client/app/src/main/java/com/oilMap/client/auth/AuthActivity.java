@@ -35,6 +35,9 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
+import com.oilMap.client.user.LoginActivity;
+
+import org.json.JSONObject;
 
 /**
  * The TokenInfoActivity is a simple app that allows users to acquire, inspect and invalidate
@@ -47,8 +50,6 @@ public class AuthActivity extends Activity {
 
     private static final String TAG = "PlayHelloActivity";
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
-    public static final String EXTRA_ACCOUNTNAME = "extra_accountname";
-
     private TextView mOut;
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
@@ -57,25 +58,12 @@ public class AuthActivity extends Activity {
 
     private String mEmail;
 
-    private Type requestType;
-
-    public static String TYPE_KEY = "type_key";
-    public static enum Type {FOREGROUND, BACKGROUND, BACKGROUND_WITH_SYNC}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.accounts_tester);
+        setContentView(R.layout.google_oauth);
 
         mOut = (TextView) findViewById(R.id.message);
-
-        Bundle extras = getIntent().getExtras();
-        requestType = Type.valueOf(extras.getString(TYPE_KEY));
-        setTitle(getTitle() + " - " + requestType.name());
-        if (extras.containsKey(EXTRA_ACCOUNTNAME)) {
-            mEmail = extras.getString(EXTRA_ACCOUNTNAME);
-            getTask(AuthActivity.this, mEmail, SCOPE).execute();
-        }
     }
 
     @Override
@@ -162,6 +150,18 @@ public class AuthActivity extends Activity {
             @Override
             public void run() {
                 mOut.setText(message);
+            }
+        });
+    }
+
+    public void next(final Auth auth) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
+                intent.putExtra("auth", auth);
+                startActivity(intent);
+                finish();
             }
         });
     }
