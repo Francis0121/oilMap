@@ -3,11 +3,13 @@
 
 <button type="button" id="crawler">Crawler</button>
 
+<p id="console"></p>
+
 <script>
     $(function(){
         $('#crawler').on('click', function(){
             $.postJSON(contextPath+'/crawler', {}, function(result){
-               console.log(result);
+               $('#console').text(result);
             });
         });
     });
