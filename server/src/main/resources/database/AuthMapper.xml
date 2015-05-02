@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="auth">
+
+    <insert id="insert" parameterType="Auth">
+        INSERT INTO
+          `auth`
+          ( `id`, `registerDate` )
+        VALUES
+          ( #{id}, SYSDATE() )
+    </insert>
+    
+    <select id="isExist" parameterType="Auth" resultType="Auth">
+        SELECT
+          `id`, `registerDate`
+        FROM
+          `auth`
+        WHERE
+          `id` = #{id}
+    </select>
+    
+    <delete id="delete" parameterType="Auth">
+        DELETE FROM
+          `auth`
+        WHERE
+          `id` = #{id}
+    </delete>
+    
+</mapper>
