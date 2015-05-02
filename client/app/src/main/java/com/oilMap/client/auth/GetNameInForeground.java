@@ -28,7 +28,7 @@ import java.io.IOException;
  */
 public class GetNameInForeground extends AbstractGetNameTask {
 
-  public GetNameInForeground(HelloActivity activity, String email, String scope) {
+  public GetNameInForeground(AuthActivity activity, String email, String scope) {
       super(activity, email, scope);
   }
 

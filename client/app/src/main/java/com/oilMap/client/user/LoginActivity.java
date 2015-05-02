@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
-import com.oilMap.client.auth.HelloActivity;
+import com.oilMap.client.auth.AuthActivity;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.info.NavigationActivity;
 
@@ -80,8 +80,8 @@ public class LoginActivity extends Activity {
                 break;
 
             case R.id.btnGoogleLogin:
-                Intent intent = new Intent(this, HelloActivity.class);
-                intent.putExtra(HelloActivity.TYPE_KEY, HelloActivity.Type.FOREGROUND.name());
+                Intent intent = new Intent(this, AuthActivity.class);
+                intent.putExtra(AuthActivity.TYPE_KEY, AuthActivity.Type.FOREGROUND.name());
                 startActivity(intent);
                 break;
         }

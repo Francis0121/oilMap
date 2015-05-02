@@ -37,12 +37,12 @@ import java.net.URL;
 public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void> {
     private static final String TAG = "TokenInfoTask";
     private static final String NAME_KEY = "given_name";
-    protected HelloActivity mActivity;
+    protected AuthActivity mActivity;
 
     protected String mScope;
     protected String mEmail;
 
-    AbstractGetNameTask(HelloActivity activity, String email, String scope) {
+    AbstractGetNameTask(AuthActivity activity, String email, String scope) {
         this.mActivity = activity;
         this.mScope = scope;
         this.mEmail = email;

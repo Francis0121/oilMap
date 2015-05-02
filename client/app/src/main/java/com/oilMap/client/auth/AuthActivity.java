@@ -43,7 +43,7 @@ import com.oilMap.client.R;
  * In addition see implementations of {@link AbstractGetNameTask} for an illustration of how to use
  * the {@link GoogleAuthUtil}.
  */
-public class HelloActivity extends Activity {
+public class AuthActivity extends Activity {
 
     private static final String TAG = "PlayHelloActivity";
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
@@ -74,7 +74,7 @@ public class HelloActivity extends Activity {
         setTitle(getTitle() + " - " + requestType.name());
         if (extras.containsKey(EXTRA_ACCOUNTNAME)) {
             mEmail = extras.getString(EXTRA_ACCOUNTNAME);
-            getTask(HelloActivity.this, mEmail, SCOPE).execute();
+            getTask(AuthActivity.this, mEmail, SCOPE).execute();
         }
     }
 
@@ -126,7 +126,7 @@ public class HelloActivity extends Activity {
             pickUserAccount();
         } else {
             if (isDeviceOnline()) {
-                getTask(HelloActivity.this, mEmail, SCOPE).execute();
+                getTask(AuthActivity.this, mEmail, SCOPE).execute();
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
             }
@@ -181,7 +181,7 @@ public class HelloActivity extends Activity {
                     int statusCode = ((GooglePlayServicesAvailabilityException)e)
                             .getConnectionStatusCode();
                     Dialog dialog = GooglePlayServicesUtil.getErrorDialog(statusCode,
-                            HelloActivity.this,
+                            AuthActivity.this,
                             REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR);
                     dialog.show();
                 } else if (e instanceof UserRecoverableAuthException) {
@@ -201,7 +201,7 @@ public class HelloActivity extends Activity {
      * background from a Foreground activity.
      */
     private AbstractGetNameTask getTask(
-            HelloActivity activity, String email, String scope) {
+            AuthActivity activity, String email, String scope) {
         return new GetNameInForeground(activity, email, scope);
     }
 }
