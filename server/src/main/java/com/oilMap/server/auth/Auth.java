@@ -12,6 +12,11 @@ public class Auth {
     public Auth() {
     }
 
+    public Auth(String id, String registerDate) {
+        this.id = id;
+        this.registerDate = registerDate;
+    }
+
     public String getId() {
         return id;
     }
