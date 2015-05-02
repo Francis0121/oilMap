@@ -268,6 +268,12 @@
             <version>4.2.0.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>edu.uci.ics</groupId>
+            <artifactId>crawler4j</artifactId>
+            <version>4.1</version>
+        </dependency>
+        
     </dependencies>
 
     <build>

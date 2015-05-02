@@ -18,11 +18,9 @@
 
   <link rel="stylesheet" type="text/css" href="${cp }/resources/css/default.css">
   <link rel="stylesheet" type="text/css" href="${cp}/resources/css/layout.css">
-  <link rel="stylesheet" type="text/css" href="${cp}/resources/css/jquery.modal.css">
 
   <script src="${cp}/resources/javascript/jquery-1.11.2.min.js"></script>
   <script src="${cp}/resources/javascript/jquery.json.js"></script>
-  <script src="${cp}/resources/javascript/jquery.modal.js"></script>
 
   <script>
     var contextPath = '<c:out value="${cp}"/>';
