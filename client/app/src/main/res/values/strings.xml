@@ -19,4 +19,5 @@
     <string name="move_home">홈 화면 이동</string>
 
     <string name="action_settings">Settings</string>
+    <string name="greet_me">Greet Me</string>
 </resources>

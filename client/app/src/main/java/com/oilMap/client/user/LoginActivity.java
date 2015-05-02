@@ -12,10 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oilMap.client.R;
+import com.oilMap.client.auth.HelloActivity;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
-import com.oilMap.client.gps.GpsMain;
 import com.oilMap.client.info.NavigationActivity;
-import com.oilMap.client.userTest.GoogleLoginTest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -81,9 +80,9 @@ public class LoginActivity extends Activity {
                 break;
 
             case R.id.btnGoogleLogin:
-                Intent googleLogin = new Intent(this, GoogleLoginTest.class);
-                startActivity(googleLogin);
-                finish();
+                Intent intent = new Intent(this, HelloActivity.class);
+                intent.putExtra(HelloActivity.TYPE_KEY, HelloActivity.Type.FOREGROUND.name());
+                startActivity(intent);
                 break;
         }
     }
