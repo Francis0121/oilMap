@@ -15,6 +15,7 @@ import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.etc.LoadingActivity;
+import com.oilMap.client.gps.MapsActivity;
 import com.oilMap.client.info.NavigationActivity;
 
 import org.springframework.http.ResponseEntity;
@@ -90,7 +91,8 @@ public class LoginActivity extends Activity {
                 break;
 
             case R.id.googleMap:
-
+                Intent mapIntent = new Intent(this, MapsActivity.class);
+                startActivity(mapIntent);
                 break;
         }
     }
