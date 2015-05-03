@@ -35,6 +35,7 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
+import com.oilMap.client.etc.LoadingActivity;
 import com.oilMap.client.user.LoginActivity;
 
 /**
