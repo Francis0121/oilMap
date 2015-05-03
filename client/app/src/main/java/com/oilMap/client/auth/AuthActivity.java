@@ -37,8 +37,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
 import com.oilMap.client.user.LoginActivity;
 
-import org.json.JSONObject;
-
 /**
  * The TokenInfoActivity is a simple app that allows users to acquire, inspect and invalidate
  * authentication tokens for a different accounts and scopes.
@@ -61,7 +59,7 @@ public class AuthActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.google_oauth);
+        setContentView(R.layout.google_auth);
 
         mOut = (TextView) findViewById(R.id.message);
     }
