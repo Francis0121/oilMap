@@ -62,6 +62,8 @@ public class AuthActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.google_auth);
 
+        startActivity(new Intent(this, LoadingActivity.class));
+
         mOut = (TextView) findViewById(R.id.message);
     }
 
