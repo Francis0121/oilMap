@@ -29,18 +29,25 @@ public class AuthController {
     @ResponseBody
     @RequestMapping(value = "/isExist", method = RequestMethod.POST)
     public Map<String, Object> isExist(@RequestBody Map<String, Object> request){
-        Auth auth = new Auth((String)request.get("id"), (String)request.get("registerDate"));
         Map<String, Object> response = new HashMap<String, Object>();
-        response.put("result", authService.selectIsExist(auth));
+        Auth auth = new Auth((String)request.get("id"), null);
+        response.put("result", authService.selectIsExist(auth) != null);
         return response;
     }
     
     @ResponseBody
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public Map<String, Object> insert(@RequestBody Map<String, Object> request){
-        Auth auth = new Auth((String)request.get("id"), null);
-        authService.insert(auth);
+        
         Map<String, Object> response = new HashMap<String, Object>();
+        Auth auth = new Auth((String)request.get("id"), null);
+        if(authService.selectIsExist(auth) != null){
+            response.put("result", false);
+            return response;
+        }
+        
+        authService.insert(auth);
+        response.put("result", true);
         return response;
     }
 
@@ -48,9 +55,10 @@ public class AuthController {
     @ResponseBody
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Map<String, Object> delete(@RequestBody Map<String, Object> request){
+        Map<String, Object> response = new HashMap<String, Object>();
         Auth auth = new Auth((String)request.get("id"), null);
         authService.delete(auth);
-        Map<String, Object> response = new HashMap<String, Object>();
+        response.put("result", true);
         return response;
     }
 }

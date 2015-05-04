@@ -17,17 +17,22 @@ public class ControllerAspect {
 	public Object trace(ProceedingJoinPoint joinPoint) throws Throwable {
 		String signatureString = joinPoint.getSignature().toShortString();
 		logger.info("Start time " + signatureString );
+		int i = 0;
+		for(Object argObj : joinPoint.getArgs()){
+			logger.info("[Access Args_"+ i++ +" : "+ argObj.getClass()+"] "+ argObj.toString());
+		}
 		long start = System.currentTimeMillis();
 
 		try {
 
 			logger.info("Aspect Test");
 
-			return joinPoint.proceed();
+			Object returnObj = joinPoint.proceed();
+			logger.info("[Access Returns : "+ returnObj.getClass()+"] "+ returnObj.toString());
+			return returnObj;
 		} finally {
 			long finish = System.currentTimeMillis();
-			logger.info("End time " + signatureString);
-			logger.info("Run time " + signatureString + " " + (finish - start) + "ms");
+			logger.info("End time " + signatureString + " " + (finish - start) + "ms\n");
 		}
 	}
 

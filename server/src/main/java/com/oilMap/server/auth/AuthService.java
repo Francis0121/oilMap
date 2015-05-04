@@ -10,4 +10,6 @@ public interface AuthService {
     void delete(Auth auth);
     
     Auth selectIsExist(Auth auth);
+    
+    void deleteAll();
 }
