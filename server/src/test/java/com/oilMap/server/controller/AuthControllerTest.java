@@ -41,7 +41,7 @@ public class AuthControllerTest {
     @Qualifier(value = "mockAuthServiceImpl")
     @Autowired
     private AuthService authService;
-    private Auth auth = new Auth("134569987654567898");
+    private Auth auth = new Auth("tjdrms0121@gmail.com","김성근","134569987654567898");
     
     @Before
     public void Before() {
@@ -53,6 +53,8 @@ public class AuthControllerTest {
     public void 구글_OAUTH_아이디_입력() throws Exception{
         Map<String, Object> request = new HashMap<String, Object>();
         request.put("id", auth.getId());
+        request.put("email", auth.getEmail());
+        request.put("name", auth.getName());
         byte[] requestBytes = TestUtil.convertObjectToJsonBytes(request);
         mockMvc.perform(post("/auth/insert")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -67,6 +69,8 @@ public class AuthControllerTest {
         
         Map<String, Object> request = new HashMap<String, Object>();
         request.put("id", auth.getId());
+        request.put("email", auth.getEmail());
+        request.put("name", auth.getName());
         byte[] requestBytes = TestUtil.convertObjectToJsonBytes(request);
         mockMvc.perform(post("/auth/insert")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)

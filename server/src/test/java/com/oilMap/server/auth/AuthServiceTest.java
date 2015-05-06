@@ -28,7 +28,7 @@ public class AuthServiceTest {
     @Autowired
     private AuthService authService;
     
-    private Auth auth = new Auth("1234567890987654");
+    private Auth auth = new Auth("tjdrms0121@gmail.com", "김성근", "1234567890987654");
     
     @Before
     public void Before() {
@@ -50,7 +50,7 @@ public class AuthServiceTest {
     @Transactional
     public void 사용자_삭제() throws Exception{
         logger.debug("사용자 삭제");
-        Auth auth2 = new Auth("1234567890987652");
+        Auth auth2 = new Auth("dusngl@naver.com", "김연상", "1234567890987652");
         authService.insert(auth2);
         Auth getAuth = authService.selectIsExist(auth2);
         assertThat(auth2.getId(), is(getAuth.getId()));

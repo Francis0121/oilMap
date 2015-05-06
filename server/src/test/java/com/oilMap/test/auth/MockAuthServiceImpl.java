@@ -21,6 +21,18 @@ public class MockAuthServiceImpl implements AuthService{
     
     @Override
     public void insert(Auth auth) {
+        if(auth.getId() == null || auth.getId().equals("")){
+            throw new RuntimeException("Null Point Exception : id");
+        }
+
+        if(auth.getEmail() == null || auth.getEmail().equals("")){
+            throw new RuntimeException("Null Point Exception : email");
+        }
+
+        if(auth.getName() == null || auth.getName().equals("")){
+            throw new RuntimeException("Null Point Exception : name");
+        }
+        
         authList.add(auth);
     }
 
