@@ -7,5 +7,6 @@
 		
 		<typeAlias type="com.oilMap.server.auth.Auth" alias="Auth"/>
 		<typeAlias type="com.oilMap.server.drive.Driving" alias="Driving"/>
+		<typeAlias type="com.oilMap.server.drive.DrivePoint" alias="DrivePoint"/>
 	</typeAliases>
 </configuration>

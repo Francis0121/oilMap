@@ -11,4 +11,12 @@
           ( #{id}, #{distance}, #{fuelQuantity}, SYSDATE() )
     </insert>
     
+    <insert id="insertDrivePoint" parameterType="DrivePoint">
+        INSERT INTO
+          `drive_point`
+          ( `id`, `position`)
+        VALUES
+          ( #{id}, #{position} )
+    </insert>
+    
 </mapper>

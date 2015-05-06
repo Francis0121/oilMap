@@ -1,7 +1,8 @@
 package com.oilMap.server.controller;
 
+import com.oilMap.server.drive.DrivePoint;
 import com.oilMap.server.drive.Driving;
-import com.oilMap.server.drive.DrivingService;
+import com.oilMap.server.drive.DriveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,26 @@ import java.util.Map;
 @RequestMapping("drive")
 public class DriveController {
     
+    // TODO - TEST CASE를 생성 필요
+    
     private static Logger logger = LoggerFactory.getLogger(DriveController.class);
     
     @Autowired
-    private DrivingService drivingService;
+    private DriveService drivingService;
     
     @ResponseBody
     @RequestMapping(value = "/driving", method = RequestMethod.POST)
     public Map<String, Object> driving(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        drivingService.insert(new Driving((String)request.get("id"), (Double)request.get("distance"), (Integer)request.get("fuelQuantity")));
+        drivingService.insertDriving(new Driving((String) request.get("id"), (Double) request.get("distance"), (Integer) request.get("fuelQuantity")));
         return response;
     }
-    
+
+    @ResponseBody
+    @RequestMapping(value = "/drivePoint", method = RequestMethod.POST)
+    public Map<String, Object> drivePoint(@RequestBody Map<String, Object> request){
+        Map<String, Object> response = new HashMap<String, Object>();
+        drivingService.insertDrivePoint(new DrivePoint((String)request.get("id"), (Integer)request.get("positio")));
+        return response;
+    }
 }
