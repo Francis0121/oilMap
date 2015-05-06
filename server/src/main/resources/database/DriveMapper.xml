@@ -14,9 +14,9 @@
     <insert id="insertDrivePoint" parameterType="DrivePoint">
         INSERT INTO
           `drive_point`
-          ( `id`, `position`)
+          ( `id`, `position`, `inputDate` )
         VALUES
-          ( #{id}, #{position} )
+          ( #{id}, #{position}, SYSDATE() )
     </insert>
     
 </mapper>

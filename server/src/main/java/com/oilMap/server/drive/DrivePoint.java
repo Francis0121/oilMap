@@ -11,6 +11,8 @@ public class DrivePoint {
      * 급 가속 위치
      */
     private Integer position;
+    
+    private String inputDate;
 
     public DrivePoint() {
     }
@@ -18,6 +20,12 @@ public class DrivePoint {
     public DrivePoint(String id, Integer position) {
         this.id = id;
         this.position = position;
+    }
+
+    public DrivePoint(String id, Integer position, String inputDate) {
+        this.id = id;
+        this.position = position;
+        this.inputDate = inputDate;
     }
 
     public String getId() {
@@ -41,6 +49,7 @@ public class DrivePoint {
         return "DrivePoint{" +
                 "id='" + id + '\'' +
                 ", position=" + position +
+                ", inputDate='" + inputDate + '\'' +
                 '}';
     }
 }

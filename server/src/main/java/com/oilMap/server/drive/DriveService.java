@@ -7,5 +7,5 @@ public interface DriveService {
 
     void insertDriving(Driving driving);
     
-    void insertDrivePoint(DrivePoint drivePoint);
+    void insertDrivePoint(DrivePoint drivePoint);   
 }
