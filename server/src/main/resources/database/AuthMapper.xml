@@ -5,9 +5,9 @@
     <insert id="insert" parameterType="Auth">
         INSERT INTO
           `auth`
-          ( `id`, `registerDate` )
+          ( `id`, `registerDate`, `name`, `email` )
         VALUES
-          ( #{id}, SYSDATE() )
+          ( #{id}, SYSDATE(), #{name}, #{email} )
     </insert>
     
     <select id="isExist" parameterType="Auth" resultType="Auth">
