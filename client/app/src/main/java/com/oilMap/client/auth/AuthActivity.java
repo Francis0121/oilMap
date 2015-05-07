@@ -25,8 +25,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -35,8 +35,7 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
-import com.oilMap.client.etc.LoadingActivity;
-import com.oilMap.client.user.LoginActivity;
+import com.oilMap.client.info.NavigationActivity;
 
 /**
  * The TokenInfoActivity is a simple app that allows users to acquire, inspect and invalidate
@@ -49,7 +48,7 @@ public class AuthActivity extends Activity {
 
     private static final String TAG = "PlayHelloActivity";
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
-    private TextView mOut;
+    //private TextView mOut;
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_AUTH_ERROR = 1001;
@@ -60,14 +59,18 @@ public class AuthActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.google_auth);
+        //setContentView(R.layout.google_auth);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
+        setContentView(R.layout.activity_loading);
 
-        startActivity(new Intent(this, LoadingActivity.class));
+        getUsername();
+        //startActivity(new Intent(this, LoadingActivity.class));
 
-        mOut = (TextView) findViewById(R.id.message);
+        //mOut = (TextView) findViewById(R.id.message);
     }
 
-    @Override
+    @Override   //아래코드는 선택된 계정을 선택하여 콜백하는 과정
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PICK_ACCOUNT) {
             if (resultCode == RESULT_OK) {
@@ -103,13 +106,14 @@ public class AuthActivity extends Activity {
     }
 
     /** Called by button in the layout */
-    public void greetTheUser(View view) {
-        getUsername();
-    }
+//    public void greetTheUser(View view) {
+//        getUsername();
+//    }
 
     /** Attempt to get the user name. If the email address isn't known yet,
      * then call pickUserAccount() method so the user can pick an account.
      */
+    //추가 범위 추가하기
     private void getUsername() {
         if (mEmail == null) {
             pickUserAccount();
@@ -150,7 +154,7 @@ public class AuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mOut.setText(message);
+                //mOut.setText(message);
             }
         });
     }
@@ -159,7 +163,7 @@ public class AuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
+                Intent intent = new Intent(AuthActivity.this, NavigationActivity.class);
                 intent.putExtra("auth", auth);
                 startActivity(intent);
                 finish();
@@ -171,6 +175,7 @@ public class AuthActivity extends Activity {
      * This method is a hook for background threads and async tasks that need to provide the
      * user a response UI when an exception occurs.
      */
+    //예외처리
     public void handleException(final Exception e) {
         runOnUiThread(new Runnable() {
             @Override

@@ -23,7 +23,7 @@
             android:id="@+id/greet_me_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/googleLogin"
+            android:text="어플리케이션 실행하기"
             android:onClick="greetTheUser"
             android:layout_gravity="center_vertical|center_horizontal"
             android:focusableInTouchMode="true"/>
