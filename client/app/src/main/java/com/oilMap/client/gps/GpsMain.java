@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
  */
 public class GpsMain extends Activity {
 
-    Button GpsFinishButton;
+    //Button GpsFinishButton;//////////////////////////////////////button
 
     // GPS 신호를 처리하는 Location Manager
     LocationManager locManager; // 위치 매니저 생성
@@ -36,7 +36,7 @@ public class GpsMain extends Activity {
         locListener = new MyLocationListener();
 
         //버튼 정의
-        GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);
+        //GpsFinishButton = (Button)findViewById(R.id.GpsFinishButton);/////////////////////////////////////////button
 
         /////////////////////////////////////////////////////GPS AUTO START//////////////////////
         Toast.makeText(getApplicationContext(), "reception start!", Toast.LENGTH_SHORT).show();
@@ -65,6 +65,7 @@ public class GpsMain extends Activity {
         //////////////////////////////////////////////////////////////////////////////////////////
         */
 
+        /*
         //FINISH 버튼 누르면 gps 수신 종료
         GpsFinishButton.setOnClickListener(new View.OnClickListener() { //FINISH 버튼 눌렀을 때
 
@@ -73,6 +74,7 @@ public class GpsMain extends Activity {
                 locManager.removeUpdates(locListener);
             }
         });
+        *////////////////////////////////////////////////////button
     }
 
     // 프로그램 종료시 GPS 끈다. --> 실제 프로그램에서는??

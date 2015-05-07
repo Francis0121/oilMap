@@ -39,15 +39,13 @@ public class LoginActivity extends Activity {
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
-        ///gps 테스트 해볼수 있게 임시로
+        ///bluetooth 테스트 해볼수 있게 임시로
         //////////////////////////////////////////////////////
         Button gpsTestBtn = (Button) findViewById(R.id.gpsTestBtn);
         gpsTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent gps_exe = new Intent(getApplicationContext(), GpsMain.class);
                 Intent blue_exe = new Intent(getApplicationContext(), Bluetooth_reception.class);
-                //startActivity(gps_exe);
                 startActivity(blue_exe);
             }
         });

@@ -26,13 +26,8 @@ public class DataParsing {
 
         ////////////////////////////////////////
         //JSONObject 객체 파싱
-        obd.setDistance(jsonOb.getDouble("distance"));
-        obd.setSpeed(jsonOb.getDouble("speed"));
-        obd.setRpm(jsonOb.getInt("rpm"));
-        obd.setFuelEfficiency(jsonOb.getDouble("fuelEfficiency"));
-        obd.setTime(jsonOb.getLong("time"));
-        obd.setNumOfAcceleration(jsonOb.getInt("numOfAcceleration"));
-        obd.setNumOfDeceleration(jsonOb.getInt("numOfDeceleration"));
+        obd.setRpm(jsonOb.getDouble("rpm"));
+        obd.setFuel(jsonOb.getDouble("fuel"));
         /////////////////////////////////////////
     }
 
