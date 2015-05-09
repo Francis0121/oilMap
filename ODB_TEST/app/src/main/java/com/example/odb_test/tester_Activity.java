@@ -25,24 +25,13 @@ import java.util.UUID;
  * Created by Administrator on 2015-04-25.
  */
 
-public class tester_Activity extends Activity   {
+public class tester_Activity extends Activity {
 
-   //////////////////// Bluetooth/////////////////////
+    //////////////////// Bluetooth/////////////////////
 
-    static final int ACTION_ENABLE_BT = 101;
-
-    TextView mTextMsg;
-    BluetoothAdapter mBA;
-
-    static final String  BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
-
-    // 접속시 사용하는 고유 ID
-    static final UUID BLUE_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-
-    ServerThread mSThread = null; // 서버 소켓 접속 스레드
-    SocketThread mSocketThread = null; // 데이터 송수신 스레드
-
-    public String strMsg;
+    Bluetooth bt = new Bluetooth();
+    TextView mTextMsg; // 송신데이터 출력
+    public String strMsg; // 송신데이터
     ////////////////////////////////////////////////////*/
     public double car_rpm = 500; // 기본 500 rpm
     public double car_speed = 0; //
@@ -51,9 +40,9 @@ public class tester_Activity extends Activity   {
     double oil_consumption = 0; // 기름소비량
 
     public boolean static_flag = false;   // 정속주행 ture
-    boolean acc_flag=false;
-    boolean faster_acc_flag=false;
-    boolean brk_flag=false;
+    boolean acc_flag = false;
+    boolean faster_acc_flag = false;
+    boolean brk_flag = false;
 
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 30.0; //rpm 증가값
@@ -84,14 +73,14 @@ public class tester_Activity extends Activity   {
         setContentView(R.layout.tester_activity);
 
         //////////////// Bluetooth///////////////////////////////////
-        mTextMsg = (TextView)findViewById(R.id.bluetooth);
+        mTextMsg = (TextView) findViewById(R.id.bluetooth);
 
         // 블루투스 사용 가능상태 판단
-        boolean isBlue = canUseBluetooth();
-        if( isBlue )
-            // 페어링된 원격 디바이스 목록 구하기
-            getParedDevice();
-    ////////////////////////////////////////////////////////////////
+        boolean isBlue = bt.canUseBluetooth();
+        if (isBlue)
+            // 블루투스 수신 서버쓰레드 생성
+            bt.getServerThread();
+        ////////////////////////////////////////////////////////////////
         rpm_text = (TextView) findViewById(R.id.rpmText);
         gear_text = (TextView) findViewById(R.id.gearText);
         speed_text = (TextView) findViewById(R.id.spdText);
@@ -115,10 +104,10 @@ public class tester_Activity extends Activity   {
             public boolean onTouch(View v, MotionEvent event) {
                 static_flag = false;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    acc_flag=true;
+                    acc_flag = true;
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    acc_flag=false;
+                    acc_flag = false;
                     return true;
                 }
                 return false;
@@ -129,10 +118,10 @@ public class tester_Activity extends Activity   {
             public boolean onTouch(View v, MotionEvent event) {
                 static_flag = false;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    faster_acc_flag=true;
+                    faster_acc_flag = true;
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    faster_acc_flag=false;
+                    faster_acc_flag = false;
                     return true;
                 }
                 return false;
@@ -144,10 +133,10 @@ public class tester_Activity extends Activity   {
             public boolean onTouch(View v, MotionEvent event) {
                 static_flag = false;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    brk_flag=true;
+                    brk_flag = true;
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    brk_flag=false;
+                    brk_flag = false;
                     return true;
                 }
                 return false;
@@ -166,7 +155,9 @@ public class tester_Activity extends Activity   {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Back",
                         Toast.LENGTH_SHORT).show();
-                onStop();
+                moveTaskToBack(true);
+                finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
         });
 
@@ -180,8 +171,7 @@ public class tester_Activity extends Activity   {
                 // 악셀중일때 rpm은 최대치를 넘지 않는다.
                 if (acc_flag == true) {
                     car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
-                }
-                else if (faster_acc_flag==true) {
+                } else if (faster_acc_flag == true) {
                     car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
                 }
                 // 가속중이지 않다면 rpm은 줄어든다.
@@ -198,27 +188,25 @@ public class tester_Activity extends Activity   {
             // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
             rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
 
-            if(brk_flag == true ) {
+            if (brk_flag == true) {
                 car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
-            }
-            else{
+            } else {
                 car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
             }
 
-            if( car_speed >= DECREASE_SPEED )
+            if (car_speed >= DECREASE_SPEED)
                 car_speed -= DECREASE_SPEED; // 줄어드는 속도
-            else if(car_speed < DECREASE_SPEED && car_speed >= 0)
+            else if (car_speed < DECREASE_SPEED && car_speed >= 0)
                 car_speed = 0;
             ////////
 
             // 5단까지 변속 가능
-            if( (current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear+1])) {
+            if ((current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear + 1])) {
                 current_gear++;
-               car_rpm = car_rpm * GEAR_RATIO[current_gear]/GEAR_RATIO[current_gear-1]; // 더 힘이 드는 rpm
-            }
-            else if( (current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear - 1]; // 더 힘이 드는 rpm
+            } else if ((current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
                 current_gear--;
-                car_rpm = car_rpm * GEAR_RATIO[current_gear]/GEAR_RATIO[current_gear+1];
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear + 1];
             }
             ////////
 
@@ -229,7 +217,7 @@ public class tester_Activity extends Activity   {
     TimerTask timeTimerTask = new TimerTask() {
         public void run() {
 
-           oil_consumption = car_rpm / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
+            oil_consumption = car_rpm / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
 
             // rpm따른 남은 기름량이 0보다 커야 계산가능
             if ((car_rpm > 0) && (oil_capacity > 0)) {
@@ -251,7 +239,7 @@ public class tester_Activity extends Activity   {
                 gearHandler.post(new Runnable() {
                     public void run() {
                         Log.d("timeTimerTask", "gear : " + current_gear);
-                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear+1))));
+                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear + 1))));
                     }
                 });
             }
@@ -277,7 +265,7 @@ public class tester_Activity extends Activity   {
                     }
                 });
             }
-            // Oil capacity
+            // Sendin Message
             Handler mHandler = mTextMsg.getHandler();
             if (mHandler != null) {
                 mHandler.post(new Runnable() {
@@ -291,193 +279,185 @@ public class tester_Activity extends Activity   {
 
     ///////////////// Bluetooth//////////////////////////
 
+    class Bluetooth {
+        static final int ACTION_ENABLE_BT = 101;
 
-    // 블루투스 사용 가능상태 판단
-    public boolean canUseBluetooth() {
+        TextView mTextMsg;
+        BluetoothAdapter mBA;
 
-        // 블루투스 어댑터를 구한다
-        mBA = BluetoothAdapter.getDefaultAdapter();
+        static final String BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
 
-        // 블루투스 어댑터가 null 이면 블루투스 장비가 존재하지 않는다.
-        if( mBA == null ) {
-            mTextMsg.setText("Device not found");
+        // 접속시 사용하는 고유 ID
+        final UUID BLUE_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+
+        ServerThread mSThread = null; // 서버 소켓 접속 스레드
+        SocketThread mSocketThread = null; // 데이터 송수신 스레드
+
+        // 블루투스 사용 가능상태 판단
+        public boolean canUseBluetooth() {
+
+            // 블루투스 어댑터를 구한다
+            mBA = BluetoothAdapter.getDefaultAdapter();
+
+            // 블루투스 어댑터가 null 이면 블루투스 장비가 존재하지 않는다.
+            if (mBA == null) {
+                mTextMsg.setText("Device not found");
+                return false;
+            }
+
+            mTextMsg.setText("Device is exist");
+
+            // 블루투스 활성화 상태라면 함수 탈출
+            if (mBA.isEnabled()) {
+                mTextMsg.append("\nDevice can use");
+                return true;
+            }
+
             return false;
         }
 
-        mTextMsg.setText("Device is exist");
 
-        // 블루투스 활성화 상태라면 함수 탈출
-        if( mBA.isEnabled() ) {
-            mTextMsg.append("\nDevice can use");
-            return true;
-        }
+        // 다른 디바이스에게 자신을 검색 허용
+        public void setDiscoverable() {
 
-        // 사용자에게 블루투스 활성화를 요청한다
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(intent, ACTION_ENABLE_BT);
-        return false;
-    }
-
-    // 블루투스 활성화 요청 결과 수신
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if( requestCode == ACTION_ENABLE_BT ) {
-
-            // 사용자가 블루투스 활성화 승인했을때
-            if( resultCode == RESULT_OK ) {
-                mTextMsg.append("\nDevice can use");
-
-                // 페어링된 원격 디바이스 목록 구하기
-                getParedDevice();
-            }
-            // 사용자가 블루투스 활성화 취소했을때
-            else {
-                mTextMsg.append("\nDevice can not use");
-            }
-        }
-    }
-    // 다른 디바이스에게 자신을 검색 허용
-    public void setDiscoverable() {
-
-        // 현재 검색 허용 상태라면 함수 탈출
-        if( mBA.getScanMode() == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE )
-            return;
-
-        // 다른 디바이스에게 자신을 검색 허용 지정
-        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-        startActivity(intent);
-    }
-
-    // 페어링된 원격 디바이스 목록 구하기
-    public void getParedDevice() {
-
-        if( mSThread != null ) return;
-
-        // 서버 소켓 접속을 위한 스레드 생성 & 시작
-        mSThread = new ServerThread();
-        mSThread.start();
-
-        // 다른 디바이스에 자신을 노출
-        setDiscoverable();
-    }
-
-    // 서버 소켓을 생성해서 접속이 들어오면 클라이언트 소켓을 생성하는 스레드
-    private class ServerThread extends Thread {
-
-        private BluetoothServerSocket mmSSocket;
-
-        // 서버 소켓 생성
-        public ServerThread() {
-            try {
-                mmSSocket = mBA.listenUsingInsecureRfcommWithServiceRecord(BLUE_NAME, BLUE_UUID);
-            } catch(IOException e) {
-                showMessage("Get Server Socket Error");
-            }
-        }
-
-        public void run() {
-
-            BluetoothSocket cSocket = null;
-
-            // 원격 디바이스에서 접속을 요청할 때까지 기다린다
-            try {
-                cSocket = mmSSocket.accept();
-            } catch(IOException e) {
-                showMessage("Socket Accept Error");
+            // 현재 검색 허용 상태라면 함수 탈출
+            if (mBA.getScanMode() == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE)
                 return;
-            }
-            // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-            onConnected(cSocket);
+
+            // 다른 디바이스에게 자신을 검색 허용 지정
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            startActivity(intent);
         }
 
-        // 서버 소켓 중지
-        public void cancel() {
+        // 블루투스 수신 서버쓰레드 생성
+        public void getServerThread() {
 
-            try {
-                mmSSocket.close();
-            } catch (IOException e) {
-                showMessage("Server Socket close error");
-            }
-        }
-    }
+            if (mSThread != null) return;
 
-    // 메시지를 화면에 표시
-    public void showMessage(String msg) {
-        strMsg = msg;//(String)msg.obj;
-        Log.d("tag1", strMsg);
-    }
+            // 서버 소켓 접속을 위한 스레드 생성 & 시작
+            mSThread = new ServerThread();
+            mSThread.start();
 
-
-    // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-    public void onConnected(BluetoothSocket socket) {
-
-        showMessage("Socket connected");
-
-        // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
-        if( mSocketThread != null )
-            mSocketThread = null;
-
-        // 데이터 송수신 스레드를 시작
-        mSocketThread = new SocketThread(socket);
-        mSocketThread.start();
-    }
-
-    // 데이터 송수신 스레드
-    private class SocketThread extends Thread {
-
-        private final BluetoothSocket mmSocket; // 클라이언트 소켓
-        private OutputStream mmOutStream; // 출력 스트림
-
-        public SocketThread(BluetoothSocket socket) {
-
-            mmSocket = socket;
-
-            // 입력 스트림과 출력 스트림을 구한다
-            try {
-                mmOutStream = socket.getOutputStream();
-            } catch (IOException e) {
-                showMessage("Get Stream error");
-            }
+            // 다른 디바이스에 자신을 노출
+            setDiscoverable();
         }
 
-        // 소켓에서 수신된 데이터를 화면에 표시한다
-        public void run() {
-            while (true) {
-                // 입력 스트림에서 데이터를 읽는다
-                mSocketThread.write("{\"distance\":\""+"34"+"\", \"speed\":\""+car_speed+"\", \"rpm\":\""+car_rpm
-                        +"\", \"fuelEfficiency\":\""+oil_consumption+"\", \"time\":\""+"34"
-                        +"\", \"numOfAcceleration\":\""+"34"+"\", \"numOfDeceleration\":\""+"34"+"\"}");
-                SystemClock.sleep(1000);
+        // 서버 소켓을 생성해서 접속이 들어오면 클라이언트 소켓을 생성하는 스레드
+        private class ServerThread extends Thread {
+
+            private BluetoothServerSocket mmSSocket;
+
+            // 서버 소켓 생성
+            public ServerThread() {
+                try {
+                    mmSSocket = mBA.listenUsingInsecureRfcommWithServiceRecord(BLUE_NAME, BLUE_UUID);
+                } catch (IOException e) {
+                    showMessage("Get Server Socket Error");
+                }
+            }
+
+            public void run() {
+
+                BluetoothSocket cSocket = null;
+
+                // 원격 디바이스에서 접속을 요청할 때까지 기다린다
+                try {
+                    cSocket = mmSSocket.accept();
+                } catch (IOException e) {
+                    showMessage("Socket Accept Error");
+                    return;
+                }
+                // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
+                onConnected(cSocket);
+            }
+
+            // 서버 소켓 중지
+            public void cancel() {
+
+                try {
+                    mmSSocket.close();
+                } catch (IOException e) {
+                    showMessage("Server Socket close error");
+                }
             }
         }
 
-        // 데이터를 소켓으로 전송한다
-        public void write(String strBuf) {
-            try {
-                // 출력 스트림에 데이터를 저장한다
-                byte[] buffer = strBuf.getBytes();
-                mmOutStream.write(buffer);
-                showMessage("Send: ");// + strBuf);
+        // 메시지를 화면에 표시
+        public void showMessage(String msg) {
+            strMsg = msg;//(String)msg.obj;
+            Log.d("tag1", strMsg);
+        }
+
+
+        // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
+        public void onConnected(BluetoothSocket socket) {
+
+            showMessage("Socket connected");
+
+            // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
+            if (mSocketThread != null)
+                mSocketThread = null;
+
+            // 데이터 송수신 스레드를 시작
+            mSocketThread = new SocketThread(socket);
+            mSocketThread.start();
+        }
+
+        // 데이터 송수신 스레드
+        private class SocketThread extends Thread {
+
+            private final BluetoothSocket mmSocket; // 클라이언트 소켓
+            private OutputStream mmOutStream; // 출력 스트림
+
+            public SocketThread(BluetoothSocket socket) {
+
+                mmSocket = socket;
+
+                // 입력 스트림과 출력 스트림을 구한다
+                try {
+                    mmOutStream = socket.getOutputStream();
+                } catch (IOException e) {
+                    showMessage("Get Stream error");
+                }
             }
-            catch (IOException e) {
-                showMessage("Socket write error");
+
+            // 소켓에서 수신된 데이터를 화면에 표시한다
+            public void run() {
+                while (true) {
+                    // 입력 스트림에서 데이터를 읽는다
+                    mSocketThread.write("{\"distance\":\"" + "34" + "\", \"speed\":\"" + car_speed + "\", \"rpm\":\"" + car_rpm
+                            + "\", \"fuelEfficiency\":\"" + oil_consumption + "\", \"time\":\"" + "34"
+                            + "\", \"numOfAcceleration\":\"" + "34" + "\", \"numOfDeceleration\":\"" + "34" + "\"}");
+                    SystemClock.sleep(1000);
+                }
+            }
+
+            // 데이터를 소켓으로 전송한다
+            public void write(String strBuf) {
+                try {
+                    // 출력 스트림에 데이터를 저장한다
+                    byte[] buffer = strBuf.getBytes();
+                    mmOutStream.write(buffer);
+                    showMessage("Send: ");// + strBuf);
+                } catch (IOException e) {
+                    showMessage("Socket write error");
+                }
             }
         }
     }
     /////////////////////////////////////////////////////
-
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         ///////////Bluetooth/////////////
-        if( mSThread != null ) {
-            mSThread.cancel();
-            mSThread = null;
+        if (bt.mSThread != null) {
+            bt.mSThread.cancel();
+            bt.mSThread = null;
         }
 
-        if( mSocketThread != null ) {
-            mSocketThread = null;
+        if (bt.mSocketThread != null) {
+            bt.mSocketThread = null;
         }
         ////////////////////////////////////////
         time_timer.cancel();
@@ -487,5 +467,6 @@ public class tester_Activity extends Activity   {
 
         finish();
     }
+
 }
 

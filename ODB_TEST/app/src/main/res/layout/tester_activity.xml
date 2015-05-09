@@ -85,8 +85,7 @@
         android:id="@+id/layoutBtn"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_height="wrap_content">
         <Button
             android:id="@+id/accelBtn"
             android:layout_width="match_parent"
@@ -113,6 +112,6 @@
             android:id="@+id/backBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Return to main" />
+            android:text="EXIT" />
     </LinearLayout>
 </LinearLayout>
