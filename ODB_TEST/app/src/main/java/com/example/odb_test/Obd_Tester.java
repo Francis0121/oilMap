@@ -24,12 +24,11 @@ public class Obd_Tester extends Activity {
         Button intoTesterPage = (Button) findViewById(R.id.testerBtn);
         intoTesterPage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent tester_Intent = new Intent(getApplicationContext(), Tester_Activity.class);
+                Intent tester_Intent = new Intent(getApplicationContext(), tester_Activity.class);
                 startActivity(tester_Intent);
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -27,6 +27,9 @@ import java.util.UUID;
 
 public class tester_Activity extends Activity {
 
+
+    //////////////////// Bluetooth/////////////////////
+
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 30.0; //rpm 증가값
     final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값
@@ -42,21 +45,7 @@ public class tester_Activity extends Activity {
     public double oil_capacity = 5000; // 5000L
     public double fuel_use = 500; // 엔진에 주입되는 기름소비량
     public double oil_consumption = 0; // 기름소비량
-    public boolean static_flag = false;   // 정속주행 ture
-    //////////////////// Bluetooth/////////////////////
-    Bluetooth bt = new Bluetooth();
-    TextView mTextMsg; // 송신데이터 출력
-    boolean acc_flag = false;
-    boolean faster_acc_flag = false;
-    boolean brk_flag = false;
-    TextView speed_text;
-    TextView gear_text;
-    TextView oilConsumption_text;
-    TextView rpm_text;
-
-    Timer time_timer = new Timer();
-
-    int current_gear = 0;
+    public int current_gear = 0;
     // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
     TimerTask timeTimerTask = new TimerTask() {
         public void run() {
@@ -120,6 +109,17 @@ public class tester_Activity extends Activity {
             }
         } //end run
     }; //end TimerTask
+    public boolean static_flag = false;   // 정속주행 ture
+    Bluetooth bt = new Bluetooth();
+    TextView mTextMsg; // 송신데이터 출력
+    TextView speed_text;
+    TextView gear_text;
+    TextView oilConsumption_text;
+    TextView rpm_text;
+    Timer time_timer = new Timer();
+    boolean acc_flag = false;
+    boolean faster_acc_flag = false;
+    boolean brk_flag = false;
     double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
     // rpm 관리
