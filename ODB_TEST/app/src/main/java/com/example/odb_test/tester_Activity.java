@@ -425,10 +425,9 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    // 입력 스트림에서 데이터를 읽는다
-                    mSocketThread.write("{\"distance\":\"" + "34" + "\", \"speed\":\"" + car_speed + "\", \"rpm\":\"" + car_rpm
-                            + "\", \"fuelEfficiency\":\"" + oil_consumption + "\", \"time\":\"" + "34"
-                            + "\", \"numOfAcceleration\":\"" + "34" + "\", \"numOfDeceleration\":\"" + "34" + "\"}");
+                    // 출력스트림 데이터 입력
+                    mSocketThread.write("{ \"rpm\":\"" + car_rpm
+                            + "\", \"fuel\":\"" + oil_consumption + "\"}");
                     SystemClock.sleep(1000);
                 }
             }
@@ -439,7 +438,7 @@ public class tester_Activity extends Activity {
                     // 출력 스트림에 데이터를 저장한다
                     byte[] buffer = strBuf.getBytes();
                     mmOutStream.write(buffer);
-                    showMessage("Send: ");// + strBuf);
+                    showMessage("Send: "+strBuf);
                 } catch (IOException e) {
                     showMessage("Socket write error");
                 }
