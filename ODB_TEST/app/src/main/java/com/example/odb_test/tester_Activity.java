@@ -22,36 +22,33 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 /**
- * Created by Administrator on 2015-04-25.
+ * Created by 나홍철 on 2015-04-25.
  */
 
 public class tester_Activity extends Activity {
 
-    //////////////////// Bluetooth/////////////////////
-
-    Bluetooth bt = new Bluetooth();
-    TextView mTextMsg; // 송신데이터 출력
-    public String strMsg; // 송신데이터
-    ////////////////////////////////////////////////////*/
-    public double car_rpm = 500; // 기본 500 rpm
-    public double car_speed = 0; //
-    public double rpm_speed = 0; // rpm 속도 : 차속(km/h)= 2π ×타이어반지름 ×(엔진rpm)/(변속기 기어비 × 종감속 기어비) × 60/1000
-    public double oil_capacity = 5000; // 5000L
-    double oil_consumption = 0; // 기름소비량
-
-    public boolean static_flag = false;   // 정속주행 ture
-    boolean acc_flag = false;
-    boolean faster_acc_flag = false;
-    boolean brk_flag = false;
-
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 30.0; //rpm 증가값
     final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값
+    ////////////////////////////////////////////////////*/
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
     final static double RPM_LIMIT = 2000; // RPM 제한
-
+    public String strMsg; // 송신데이터
+    public double car_rpm = 500; // 기본 500 rpm
+    public double car_speed = 0; //
+    public double rpm_speed = 0; // rpm 속도 : 차속(km/h)= 2π ×타이어반지름 ×(엔진rpm)/(변속기 기어비 × 종감속 기어비) × 60/1000
+    public double oil_capacity = 5000; // 5000L
+    public double fuel_use = 500; // 엔진에 주입되는 기름소비량
+    public double oil_consumption = 0; // 기름소비량
+    public boolean static_flag = false;   // 정속주행 ture
+    //////////////////// Bluetooth/////////////////////
+    Bluetooth bt = new Bluetooth();
+    TextView mTextMsg; // 송신데이터 출력
+    boolean acc_flag = false;
+    boolean faster_acc_flag = false;
+    boolean brk_flag = false;
     TextView speed_text;
     TextView gear_text;
     TextView oilConsumption_text;
@@ -60,12 +57,130 @@ public class tester_Activity extends Activity {
     Timer time_timer = new Timer();
 
     int current_gear = 0;
+    // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
+    TimerTask timeTimerTask = new TimerTask() {
+        public void run() {
+
+            oil_consumption = fuel_use / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
+
+            // rpm따른 남은 기름량이 0보다 커야 계산가능
+            if ((car_rpm > 0) && (oil_capacity > 0)) {
+                oil_capacity -= oil_consumption;
+            }
+            // RPM
+            Handler rpmHandler = rpm_text.getHandler();
+            if (rpmHandler != null) {
+                rpmHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "rpm : " + car_rpm);
+                        rpm_text.setText(Double.toString(Double.parseDouble(String.format("%.1f", car_rpm))));
+                    }
+                });
+            }
+            // Gear
+            Handler gearHandler = gear_text.getHandler();
+            if (gearHandler != null) {
+                gearHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "gear : " + current_gear);
+                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear + 1))));
+                    }
+                });
+            }
+
+            // Speed
+            Handler speedHandler = speed_text.getHandler();
+            if (speedHandler != null) {
+                speedHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "speed : " + car_speed);
+                        speed_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", car_speed))));
+                    }
+                });
+            }
+
+            // Oil capacity
+            Handler oilHandler = oilConsumption_text.getHandler();
+            if (oilHandler != null) {
+                oilHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "oil : " + oil_capacity);
+                        oilConsumption_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", oil_capacity))));
+                    }
+                });
+            }
+            // Sendin Message
+            Handler mHandler = mTextMsg.getHandler();
+            if (mHandler != null) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        mTextMsg.setText(strMsg);
+                    }
+                });
+            }
+        } //end run
+    }; //end TimerTask
     double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
+    /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
+    // rpm 관리
+    TimerTask rpmTimeTask = new TimerTask() {
+        public void run() {
+            // 정속주행이 아니라면
+            if (!static_flag) {
+                // 악셀중일때
+                if (acc_flag) {
+                    //rpm은 최대치를 넘지 않는다.
+                    car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
+                    // 엔진에 주입되는 기름
+                    fuel_use = (fuel_use < (RPM_LIMIT - RPM_RANGE)) ? fuel_use + RPM_RANGE : fuel_use;
+                    // 가속구간
+                } else if (faster_acc_flag) {
+                    car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
+                    fuel_use = (fuel_use < (RPM_LIMIT - FASTER_RPM_RANGE)) ? fuel_use + FASTER_RPM_RANGE : fuel_use;
+                }
+                // 가속중이지 않다면 rpm은 줄어든다.
+                else {
+                    car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM / GEAR_RATIO[current_gear]) ? BASIC_RPM : car_rpm - DECREASE_RPM / GEAR_RATIO[current_gear];
+                    fuel_use = (fuel_use < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : fuel_use - DECREASE_RPM;
+                }
+            }
+        }
+    };
     //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     double REDUCTION_GEAR_RATIO = 2.890;
-    /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
-
     double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
+    // speed 관리
+    TimerTask speedTimeTask = new TimerTask() {
+        public void run() {
+
+            // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
+            rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
+
+            if (brk_flag) {
+                car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
+            } else {
+                car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
+            }
+
+            if (car_speed >= DECREASE_SPEED)
+                car_speed -= DECREASE_SPEED; // 줄어드는 속도
+            else if (car_speed < DECREASE_SPEED && car_speed >= 0)
+                car_speed = 0;
+            ////////
+
+            // 5단까지 변속 가능
+            if ((current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear + 1])) {
+                current_gear++;
+                // 이전기어에서의 rpm보다 현제 기어에서 더 많은 회전이 필요하므로
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear - 1];
+            } else if ((current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
+                current_gear--;
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear + 1];
+            }
+            ////////
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,133 +278,36 @@ public class tester_Activity extends Activity {
 
     }
 
-    // rpm 관리
-    TimerTask rpmTimeTask = new TimerTask() {
-        public void run() {
-            // 정속주행이 아니라면
-            if (static_flag == false) {
-                // 악셀중일때 rpm은 최대치를 넘지 않는다.
-                if (acc_flag == true) {
-                    car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
-                } else if (faster_acc_flag == true) {
-                    car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
-                }
-                // 가속중이지 않다면 rpm은 줄어든다.
-                else {
-                    car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : car_rpm - DECREASE_RPM;
-                }
-            }
-        }
-    };
-
-    // speed 관리
-    TimerTask speedTimeTask = new TimerTask() {
-        public void run() {
-            // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
-            rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
-
-            if (brk_flag == true) {
-                car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
-            } else {
-                car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
-            }
-
-            if (car_speed >= DECREASE_SPEED)
-                car_speed -= DECREASE_SPEED; // 줄어드는 속도
-            else if (car_speed < DECREASE_SPEED && car_speed >= 0)
-                car_speed = 0;
-            ////////
-
-            // 5단까지 변속 가능
-            if ((current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear + 1])) {
-                current_gear++;
-                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear - 1]; // 더 힘이 드는 rpm
-            } else if ((current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
-                current_gear--;
-                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear + 1];
-            }
-            ////////
-
-        }
-    };
-
-    // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
-    TimerTask timeTimerTask = new TimerTask() {
-        public void run() {
-
-            oil_consumption = car_rpm / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
-
-            // rpm따른 남은 기름량이 0보다 커야 계산가능
-            if ((car_rpm > 0) && (oil_capacity > 0)) {
-                oil_capacity -= oil_consumption;
-            }
-            // RPM
-            Handler rpmHandler = rpm_text.getHandler();
-            if (rpmHandler != null) {
-                rpmHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "rpm : " + car_rpm);
-                        rpm_text.setText(Double.toString(Double.parseDouble(String.format("%.1f", car_rpm))));
-                    }
-                });
-            }
-            // Gear
-            Handler gearHandler = gear_text.getHandler();
-            if (gearHandler != null) {
-                gearHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "gear : " + current_gear);
-                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear + 1))));
-                    }
-                });
-            }
-
-            // Speed
-            Handler speedHandler = speed_text.getHandler();
-            if (speedHandler != null) {
-                speedHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "speed : " + car_speed);
-                        speed_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", car_speed))));
-                    }
-                });
-            }
-
-            // Oil capacity
-            Handler oilHandler = oilConsumption_text.getHandler();
-            if (oilHandler != null) {
-                oilHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "oil : " + oil_capacity);
-                        oilConsumption_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", oil_capacity))));
-                    }
-                });
-            }
-            // Sendin Message
-            Handler mHandler = mTextMsg.getHandler();
-            if (mHandler != null) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        mTextMsg.setText(strMsg);
-                    }
-                });
-            }
-        } //end run
-    }; //end TimerTask
-
     ///////////////// Bluetooth//////////////////////////
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ///////////Bluetooth/////////////
+        if (bt.mSThread != null) {
+            bt.mSThread.cancel();
+            bt.mSThread = null;
+        }
+
+        if (bt.mSocketThread != null) {
+            bt.mSocketThread = null;
+        }
+        ////////////////////////////////////////
+        time_timer.cancel();
+        timeTimerTask.cancel();
+        rpmTimeTask.cancel();
+        speedTimeTask.cancel();
+
+        finish();
+    }
+    /////////////////////////////////////////////////////
+
     class Bluetooth {
-        static final int ACTION_ENABLE_BT = 101;
-
-        TextView mTextMsg;
-        BluetoothAdapter mBA;
-
         static final String BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
-
         // 접속시 사용하는 고유 ID
         final UUID BLUE_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-
+        Json_Data jd = new Json_Data();   // Json data 객체 생성
+        BluetoothAdapter mBA;
         ServerThread mSThread = null; // 서버 소켓 접속 스레드
         SocketThread mSocketThread = null; // 데이터 송수신 스레드
 
@@ -301,15 +319,15 @@ public class tester_Activity extends Activity {
 
             // 블루투스 어댑터가 null 이면 블루투스 장비가 존재하지 않는다.
             if (mBA == null) {
-                mTextMsg.setText("Device not found");
+                showMessage("Device not found");
                 return false;
             }
 
-            mTextMsg.setText("Device is exist");
+            showMessage("Device is exist");
 
             // 블루투스 활성화 상태라면 함수 탈출
             if (mBA.isEnabled()) {
-                mTextMsg.append("\nDevice can use");
+                showMessage("\nDevice can use");
                 return true;
             }
 
@@ -343,6 +361,26 @@ public class tester_Activity extends Activity {
             setDiscoverable();
         }
 
+        // 메시지를 화면에 표시
+        public void showMessage(String msg) {
+            strMsg = msg;//(String)msg.obj;
+            Log.d("tag1", strMsg);
+        }
+
+        // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
+        public void onConnected(BluetoothSocket socket) {
+
+            showMessage("Socket connected");
+
+            // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
+            if (mSocketThread != null)
+                mSocketThread = null;
+
+            // 데이터 송수신 스레드를 시작
+            mSocketThread = new SocketThread(socket);
+            mSocketThread.start();
+        }
+
         // 서버 소켓을 생성해서 접속이 들어오면 클라이언트 소켓을 생성하는 스레드
         private class ServerThread extends Thread {
 
@@ -359,7 +397,7 @@ public class tester_Activity extends Activity {
 
             public void run() {
 
-                BluetoothSocket cSocket = null;
+                BluetoothSocket cSocket;
 
                 // 원격 디바이스에서 접속을 요청할 때까지 기다린다
                 try {
@@ -383,36 +421,12 @@ public class tester_Activity extends Activity {
             }
         }
 
-        // 메시지를 화면에 표시
-        public void showMessage(String msg) {
-            strMsg = msg;//(String)msg.obj;
-            Log.d("tag1", strMsg);
-        }
-
-
-        // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-        public void onConnected(BluetoothSocket socket) {
-
-            showMessage("Socket connected");
-
-            // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
-            if (mSocketThread != null)
-                mSocketThread = null;
-
-            // 데이터 송수신 스레드를 시작
-            mSocketThread = new SocketThread(socket);
-            mSocketThread.start();
-        }
-
         // 데이터 송수신 스레드
         private class SocketThread extends Thread {
 
-            private final BluetoothSocket mmSocket; // 클라이언트 소켓
             private OutputStream mmOutStream; // 출력 스트림
 
             public SocketThread(BluetoothSocket socket) {
-
-                mmSocket = socket;
 
                 // 입력 스트림과 출력 스트림을 구한다
                 try {
@@ -425,10 +439,13 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    // 출력스트림 데이터 입력
-                    mSocketThread.write("{ \"rpm\":\"" + car_rpm
-                            + "\", \"fuel\":\"" + oil_consumption + "\"}");
+                    jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
+                    jd.setFuel(Double.parseDouble(String.format("%.3f", oil_consumption)));
+                    // 아웃 스트림 json 객체의 스트링을 반환받아 작성
+                    mSocketThread.write(jd.retJson());
+                    showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel());// + strBuf);
                     SystemClock.sleep(1000);
+
                 }
             }
 
@@ -438,33 +455,11 @@ public class tester_Activity extends Activity {
                     // 출력 스트림에 데이터를 저장한다
                     byte[] buffer = strBuf.getBytes();
                     mmOutStream.write(buffer);
-                    showMessage("Send: "+strBuf);
                 } catch (IOException e) {
                     showMessage("Socket write error");
                 }
             }
         }
-    }
-    /////////////////////////////////////////////////////
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ///////////Bluetooth/////////////
-        if (bt.mSThread != null) {
-            bt.mSThread.cancel();
-            bt.mSThread = null;
-        }
-
-        if (bt.mSocketThread != null) {
-            bt.mSocketThread = null;
-        }
-        ////////////////////////////////////////
-        time_timer.cancel();
-        timeTimerTask.cancel();
-        rpmTimeTask.cancel();
-        speedTimeTask.cancel();
-
-        finish();
     }
 
 }
