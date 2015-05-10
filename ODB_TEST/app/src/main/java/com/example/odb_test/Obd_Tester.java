@@ -2,12 +2,16 @@ package com.example.odb_test;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+/**
+ * Created by 나홍철 on 2015-04-25.
+ */
 
 public class Obd_Tester extends Activity {
 
@@ -20,7 +24,7 @@ public class Obd_Tester extends Activity {
         Button intoTesterPage = (Button) findViewById(R.id.testerBtn);
         intoTesterPage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent tester_Intent = new Intent(getApplicationContext(), tester_Activity.class);
+                Intent tester_Intent = new Intent(getApplicationContext(), Tester_Activity.class);
                 startActivity(tester_Intent);
             }
         });
@@ -33,6 +37,12 @@ public class Obd_Tester extends Activity {
         getMenuInflater().inflate(R.menu.menu_odb__tester, menu);
         return true;
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
