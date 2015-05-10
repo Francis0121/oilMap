@@ -33,4 +33,11 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_box_white"
         android:drawableTop="@drawable/ic_launcher"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="bluetooth test"
+        android:id="@+id/BTTestBtn" />
 </RelativeLayout>

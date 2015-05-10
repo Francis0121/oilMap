@@ -2,6 +2,7 @@ package com.oilMap.client.info;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.oilMap.client.R;
+import com.oilMap.client.bluetooth.Bluetooth_reception;
 
 /**
  * Created by yeonsang on 2015-03-28.
@@ -26,6 +28,18 @@ public class MainPage extends Fragment implements View.OnClickListener{
         infobutton.setOnClickListener(this);
         Button chartbutton= (Button) rootView.findViewById(R.id.chartbtn);
         chartbutton.setOnClickListener(this);
+
+        ///bluetooth 테스트 해볼수 있게 임시로
+        //////////////////////////////////////////////////////
+        Button BTTestBtn = (Button) rootView.findViewById(R.id.BTTestBtn);
+        BTTestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent blue_exe = new Intent(getActivity(), Bluetooth_reception.class);
+                startActivity(blue_exe);
+            }
+        });
+        /////////////////////////////////////////////////////////////
 
         return rootView;
     }

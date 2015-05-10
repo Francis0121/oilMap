@@ -241,6 +241,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 클라이언트 소켓 스레드 생성 & 시작
         mCThread = new ClientThread(device);
         mCThread.start();
+
+        ///////////////////////////////////////////////
+        //연결 후 디바이스 목록 안보이게
+        ListView listview = (ListView)findViewById(R.id.listDevice);
+        //listview.setVisibility(View.GONE);
+        listview.setVisibility(View.INVISIBLE);
     }
 
     // 클라이언트 소켓 생성을 위한 스레드
