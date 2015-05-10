@@ -44,11 +44,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_main);
+
         mTextMsg = (TextView)findViewById(R.id.textMessage);
         mBA = BluetoothAdapter.getDefaultAdapter();
 
         // ListView 초기화
-        //initListView();
+        initListView();
 
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
@@ -107,6 +108,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // 원격 디바이스 검색 중지
         stopFindDevice();
+
+        showMessage("OBD를 선택하세요!");
 
         // 디바이스 검색 시작
         mBA.startDiscovery();
@@ -167,6 +170,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mArDevice);
 
         // ListView 에 어댑터와 이벤트 리스너를 지정
+        mListDevice = (ListView)findViewById(R.id.listDevice);
         mListDevice.setAdapter(adapter);
         mListDevice.setOnItemClickListener(this);
     }
@@ -195,6 +199,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // 블루투스 어댑터에서 페어링된 원격 디바이스 목록을 구한다
         Set<BluetoothDevice> devices = mBA.getBondedDevices();
+
+        // 디바이스 목록에서 하나씩 추출
+        for( BluetoothDevice device : devices ) {
+            addDeviceToList(device.getName(), device.getAddress()); // 디바이스를 목록에 추가
+        }
 
         // 원격 디바이스 검색 시작
         startFindDevice();
@@ -232,6 +241,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 클라이언트 소켓 스레드 생성 & 시작
         mCThread = new ClientThread(device);
         mCThread.start();
+
+        ///////////////////////////////////////////////
+        //연결 후 디바이스 목록 안보이게
+        ListView listview = (ListView)findViewById(R.id.listDevice);
+        //listview.setVisibility(View.GONE);
+        listview.setVisibility(View.INVISIBLE);
     }
 
     // 클라이언트 소켓 생성을 위한 스레드
@@ -388,6 +403,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     String strBuf = new String(buffer, 0, bytes);
 
                     //////////////////////////////////////////////////////////////////
+                    //파싱
                     i.dataP(strBuf);
                     ///////////////////////////////////////////////////////////////////
 
@@ -400,6 +416,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     break;
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    return;
                 }
             }
         }
@@ -419,13 +436,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         }
     }
 
-    // 앱이 종료될 때 디바이스 검색 중지
+    // 앱이 종료될 때
     public void onDestroy() {
 
         super.onDestroy();
 
         // 디바이스 검색 중지
-        stopFindDevice();
+        stopFindDevice();////////////////////////////////////
 
         // 스레드를 종료
         if( mCThread != null ) {
@@ -441,6 +458,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         if( mSocketThread != null )
             mSocketThread = null;
 
-        mBA.disable();
+        mBA.disable(); //블루투스 꺼짐
     }
 }

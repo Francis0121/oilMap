@@ -18,7 +18,6 @@ package com.oilMap.client.auth;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 
@@ -55,6 +54,9 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
       try {
+
+
+
         fetchNameFromProfileServer();
       } catch (IOException ex) {
         onError("Following Error occured, please try again. " + ex.getMessage(), ex);
@@ -95,9 +97,11 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void> {
         int sc = con.getResponseCode();
         if (sc == 200) {
             InputStream is = con.getInputStream();
-            mActivity.next(getInfo(readResponse(is)));
+
+            Auth auth = getInfo(readResponse(is));
+            mActivity.next(auth);
             is.close();
-            return;
+
         } else if (sc == 401) {
             GoogleAuthUtil.invalidateToken(mActivity, token);
             onError("Server auth error, please try again.", null);

@@ -3,17 +3,20 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-        >
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/getBtn" android:text="Get" android:layout_margin="15dp"/>
-        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Post"
-                android:id="@+id/postBtn" android:layout_margin="15dp"/>
-    </LinearLayout>
+                android:background="#282828">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Improve your driving habit"
+        android:id="@+id/textView01"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ⓒCopyright Team.OilMap"
+        android:id="@+id/textView02"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
 
