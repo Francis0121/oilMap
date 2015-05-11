@@ -238,7 +238,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         listview.setVisibility(View.INVISIBLE);
 
 
-        // 연결 후 메인 액티비티로 복귀!!!/////
+      // 연결 후 메인 액티비티로 복귀!!!/////
         Intent intent = new Intent(getBaseContext(), NavigationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
