@@ -29,13 +29,14 @@ public class MainPage extends Fragment implements View.OnClickListener{
         Button chartbutton= (Button) rootView.findViewById(R.id.chartbtn);
         chartbutton.setOnClickListener(this);
 
-        ///bluetooth �׽�Ʈ �غ��� �ְ� �ӽ÷�
+        ///bluetooth �׽�Ʈ �غ��� �ְ� �ӽ÷�
         //////////////////////////////////////////////////////
         Button BTTestBtn = (Button) rootView.findViewById(R.id.BTTestBtn);
         BTTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent blue_exe = new Intent(getActivity(), Bluetooth_reception.class);
+                blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(blue_exe);
             }
         });
