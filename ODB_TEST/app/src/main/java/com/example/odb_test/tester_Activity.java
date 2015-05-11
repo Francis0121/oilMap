@@ -300,7 +300,6 @@ public class tester_Activity extends Activity {
             }
         } //end run
     }; //end TimerTask
-    ///////////////// Bluetooth//////////////////////////
 
     @Override
     protected void onDestroy() {
@@ -324,6 +323,7 @@ public class tester_Activity extends Activity {
     }
     /////////////////////////////////////////////////////
 
+    ///////////////// Bluetooth//////////////////////////
     class Bluetooth {
         static final String BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
         // 접속시 사용하는 고유 ID
@@ -493,6 +493,5 @@ public class tester_Activity extends Activity {
             }
         }
     }
-
 }
 
