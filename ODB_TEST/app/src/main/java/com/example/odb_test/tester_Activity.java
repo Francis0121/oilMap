@@ -44,17 +44,16 @@ public class tester_Activity extends Activity {
     final static double RPM_LIMIT = 2000; // RPM 제한
     public double car_rpm = 500; // 기본 500 rpm
     public double car_speed = 0; //
-    public double rpm_speed = 0; // rpm 속도 : 차속(km/h)= 2π ×타이어반지름 ×(엔진rpm)/(변속기 기어비 × 종감속 기어비) × 60/1000
     public double oil_capacity = 5000; // 5000L
     public double fuel_use = 500; // 엔진에 주입되는 기름소비량
     public double oil_consumption = 0; // 기름소비량
     public int current_gear = 0;
 
-
-    TextView speed_text;
-    TextView gear_text;
-    TextView oilConsumption_text;
+    TextView fuel_use_text;
     TextView rpm_text;
+    TextView gear_text;
+    TextView speed_text;
+    TextView oilConsumption_text;
 
     Timer time_timer = new Timer(); // 변경사항 보여주는 쓰레드 실행을 위한 타이머
 
@@ -84,6 +83,7 @@ public class tester_Activity extends Activity {
             // 블루투스 수신 서버쓰레드 생성
             bt.getServerThread();
         ////////////////////////////////////////////////////////////////
+        fuel_use_text = (TextView) findViewById(R.id.fueluseText);
         rpm_text = (TextView) findViewById(R.id.rpmText);
         gear_text = (TextView) findViewById(R.id.gearText);
         speed_text = (TextView) findViewById(R.id.spdText);
@@ -158,9 +158,13 @@ public class tester_Activity extends Activity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Back",
                         Toast.LENGTH_SHORT).show();
-                moveTaskToBack(true);
+
+                Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
+                tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
+                startActivity(tester_Intent);
+              /*  moveTaskToBack(true);
                 finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
+                android.os.Process.killProcess(android.os.Process.myPid());*/
             }
         });
 
@@ -194,6 +198,7 @@ public class tester_Activity extends Activity {
     TimerTask speedTimeTask = new TimerTask() {
         public void run() {
 
+            double rpm_speed = 0; // rpm 속도 : 차속(km/h)= 2π ×타이어반지름 ×(엔진rpm)/(변속기 기어비 × 종감속 기어비) × 60/1000
             // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
             rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
 
@@ -231,6 +236,16 @@ public class tester_Activity extends Activity {
             // rpm따른 남은 기름량이 0보다 커야 계산가능
             if ((car_rpm > 0) && (oil_capacity > 0)) {
                 oil_capacity -= oil_consumption;
+            }
+            // Fuel consumption
+            Handler fueluseHandler = fuel_use_text.getHandler();
+            if (fueluseHandler != null) {
+                fueluseHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "fuel use : " + fuel_use);
+                        fuel_use_text.setText(Double.toString(Double.parseDouble(String.format("%.1f", fuel_use))));
+                    }
+                });
             }
             // RPM
             Handler rpmHandler = rpm_text.getHandler();
@@ -407,19 +422,22 @@ public class tester_Activity extends Activity {
                 BluetoothSocket cSocket;
 
                 // 원격 디바이스에서 접속을 요청할 때까지 기다린다
-                try {
-                    cSocket = mmSSocket.accept();
-                } catch (IOException e) {
-                    showMessage("Socket Accept Error");
-                    return;
+                while (true) {
+                    try {
+                        cSocket = mmSSocket.accept();
+                    } catch (IOException e) {
+                        showMessage("Socket Accept Error");
+                        break;
+                    }
+                    // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
+                    if (cSocket != null) {
+                        onConnected(cSocket);
+                    }
                 }
-                // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-                onConnected(cSocket);
             }
 
             // 서버 소켓 중지
             public void cancel() {
-
                 try {
                     mmSSocket.close();
                 } catch (IOException e) {
@@ -434,12 +452,16 @@ public class tester_Activity extends Activity {
             private OutputStream mmOutStream; // 출력 스트림
 
             public SocketThread(BluetoothSocket socket) {
-
                 // 입력 스트림과 출력 스트림을 구한다
                 try {
                     mmOutStream = socket.getOutputStream();
                 } catch (IOException e) {
                     showMessage("Get Stream error");
+                    try {
+                        socket.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
 
@@ -449,21 +471,24 @@ public class tester_Activity extends Activity {
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
                     jd.setFuel(Double.parseDouble(String.format("%.3f", oil_consumption)));
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
-                    mSocketThread.write(jd.retJson());
-                    showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel());// + strBuf);
+                    if (mSocketThread.write(jd.retJson()))
+                        showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel());// + strBuf);
+                    else
+                        showMessage("Socket Disconnected");
                     SystemClock.sleep(1000);
-
                 }
+
             }
 
             // 데이터를 소켓으로 전송한다
-            public void write(String strBuf) {
+            public boolean write(String strBuf) {
                 try {
                     // 출력 스트림에 데이터를 저장한다
                     byte[] buffer = strBuf.getBytes();
                     mmOutStream.write(buffer);
+                    return true;
                 } catch (IOException e) {
-                    showMessage("Socket write error");
+                    return false;
                 }
             }
         }

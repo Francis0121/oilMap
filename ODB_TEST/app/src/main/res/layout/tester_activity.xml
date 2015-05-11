@@ -9,10 +9,28 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
+
         <TableRow>
 
             <TextView
                 android:id="@+id/bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Fuel use : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/fueluseText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="15px"
@@ -94,7 +112,6 @@
         android:layout_height="fill_parent"
         android:gravity="bottom"
         android:orientation="vertical">
-
         <Button
             android:id="@+id/accelBtn"
             android:layout_width="match_parent"
