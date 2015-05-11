@@ -46,69 +46,7 @@ public class tester_Activity extends Activity {
     public double fuel_use = 500; // 엔진에 주입되는 기름소비량
     public double oil_consumption = 0; // 기름소비량
     public int current_gear = 0;
-    // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
-    TimerTask timeTimerTask = new TimerTask() {
-        public void run() {
 
-            oil_consumption = fuel_use / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
-
-            // rpm따른 남은 기름량이 0보다 커야 계산가능
-            if ((car_rpm > 0) && (oil_capacity > 0)) {
-                oil_capacity -= oil_consumption;
-            }
-            // RPM
-            Handler rpmHandler = rpm_text.getHandler();
-            if (rpmHandler != null) {
-                rpmHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "rpm : " + car_rpm);
-                        rpm_text.setText(Double.toString(Double.parseDouble(String.format("%.1f", car_rpm))));
-                    }
-                });
-            }
-            // Gear
-            Handler gearHandler = gear_text.getHandler();
-            if (gearHandler != null) {
-                gearHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "gear : " + current_gear);
-                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear + 1))));
-                    }
-                });
-            }
-
-            // Speed
-            Handler speedHandler = speed_text.getHandler();
-            if (speedHandler != null) {
-                speedHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "speed : " + car_speed);
-                        speed_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", car_speed))));
-                    }
-                });
-            }
-
-            // Oil capacity
-            Handler oilHandler = oilConsumption_text.getHandler();
-            if (oilHandler != null) {
-                oilHandler.post(new Runnable() {
-                    public void run() {
-                        Log.d("timeTimerTask", "oil : " + oil_capacity);
-                        oilConsumption_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", oil_capacity))));
-                    }
-                });
-            }
-            // Sendin Message
-            Handler mHandler = mTextMsg.getHandler();
-            if (mHandler != null) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        mTextMsg.setText(strMsg);
-                    }
-                });
-            }
-        } //end run
-    }; //end TimerTask
     public boolean static_flag = false;   // 정속주행 ture
     Bluetooth bt = new Bluetooth();
     TextView mTextMsg; // 송신데이터 출력
@@ -122,65 +60,11 @@ public class tester_Activity extends Activity {
     boolean brk_flag = false;
     double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
-    // rpm 관리
-    TimerTask rpmTimeTask = new TimerTask() {
-        public void run() {
-            // 정속주행이 아니라면
-            if (!static_flag) {
-                // 악셀중일때
-                if (acc_flag) {
-                    //rpm은 최대치를 넘지 않는다.
-                    car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
-                    // 엔진에 주입되는 기름
-                    fuel_use = (fuel_use < (RPM_LIMIT - RPM_RANGE)) ? fuel_use + RPM_RANGE : fuel_use;
-                    // 가속구간
-                } else if (faster_acc_flag) {
-                    car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
-                    fuel_use = (fuel_use < (RPM_LIMIT - FASTER_RPM_RANGE)) ? fuel_use + FASTER_RPM_RANGE : fuel_use;
-                }
-                // 가속중이지 않다면 rpm은 줄어든다.
-                else {
-                    car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM / GEAR_RATIO[current_gear]) ? BASIC_RPM : car_rpm - DECREASE_RPM / GEAR_RATIO[current_gear];
-                    fuel_use = (fuel_use < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : fuel_use - DECREASE_RPM;
-                }
-            }
-        }
-    };
+
     //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     double REDUCTION_GEAR_RATIO = 2.890;
     double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
-    // speed 관리
-    TimerTask speedTimeTask = new TimerTask() {
-        public void run() {
 
-            // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
-            rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
-
-            if (brk_flag) {
-                car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
-            } else {
-                car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
-            }
-
-            if (car_speed >= DECREASE_SPEED)
-                car_speed -= DECREASE_SPEED; // 줄어드는 속도
-            else if (car_speed < DECREASE_SPEED && car_speed >= 0)
-                car_speed = 0;
-            ////////
-
-            // 5단까지 변속 가능
-            if ((current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear + 1])) {
-                current_gear++;
-                // 이전기어에서의 rpm보다 현제 기어에서 더 많은 회전이 필요하므로
-                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear - 1];
-            } else if ((current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
-                current_gear--;
-                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear + 1];
-            }
-            ////////
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,6 +162,125 @@ public class tester_Activity extends Activity {
 
     }
 
+    // rpm 관리
+    TimerTask rpmTimeTask = new TimerTask() {
+        public void run() {
+            // 정속주행이 아니라면
+            if (!static_flag) {
+                // 악셀중일때
+                if (acc_flag) {
+                    //rpm은 최대치를 넘지 않는다.
+                    car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
+                    // 엔진에 주입되는 기름
+                    fuel_use = (fuel_use < (RPM_LIMIT - RPM_RANGE)) ? fuel_use + RPM_RANGE : fuel_use;
+                    // 가속구간
+                } else if (faster_acc_flag) {
+                    car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
+                    fuel_use = (fuel_use < (RPM_LIMIT - FASTER_RPM_RANGE)) ? fuel_use + FASTER_RPM_RANGE : fuel_use;
+                }
+                // 가속중이지 않다면 rpm은 줄어든다.
+                else {
+                    car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM / GEAR_RATIO[current_gear]) ? BASIC_RPM : car_rpm - DECREASE_RPM / GEAR_RATIO[current_gear];
+                    fuel_use = (fuel_use < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : fuel_use - DECREASE_RPM;
+                }
+            }
+        }
+    };
+    // speed 관리
+    TimerTask speedTimeTask = new TimerTask() {
+        public void run() {
+
+            // 브레이크 중 일때 차 속도는 0미만이 되지 못한다.
+            rpm_speed = 2 * 3.14 * car_rpm / (GEAR_RATIO[current_gear] * REDUCTION_GEAR_RATIO) * 60 / 1000; // 엔진속도
+
+            if (brk_flag) {
+                car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
+            } else {
+                car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
+            }
+
+            if (car_speed >= DECREASE_SPEED)
+                car_speed -= DECREASE_SPEED; // 줄어드는 속도
+            else if (car_speed < DECREASE_SPEED && car_speed >= 0)
+                car_speed = 0;
+            ////////
+
+            // 5단까지 변속 가능
+            if ((current_gear < 4) && (car_speed > SHIFT_GEAR_SPEED[current_gear + 1])) {
+                current_gear++;
+                // 이전기어에서의 rpm보다 현제 기어에서 더 많은 회전이 필요하므로
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear - 1];
+            } else if ((current_gear > 0) && (car_speed < SHIFT_GEAR_SPEED[current_gear])) {
+                current_gear--;
+                car_rpm = car_rpm * GEAR_RATIO[current_gear] / GEAR_RATIO[current_gear + 1];
+            }
+            ////////
+
+        }
+    };
+    // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
+    TimerTask timeTimerTask = new TimerTask() {
+        public void run() {
+
+            oil_consumption = fuel_use / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
+
+            // rpm따른 남은 기름량이 0보다 커야 계산가능
+            if ((car_rpm > 0) && (oil_capacity > 0)) {
+                oil_capacity -= oil_consumption;
+            }
+            // RPM
+            Handler rpmHandler = rpm_text.getHandler();
+            if (rpmHandler != null) {
+                rpmHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "rpm : " + car_rpm);
+                        rpm_text.setText(Double.toString(Double.parseDouble(String.format("%.1f", car_rpm))));
+                    }
+                });
+            }
+            // Gear
+            Handler gearHandler = gear_text.getHandler();
+            if (gearHandler != null) {
+                gearHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "gear : " + current_gear);
+                        gear_text.setText(Double.toString(Double.parseDouble(String.format("%d", current_gear + 1))));
+                    }
+                });
+            }
+
+            // Speed
+            Handler speedHandler = speed_text.getHandler();
+            if (speedHandler != null) {
+                speedHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "speed : " + car_speed);
+                        speed_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", car_speed))));
+                    }
+                });
+            }
+
+            // Oil capacity
+            Handler oilHandler = oilConsumption_text.getHandler();
+            if (oilHandler != null) {
+                oilHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "oil : " + oil_capacity);
+                        oilConsumption_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", oil_capacity))));
+                    }
+                });
+            }
+            // Sendin Message
+            Handler mHandler = mTextMsg.getHandler();
+            if (mHandler != null) {
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        mTextMsg.setText(strMsg);
+                    }
+                });
+            }
+        } //end run
+    }; //end TimerTask
     ///////////////// Bluetooth//////////////////////////
 
     @Override
