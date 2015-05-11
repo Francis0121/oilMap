@@ -21,6 +21,7 @@ public class DataParsing {
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
         ///////////////////////////////////
 
