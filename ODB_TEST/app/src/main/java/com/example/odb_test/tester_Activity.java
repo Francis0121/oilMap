@@ -30,15 +30,18 @@ public class tester_Activity extends Activity {
 
     //////////////////// Bluetooth/////////////////////
 
+    Bluetooth bt = new Bluetooth();
+    TextView mTextMsg; // 송신데이터 출력
+    public String strMsg; // 송신데이터
+
+    ////////////////////////////////////////////////////*/
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 30.0; //rpm 증가값
     final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값
-    ////////////////////////////////////////////////////*/
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
     final static double RPM_LIMIT = 2000; // RPM 제한
-    public String strMsg; // 송신데이터
     public double car_rpm = 500; // 기본 500 rpm
     public double car_speed = 0; //
     public double rpm_speed = 0; // rpm 속도 : 차속(km/h)= 2π ×타이어반지름 ×(엔진rpm)/(변속기 기어비 × 종감속 기어비) × 60/1000
@@ -47,23 +50,24 @@ public class tester_Activity extends Activity {
     public double oil_consumption = 0; // 기름소비량
     public int current_gear = 0;
 
-    public boolean static_flag = false;   // 정속주행 ture
-    Bluetooth bt = new Bluetooth();
-    TextView mTextMsg; // 송신데이터 출력
+
     TextView speed_text;
     TextView gear_text;
     TextView oilConsumption_text;
     TextView rpm_text;
-    Timer time_timer = new Timer();
-    boolean acc_flag = false;
-    boolean faster_acc_flag = false;
-    boolean brk_flag = false;
-    double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
+
+    Timer time_timer = new Timer(); // 변경사항 보여주는 쓰레드 실행을 위한 타이머
+
+    public boolean static_flag = false;   // 정속주행 ture
+    public boolean acc_flag = false;
+    public boolean faster_acc_flag = false;
+    public boolean brk_flag = false;
+    public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
 
     //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
-    double REDUCTION_GEAR_RATIO = 2.890;
-    double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
+    public double REDUCTION_GEAR_RATIO = 2.890;
+    public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
 
 
     @Override
