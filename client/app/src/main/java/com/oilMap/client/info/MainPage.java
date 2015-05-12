@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.user.IdCheckActivity;
 
 /**
  * Created by yeonsang on 2015-03-28.
@@ -41,6 +42,15 @@ public class MainPage extends Fragment implements View.OnClickListener{
             }
         });
         /////////////////////////////////////////////////////////////
+
+        Button IDTestBtn = (Button) rootView.findViewById(R.id.IDCheckBtn);
+        IDTestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent idCheck = new Intent(getActivity(), IdCheckActivity.class);
+                startActivity(idCheck);
+            }
+        });
 
         return rootView;
     }
