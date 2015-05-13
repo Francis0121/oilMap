@@ -37,7 +37,7 @@
         android:layout_marginLeft="10dp"
         android:layout_gravity="left"
         android:text="평균 유류비를 선택하세요(원)"
-        />
+    />
 
     <Spinner
         android:layout_width="fill_parent"
