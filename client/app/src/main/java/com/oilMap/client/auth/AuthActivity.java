@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -163,6 +164,13 @@ public class AuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                SharedPreferences pref = getSharedPreferences("userInfo", 0);
+                //SharedPreferences.Editor prefEdit = pref.edit();
+                SharedPreferences.Editor prefEdit = pref.edit();
+                prefEdit.putString("id", auth.getId());
+                prefEdit.commit();
+
                 Intent intent = new Intent(AuthActivity.this, NavigationActivity.class);
                 intent.putExtra("auth", auth);
                 startActivity(intent);

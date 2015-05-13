@@ -44,9 +44,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IDDBTest"
-        android:id="@+id/IDCheckBtn"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_toStartOf="@+id/chartbtn" />
+        android:text="로그아웃"
+        android:id="@+id/logout" />
 
 </RelativeLayout>

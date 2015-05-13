@@ -3,15 +3,17 @@ package com.oilMap.client.info;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
+import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
-import com.oilMap.client.user.IdCheckActivity;
 
 /**
  * Created by yeonsang on 2015-03-28.
@@ -19,6 +21,7 @@ import com.oilMap.client.user.IdCheckActivity;
 public class MainPage extends Fragment implements View.OnClickListener{
     Fragment fragment;
     FragmentTransaction transaction;
+    Auth auth;
 
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View rootView= inflater.inflate(R.layout.mainpage_layout, container, false);
@@ -43,12 +46,20 @@ public class MainPage extends Fragment implements View.OnClickListener{
         });
         /////////////////////////////////////////////////////////////
 
-        Button IDTestBtn = (Button) rootView.findViewById(R.id.IDCheckBtn);
-        IDTestBtn.setOnClickListener(new View.OnClickListener() {
+        Button logout = (Button) rootView.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent idCheck = new Intent(getActivity(), IdCheckActivity.class);
+
+                SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
+                //SharedPreferences.Editor prefEdit = pref.edit();
+                SharedPreferences.Editor prefEdit = pref.edit();
+                prefEdit.putString("id","");
+                prefEdit.commit();
+
+                Intent idCheck = new Intent(getActivity(), MainActivity.class);
                 startActivity(idCheck);
+                getActivity().finish();
             }
         });
 
