@@ -50,7 +50,7 @@ public class MainPage extends Fragment implements View.OnClickListener{
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //
                 SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
                 //SharedPreferences.Editor prefEdit = pref.edit();
                 SharedPreferences.Editor prefEdit = pref.edit();
