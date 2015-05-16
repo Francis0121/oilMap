@@ -5,19 +5,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.cocosw.bottomsheet.BottomSheet;
 import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
 
 public class OilInfoActivity extends Activity {
 
     private BottomSheet bottomSheet;
+    SMSReceiver smsReceiver = new SMSReceiver();
 
     private BackPressCloseHandler backPressCloseHandler;
 
@@ -32,6 +32,7 @@ public class OilInfoActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
+
                     case R.id.bluetooth:
                         Intent blue_exe = new Intent(OilInfoActivity.this, Bluetooth_reception.class);
                         blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
