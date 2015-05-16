@@ -94,8 +94,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // ListView 초기화
         initListView();
 
-        //Thread GpsThread=new GpsThread();
-        //GpsThread.start();
 
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
@@ -104,10 +102,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             getParedDevice();
         ////
         gps = new GpsInfo(Bluetooth_reception.this);
-        // while(true){
-        //gpsUsing();
-        // SystemClock.sleep(1000);
-        // }
     }
 
     private void init() {
@@ -456,8 +450,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean sending_acceleration() {
-
-
         boolean bool=false;
         long time_now=d.getTime();
         long time_interval =0;
@@ -471,27 +463,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
 
-<<<<<<< HEAD
-                bool=true;
-            }
-        }
-        // 0초차이
-        else{
-            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub*2)))) { //급가속 했을 때
-                //서버로 전송
-                //i.obd.getFuel(); //전송할 데이터 3개
-                //i.obd.getLatitude();
-                //i.obd.getLongitude();
-                bool=true;
-            }
-        }
-=======
-                //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
+
                 bool=true;
             }
 
-
->>>>>>> 6bf8120faea6cd8de6ef078473401d31c1771ced
 
         rpm_sub = rpm_now-rpm_last;
         rpm_last = rpm_now;
@@ -561,13 +536,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
 
                 if(sending_acceleration()) {
-<<<<<<< HEAD
                     currentX = String.format("%.3f",latitude);
                     currentY = String.format("%.3f",longitude);
                     showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
-=======
-                    showMessage(" [ Acc! (" + ")" );
->>>>>>> 6bf8120faea6cd8de6ef078473401d31c1771ced
+
                 }
                /* else{
                     showMessage("Receive: " + strBuf);
@@ -582,25 +554,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             catch (JSONException e) {
                 e.printStackTrace();
                 return true; // json 예외 허용
-            }
-        }
-    }
-
-    private class GpsThread extends Thread{
-        GpsInfo gps = null;
-        public GpsThread(){
-        }
-
-        public void run(){
-            // GPS 사용유무 가져오기
-            gps = new GpsInfo(Bluetooth_reception.this);
-
-            if (gps.isGetLocation()) {
-
-                double latitude = gps.getLatitude();
-                double longitude = gps.getLongitude();
-                showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
-
             }
         }
     }
