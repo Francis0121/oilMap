@@ -49,6 +49,23 @@ public class RankingviewAdapter extends BaseAdapter {
             convertView = inflater.inflate(layout, parent, false);
         }
 
+        if(position < 3) {
+            switch (position) {
+                case 0:
+                    convertView.setBackgroundResource(R.drawable.layer_list_01);
+                    break;
+                case 1:
+                    convertView.setBackgroundResource(R.drawable.layer_list_02);
+                    break;
+                case 2:
+                    convertView.setBackgroundResource(R.drawable.layer_list_03);
+                    break;
+            }
+        }else{
+            convertView.setBackgroundResource(R.drawable.layer_list_04);
+        }
+
+
         RankingItem listviewitem = data.get(position);
         ImageView rankingIcon=(ImageView)convertView.findViewById(R.id.rank_item_imageview);
         rankingIcon.setImageResource(listviewitem.getRankingIcon());

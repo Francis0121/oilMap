@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -21,27 +23,30 @@ public class RankingActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.ranking_list);
 
         ListView listView = (ListView) findViewById(R.id.rankingListView);
-
         ArrayList<RankingItem> data = new ArrayList<>();
 
+        for(int i = 0; i < 30; i++){
 
-
-        rankingArray[0] = new RankingItem(R.drawable.ic_icon,"a", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
-        rankingArray[1] = new RankingItem(R.drawable.ic_icon, "b", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
-        rankingArray[2] = new RankingItem(R.drawable.ic_icon, "c", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
-
-        data.add(rankingArray[0]);
-        data.add(rankingArray[1]);
-        data.add(rankingArray[2]);
-        //////////////////////////////////////////////////////////////////////////////
-
-
-
-        for(int i = 3; i < 30; i++){
-            rankingArray[i] = new RankingItem(R.drawable.ic_icon, "a_a", R.drawable.ic_icon,"Efficiency " + " 3.14" + "km/L");
+            if(i < 3) {
+                switch (i) {
+                    case 0:
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking01, "Efficiency " + " 3.14" + "km/L");
+                        break;
+                    case 1:
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking02, "Efficiency " + " 3.14" + "km/L");
+                        break;
+                    case 2:
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking03, "Efficiency " + " 3.14" + "km/L");
+                        break;
+                }
+            }else{
+                rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking04, "Efficiency " + " 3.14" + "km/L");
+            }
             data.add(rankingArray[i]);
         }
 
