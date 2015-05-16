@@ -12,18 +12,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity;
+import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
@@ -61,6 +61,15 @@ public class OilInfoActivity extends Activity {
 
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         this.id = pref.getString("id", "");
+
+        Button rankBtn = (Button) findViewById(R.id.rankingBtn);
+        rankBtn.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent ranking = new Intent(OilInfoActivity.this, RankingActivity.class);
+                startActivity(ranking);
+                finish();
+            }
+        });
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {

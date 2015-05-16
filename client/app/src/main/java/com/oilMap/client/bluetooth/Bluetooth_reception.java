@@ -10,20 +10,23 @@ import java.util.*;
 import android.app.*;
 import android.bluetooth.*;
 import android.content.*;
+import android.location.Location;
 import android.os.*;
+import android.text.format.Time;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
 
-import com.cocosw.bottomsheet.BottomSheet;
 import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
+import com.oilMap.client.gps.GpsInfo;
 import com.oilMap.client.info.MainPage;
 import com.oilMap.client.info.NavigationActivity;
 import com.oilMap.client.info.OilInfoActivity;
 import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
 
@@ -44,42 +47,26 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     ServerThread mSThread = null; // 서버 소켓 접속 스레드
     SocketThread mSocketThread = null; // 데이터 송수신 스레드
 
-    private BottomSheet bottomSheet;
-    private BackPressCloseHandler backPressCloseHandler;
+    //급가속 시 서버로 보냄/////
+    public double km_per_liter=0;
+    public double first_dis=0,first_fuel=0;
+    ////지우기
+    public double rpm_last=0.0, rpm_now=0.0, rpm_sub=999.0;
+    public long time_last=0;
+    public Date d=new Date();
+    ///////////////////////
+    //////
+
+    GpsInfo gps = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-;
+        ;
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.gps_main);
-        // ~ BottomSheet
-        bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list_main).listener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case R.id.main_bluetooth:
-                        Intent main = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
-                        startActivity(main);
-                        Bluetooth_reception.this.finish();
-                        break;
-
-                    case R.id.logout_bluetooth:
-                        SharedPreferences pref = Bluetooth_reception.this.getSharedPreferences("userInfo", 0);
-                        SharedPreferences.Editor prefEdit = pref.edit();
-                        prefEdit.putString("id","");
-                        prefEdit.commit();
-
-                        Intent idCheck = new Intent(Bluetooth_reception.this, MainActivity.class);
-                        startActivity(idCheck);
-                        Bluetooth_reception.this.finish();
-                        break;
-                }
-            }
-        }).build();
-
-        this.backPressCloseHandler = new BackPressCloseHandler(this);
 
 
         mTextMsg = (TextView)findViewById(R.id.textMessage);
@@ -88,18 +75,31 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // ListView 초기화
         initListView();
 
+        //Thread GpsThread=new GpsThread();
+        //GpsThread.start();
+
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
         if( isBlue )
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
+        ////
+        gps = new GpsInfo(Bluetooth_reception.this);
+        // while(true){
+        gpsUsing();
+        // SystemClock.sleep(1000);
+        // }
+    }
+
+    public void gpsUsing(){
+        if (gps.isGetLocation()) {
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+            showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
+        }
     }
 
 
-    @Override
-    public void onBackPressed() {
-        this.backPressCloseHandler.onBackPressed(this.bottomSheet);
-    }
 
     // 블루투스 사용 가능상태 판단
     public boolean canUseBluetooth() {
@@ -239,7 +239,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         startFindDevice();
 
         // 다른 디바이스에 자신을 노출
-       // setDiscoverable();
+        // setDiscoverable();
     }
 
     // ListView 항목 선택 이벤트 함수
@@ -279,7 +279,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         listview.setVisibility(View.INVISIBLE);
 
 
-      // 연결 후 메인 액티비티로 복귀!!!/////
+        // 연결 후 메인 액티비티로 복귀!!!/////
         Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
@@ -411,23 +411,47 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     //////////////////////////////////////////////////////////////
     //처음, 끝 정보 서버로 보냄
     public void sending() {
-        //i.obd.getDistance(); //전송할 데이터 2개
-        //i.obd.getFuel();
+        first_dis=i.obd.getDistance(); //전송할 데이터 2개
+        first_fuel=i.obd.getFuel();
+    }
+    ///지우기
+    public void last_sending() {
+        km_per_liter=(i.obd.getDistance()-first_dis) /(first_fuel-i.obd.getFuel()) ;
     }
 
-    //급가속 시 서버로 보냄
-    double rpm_last=0, rpm_now=0, rpm_sub=9999;
-    public void sending_acceleration() {
+    // 가속했을때
+    public boolean sending_acceleration() {
+
+        boolean bool=false;
+        long time_now=d.getTime();
+        long time_interval = time_now-time_last;
         rpm_now = i.obd.getRpm();
 
-        if(rpm_now-rpm_last >= rpm_sub*2) { //급가속 했을 때
-            //서버로 전송
-            //i.obd.getFuel(); //전송할 데이터 3개
-            //i.obd.getLatitude();
-            //i.obd.getLongitude();
+        if(time_interval >= 1){
+            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*2)))) { //급가속 했을 때
+                //서버로 전송
+                //i.obd.getFuel(); //전송할 데이터 3개
+                //i.obd.getLatitude();
+                //i.obd.getLongitude();
+                bool=true;
+            }
+
+        }
+        else{
+            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub*2)))) { //급가속 했을 때
+                //서버로 전송
+                //i.obd.getFuel(); //전송할 데이터 3개
+                //i.obd.getLatitude();
+                //i.obd.getLongitude();
+                bool=true;
+            }
         }
 
         rpm_sub = rpm_now-rpm_last;
+        rpm_last = rpm_now;
+        time_last=time_now;
+
+        return bool;
     }
     ////////////////////////////////////////////////////////////////
 
@@ -456,7 +480,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 ///// server 연동
                 //소켓
                 sending();
-                rpm_last = i.obd.getRpm();
+
+                rpm_last = i.obd.getRpm(); //처음 rpm 구하기
+                time_last=d.getTime(); // 처음 수신 시간구하기
                 ///////////////////////////////////////////
             } catch (IOException e) {
                 showMessage("Get Stream error");
@@ -465,22 +491,26 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // 소켓에서 수신된 데이터를 화면에 표시한다
         public void run() {
-
-           while (dataParsingSet(mmInStream)) {
-                showMessage("Receive: " + strBuf);
-
-                SystemClock.sleep(1);
+            while (dataParsingSet(mmInStream)) {
+                buffer = new byte[512]; //버퍼 초기화
+                SystemClock.sleep(1000);
             }
         }
         public boolean dataParsingSet(InputStream inStream){
             try {
-                bytes = inStream.read(buffer);
+                bytes=inStream.read(buffer);
                 strBuf = new String(buffer, 0, bytes);
 
                 //////////////////////////////////////////////////////////////////
                 //파싱
                 i.dataP(strBuf);
-                sending_acceleration();
+
+                if(sending_acceleration()) {
+                    ;//showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
+                }
+                else{
+                    ;// showMessage("Receive: " + strBuf);
+                }
 
                 return true;
             }
@@ -490,62 +520,30 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             }
             catch (JSONException e) {
                 e.printStackTrace();
-                return false;
+                return true; // json 예외 허용
             }
         }
     }
 
-    /*
-    // 데이터 송수신 스레드
-    private class SocketThread extends Thread {
-
-        private final BluetoothSocket mmSocket; // 클라이언트 소켓
-        private InputStream mmInStream; // 입력 스트림
-
-        public SocketThread(BluetoothSocket socket) {
-
-            mmSocket = socket;
-
-            // 입력 스트림 구한다
-            try {
-                mmInStream = socket.getInputStream();
-            } catch (IOException e) {
-                showMessage("Get Stream error");
-            }
+    private class GpsThread extends Thread{
+        GpsInfo gps = null;
+        public GpsThread(){
         }
 
-        // 소켓에서 수신된 데이터를 화면에 표시한다
-        public void run() {
+        public void run(){
+            // GPS 사용유무 가져오기
+            gps = new GpsInfo(Bluetooth_reception.this);
 
-            byte[] buffer = new byte[1024];
-            int bytes;
+            if (gps.isGetLocation()) {
 
-            while (true) {
-                try {
-                    // 입력 스트림에서 데이터를 읽는다
-                    bytes = mmInStream.read(buffer);
-                    String strBuf = new String(buffer, 0, bytes);
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
+                showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
 
-                    //////////////////////////////////////////////////////////////////
-                    //파싱
-                    i.dataP(strBuf);
-                    ///////////////////////////////////////////////////////////////////
-
-                    showMessage("Receive: " + strBuf);
-
-                    SystemClock.sleep(1);
-                }
-                catch (IOException e) {
-                    showMessage("Socket disconneted");
-                    break;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return;
-                }
             }
         }
     }
-    */
+
 
     // 블루투스 종료될 때
     public void onDestroy() {
@@ -555,6 +553,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         /////////////////////////////////////////
 
         super.onDestroy();
+
+        last_sending();
+        String txt = String.format("%.3f", km_per_liter);
+        Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
 
         // 디바이스 검색 중지
         stopFindDevice();////////////////////////////////////
