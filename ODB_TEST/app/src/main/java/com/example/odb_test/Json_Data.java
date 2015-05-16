@@ -30,9 +30,8 @@ public class Json_Data implements Serializable {
     }
 
     public double getDistance() {
-        return rpm;
+        return distance;
     }
-
     public void setDistance(double distance) {
         this.distance = distance;
     }
