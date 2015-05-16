@@ -460,17 +460,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         boolean bool=false;
         long time_now=d.getTime();
-        long time_interval = time_now-time_last;
+        long time_interval =0;
+        time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
         rpm_now = i.obd.getRpm();
 
         // 1초차이 있음
-        if(time_interval >= 1){
-            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*2)))) { //급가속 했을 때
+            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*3)))) { //급가속 했을 때
                 //서버로 전송
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
 
+<<<<<<< HEAD
                 bool=true;
             }
         }
@@ -484,6 +485,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 bool=true;
             }
         }
+=======
+                //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
+                bool=true;
+            }
+
+
+>>>>>>> 6bf8120faea6cd8de6ef078473401d31c1771ced
 
         rpm_sub = rpm_now-rpm_last;
         rpm_last = rpm_now;
@@ -551,10 +559,15 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //파싱
                 i.dataP(strBuf);
 
+
                 if(sending_acceleration()) {
+<<<<<<< HEAD
                     currentX = String.format("%.3f",latitude);
                     currentY = String.format("%.3f",longitude);
                     showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
+=======
+                    showMessage(" [ Acc! (" + ")" );
+>>>>>>> 6bf8120faea6cd8de6ef078473401d31c1771ced
                 }
                /* else{
                     showMessage("Receive: " + strBuf);
