@@ -23,7 +23,7 @@
 
     <ImageView
         android:id="@+id/item_imageview"
-        android:layout_width="60dp"
+        android:layout_width="30dp"
         android:layout_height="60dp"/>
 
     <TextView
