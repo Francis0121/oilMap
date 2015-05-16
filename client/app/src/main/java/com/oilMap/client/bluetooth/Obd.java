@@ -7,6 +7,9 @@ public class Obd{
 
     private double rpm;
     private double fuel;
+    private double distance;
+    private double latitude;
+    private double longitude;
 
     public double getRpm() {
         return rpm;
@@ -22,6 +25,22 @@ public class Obd{
 
     public void setFuel(double fuel) {
         this.fuel = fuel;
+    }
+
+    public double getDistance() { return distance; }
+
+    public void setDistance(double distance) { this.distance = distance; }
+
+    public double getLatitude() { return latitude; }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() { return longitude; }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
 }
