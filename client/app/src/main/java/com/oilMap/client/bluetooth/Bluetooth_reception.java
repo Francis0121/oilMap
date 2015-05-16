@@ -119,15 +119,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         }
     }
 
-//
-//    public void gpsUsing(){
-//        if (gps.isGetLocation()) {
-//            double latitude = gps.getLatitude();
-//            double longitude = gps.getLongitude();
-//            showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
-//        }
-//    }
-
 
 
     // 블루투스 사용 가능상태 판단
@@ -504,8 +495,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 rpm_last = i.obd.getRpm(); //처음 rpm 구하기
                 time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
 
-
-                showMessage(String.format("%.3f",fuel_capacity));
                 //
                 //////////////////////////////////////////////////////////////////////////////////////
                 ///// server 연동
@@ -533,11 +522,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //파싱
                 i.dataP(strBuf);
 
+               if(sending_acceleration()) {
+                   i.obd.setLatitude(latitude);
+                   i.obd.setLongitude(longitude);
 
-                if(sending_acceleration()) {
-                    currentX = String.format("%.3f",latitude);
-                    currentY = String.format("%.3f",longitude);
-                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
+                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
                 }
                 else{
                     showMessage("Receive: " + strBuf);
