@@ -35,9 +35,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
         /*this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
 
-
-        Log.d("MapsActivity", "onCreate");
-        setUpMapIfNeeded(new LatLng(37.56641923090,126.9778741551));*/
+        Log.d("MapsActivity", "onCreate");*/
     }
 
     private void init() {
