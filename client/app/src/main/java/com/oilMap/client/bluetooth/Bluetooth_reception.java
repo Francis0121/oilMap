@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.oilMap.client.R;
 import com.oilMap.client.gps.GpsInfo;
-import com.oilMap.client.info.OilInfoActivity;
 
 import org.json.JSONException;
 
@@ -53,7 +52,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     double a = currentPosition.x;
     double b = currentPosition.y;
-
     String aa = String.format("%.3f",a);
     String bb = String.format("%.3f",b);
 
@@ -455,7 +453,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
-                Toast.makeText(Bluetooth_reception.this, a + " , " + b, Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
                 bool=true;
             }
         }
