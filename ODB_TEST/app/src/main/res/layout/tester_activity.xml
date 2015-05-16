@@ -104,6 +104,23 @@
                 android:padding="15px"
                 android:textSize="18sp" />
         </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Distance : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/distanceText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
     </TableLayout>
 
     <LinearLayout

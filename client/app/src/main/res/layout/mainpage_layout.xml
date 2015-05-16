@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         android:layout_width="100dp"
@@ -22,7 +22,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         android:layout_width="100dp"
@@ -32,7 +32,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"

@@ -10,14 +10,20 @@ public class Auth implements Parcelable{
 
     private String id;
 
+    private String email;
+
     private String name;
 
     private String gender;
 
     private String locale;
 
-    public Auth(String id, String name, String gender, String locale) {
+    public Auth() {
+    }
+
+    public Auth(String id, String email, String name, String gender, String locale) {
         this.id = id;
+        this.email = email;
         this.name = name;
         this.gender = gender;
         this.locale = locale;
@@ -32,6 +38,7 @@ public class Auth implements Parcelable{
         this.name = in.readString();
         this.gender = in.readString();
         this.locale = in.readString();
+        this.email = in.readString();
     }
 
     @Override
@@ -45,6 +52,7 @@ public class Auth implements Parcelable{
         parcel.writeString(this.name);
         parcel.writeString(this.gender);
         parcel.writeString(this.locale);
+        parcel.writeString(this.email);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -87,6 +95,14 @@ public class Auth implements Parcelable{
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

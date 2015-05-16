@@ -34,4 +34,9 @@ public class AuthServiceImpl extends SqlSessionDaoSupport implements AuthService
     public void deleteAll() {
 
     }
+
+    @Override
+    public Auth selectAuth(String id) {
+        return getSqlSession().selectOne("auth.selectAuth", id);
+    }
 }

@@ -37,7 +37,7 @@ public class tester_Activity extends Activity {
     ////////////////////////////////////////////////////*/
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 30.0; //rpm 증가값
-    final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값
+    final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값 기본 rpm의 2배
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
@@ -47,6 +47,7 @@ public class tester_Activity extends Activity {
     public double oil_capacity = 5000; // 5000L
     public double fuel_use = 500; // 엔진에 주입되는 기름소비량
     public double oil_consumption = 0; // 기름소비량
+    public double distance = 1000; // 현재 1000km를 탄상태
     public int current_gear = 0;
 
     TextView fuel_use_text;
@@ -54,6 +55,7 @@ public class tester_Activity extends Activity {
     TextView gear_text;
     TextView speed_text;
     TextView oilConsumption_text;
+    TextView distance_text;
 
     Timer time_timer = new Timer(); // 변경사항 보여주는 쓰레드 실행을 위한 타이머
 
@@ -88,6 +90,7 @@ public class tester_Activity extends Activity {
         gear_text = (TextView) findViewById(R.id.gearText);
         speed_text = (TextView) findViewById(R.id.spdText);
         oilConsumption_text = (TextView) findViewById(R.id.oilconText);
+        distance_text = (TextView) findViewById(R.id.distanceText);
 
         time_timer.schedule(timeTimerTask, 10, 1000);    // TEXT 실시간 표시
         time_timer.schedule(rpmTimeTask, 10, 1000); // accel 플래그 있다면 수행
@@ -225,6 +228,8 @@ public class tester_Activity extends Activity {
             }
             ////////
 
+            // 순간속도 1초 만큼 거리 추가
+            distance += car_speed / 3600;
         }
     };
     // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
@@ -286,6 +291,16 @@ public class tester_Activity extends Activity {
                     public void run() {
                         Log.d("timeTimerTask", "oil : " + oil_capacity);
                         oilConsumption_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", oil_capacity))));
+                    }
+                });
+            }
+            // distnace
+            Handler disHandler = distance_text.getHandler();
+            if (oilHandler != null) {
+                oilHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "distance : " + distance);
+                        distance_text.setText(Double.toString(Double.parseDouble(String.format("%.3f", distance))));
                     }
                 });
             }
@@ -470,6 +485,7 @@ public class tester_Activity extends Activity {
                 while (true) {
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
                     jd.setFuel(Double.parseDouble(String.format("%.3f", oil_consumption)));
+                    jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     if (mSocketThread.write(jd.retJson()))
                         showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel());// + strBuf);
