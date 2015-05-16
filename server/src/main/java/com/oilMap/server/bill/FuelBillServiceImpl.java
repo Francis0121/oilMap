@@ -35,7 +35,7 @@ public class FuelBillServiceImpl extends SqlSessionDaoSupport implements FuelBil
     public Map<String, Object> selectMainInfo(String id) {
         Map<String, Object> map = new HashMap<String, Object>();
         FuelBill fuelBill = selectMaxFuelBill(id);
-        if(fuelBill.getPn() != null) {
+        if(fuelBill != null && fuelBill.getPn() != null) {
             map.put("fuelBill", fuelBill);
             List<Driving> drivingList = driveService.selectDrivingFromFuelBillPn(fuelBill.getPn());
             map.put("drivingList", drivingList);

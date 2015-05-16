@@ -184,7 +184,7 @@ public class OilInfoActivity extends Activity {
 
             if((Boolean)stringObjectMap.get("result")){
                 Map<String, Object> map = (Map<String, Object>) stringObjectMap.get("fuelBill");
-                if(map == null){
+                if(map == null || map.get("pn") == null){
                     dateTextView.setText("Data doesn't exist.");
                     moneyTextView.setText("Data doesn't exist.");
                 }else{
@@ -199,19 +199,22 @@ public class OilInfoActivity extends Activity {
                 Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
 
                 List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) stringObjectMap.get("drivingList");
-
                 List<String> list = new ArrayList<String>();
-                for (int i = 0; i < drivingListMap.size()-1; i++) {
-                    Map<String, Object> drivingMapBefore = drivingListMap.get(i);
-                    Map<String, Object> drivingMapEnd = drivingListMap.get(i+1);
+                if(drivingListMap.size() > 1) {
+                    for (int i = 0; i < drivingListMap.size() - 1; i++) {
+                        Map<String, Object> drivingMapBefore = drivingListMap.get(i);
+                        Map<String, Object> drivingMapEnd = drivingListMap.get(i + 1);
 
-                    Double calculate = (Double)drivingMapBefore.get("fuelQuantity") - (Double)drivingMapEnd.get("fuelQuantity") ;
-                    Double distance = ((Double)drivingMapEnd.get("distance") - (Double)drivingMapBefore.get("distance"));
-                    Double cash = (calculate  * avgGasoline);
-                    DecimalFormat df = new DecimalFormat("#,##0");
-                    String strCash = df.format(cash);
+                        Double calculate = (Double) drivingMapBefore.get("fuelQuantity") - (Double) drivingMapEnd.get("fuelQuantity");
+                        Double distance = ((Double) drivingMapEnd.get("distance") - (Double) drivingMapBefore.get("distance"));
+                        Double cash = (calculate * avgGasoline);
+                        DecimalFormat df = new DecimalFormat("#,##0");
+                        String strCash = df.format(cash);
 
-                    list.add("Date : "+ ( (String)drivingMapEnd.get("inputDate") ).substring(0, 10) + " - Cash : " + strCash  + "￦ - Efficiency :" +  distance/calculate + "km/l" ) ;
+                        list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + distance / calculate + "km/l");
+                    }
+                }else{
+                    list.add("Data doesn't exist");
                 }
                 final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
