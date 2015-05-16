@@ -17,6 +17,8 @@ import java.util.ArrayList;
  */
 public class RankingActivity extends Activity {
 
+    RankingItem[] rankingArray = new RankingItem[30];
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ranking_list);
@@ -25,21 +27,25 @@ public class RankingActivity extends Activity {
 
         ArrayList<RankingItem> data = new ArrayList<>();
 
-        RankingItem a = new RankingItem(R.drawable.ic_icon,"a", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
-        RankingItem b = new RankingItem(R.drawable.ic_icon, "b", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
-        RankingItem c = new RankingItem(R.drawable.ic_icon, "c", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
 
-        data.add(a);
-        data.add(b);
-        data.add(c);
+
+        rankingArray[0] = new RankingItem(R.drawable.ic_icon,"a", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
+        rankingArray[1] = new RankingItem(R.drawable.ic_icon, "b", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
+        rankingArray[2] = new RankingItem(R.drawable.ic_icon, "c", R.drawable.ic_icon, "Efficiency " + " 3.14" + "km/L");
+
+        data.add(rankingArray[0]);
+        data.add(rankingArray[1]);
+        data.add(rankingArray[2]);
         //////////////////////////////////////////////////////////////////////////////
 
-        RankingItem[] rankingArray = new RankingItem[20];
 
-        for(int i = 0; i < 20; i++){
+
+        for(int i = 3; i < 30; i++){
             rankingArray[i] = new RankingItem(R.drawable.ic_icon, "a_a", R.drawable.ic_icon,"Efficiency " + " 3.14" + "km/L");
             data.add(rankingArray[i]);
         }
+
+
 
         RankingviewAdapter adapter = new RankingviewAdapter(this, R.layout.ranking_item, data);
         listView.setAdapter(adapter);
@@ -47,7 +53,9 @@ public class RankingActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String passId = rankingArray[position].getKey();
                 Intent map = new Intent(RankingActivity.this, MapsActivity.class);
+                map.putExtra("id", passId);
                 startActivity(map);
             }
         });

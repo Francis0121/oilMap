@@ -2,6 +2,7 @@ package com.oilMap.client.gps;
 
 import android.annotation.TargetApi;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,11 +23,13 @@ import com.oilMap.client.R;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
 
     private GoogleMap mGoogleMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_map);
+
+        Intent config = getIntent();
+        String Id = config.getExtras().getString("id");         //아이디값을 받아옴
 
         MapsInitializer.initialize(getApplicationContext());
 
@@ -95,6 +98,5 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 + String.valueOf(point.longitude) + ")");
         Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y("
                 + String.valueOf(screenPt.y) + ")");
-
     }
 }

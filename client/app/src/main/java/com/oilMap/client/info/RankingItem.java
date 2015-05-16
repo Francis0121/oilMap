@@ -21,10 +21,26 @@ public class RankingItem {
         return efficiency;
     }
 
+    private String key = "여기에 ID키값 넣을 것";
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+
+
     private String efficiency;
     private int icon;
     private String Id;
     private int rankingIcon;
+
+    public RankingItem(String Id){
+        this.Id = Id;
+    }
 
     public RankingItem(int icon, String Id, int rankingIcon, String efficiency){
         this.icon = icon;
