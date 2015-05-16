@@ -24,6 +24,7 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="main">Go to Main</string>
     <string name="setting">Setting</string>
     <string name="logout">LogOut</string>
     <string name="bluetooth">Bluetooth</string>

@@ -7,9 +7,17 @@
 
     <TextView
         android:id="@+id/textMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hello_world" />
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="hello_world"
+        android:textSize="16sp"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/border_bottom"
+        android:textColor="#000"
+        android:textIsSelectable="true" />
 
     <LinearLayout
         android:id="@+id/layoutInput"
@@ -17,17 +25,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textMessage" >
+
+        <ListView
+            android:id="@+id/listDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutInput"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="\n"/>
-
-    <ListView
-        android:id="@+id/listDevice"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layoutInput" />
 
 </LinearLayout>

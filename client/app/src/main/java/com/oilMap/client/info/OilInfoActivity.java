@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.cocosw.bottomsheet.BottomSheet;
@@ -36,6 +34,7 @@ public class OilInfoActivity extends Activity {
                         Intent blue_exe = new Intent(OilInfoActivity.this, Bluetooth_reception.class);
                         blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(blue_exe);
+                        OilInfoActivity.this.finish();
                         break;
 
                     case R.id.logout:
