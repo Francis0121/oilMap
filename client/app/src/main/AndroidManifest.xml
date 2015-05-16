@@ -81,7 +81,8 @@
 
         <activity
             android:name=".info.OilInfoActivity"
-            android:label="@string/title_activity_oil_info" >
+            android:theme="@style/CustomTheme"
+            android:label="@string/app_name">
         </activity>
 
         <!-- SMS 관련 -->

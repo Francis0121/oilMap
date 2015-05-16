@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="custom_bg_color">#282828</color>
+
     <style name="BottomSheet.StyleDialog" parent="BottomSheet.Dialog">
         <item name="android:backgroundDimAmount">0.5</item>
         <item name="android:windowAnimationStyle">@style/BottomSheet.Animation</item>
@@ -10,6 +12,10 @@
         <item name="bs_dialogBackground">@color/bs_dark_divider_color</item>
         <item name="bs_dividerColor">@color/bs_divider_color</item>
         <item name="bs_numColumns">3</item>
+    </style>
+
+    <style name="CustomTheme" parent="android:Theme.Holo.Light">
+        <item name="android:windowBackground">@color/custom_bg_color</item>
     </style>
 
 </resources>
