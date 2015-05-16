@@ -27,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.MapsInitializer;
 import com.oilMap.client.R;
 import com.oilMap.client.gps.GpsInfo;
 
@@ -48,12 +50,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     BluetoothAdapter mBA;
     ListView mListDevice;
     ArrayList<String> mArDevice; // 원격 디바이스 목록
-    CurrentPosition currentPosition = new CurrentPosition();
 
-    double a = currentPosition.x;
-    double b = currentPosition.y;
-    String aa = String.format("%.3f",a);
-    String bb = String.format("%.3f",b);
+    String currentX, currentY;
 
     static final String  BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
 
@@ -72,12 +70,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     public double rpm_last=0.0, rpm_now=0.0, rpm_sub=999.0;
     public long time_last=0;
     public Date d=new Date();
+    double latitude;
+    double longitude;
     ///////////////////////
     //////
 
     GpsInfo gps = null;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -86,6 +84,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.gps_main);
 
+        MapsInitializer.initialize(getApplicationContext());
+
+        init();
 
         mTextMsg = (TextView)findViewById(R.id.textMessage);
         mBA = BluetoothAdapter.getDefaultAdapter();
@@ -108,6 +109,22 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // SystemClock.sleep(1000);
         // }
     }
+
+    private void init() {
+
+        GooglePlayServicesUtil.isGooglePlayServicesAvailable(Bluetooth_reception.this);
+        // 맵의 이동
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+
+        GpsInfo gps = new GpsInfo(Bluetooth_reception.this);
+        // GPS 사용유무 가져오기
+        if (gps.isGetLocation()) {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+
+        }
+    }
+
 //
 //    public void gpsUsing(){
 //        if (gps.isGetLocation()) {
@@ -454,7 +471,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
 
-                Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
                 bool=true;
             }
         }
@@ -465,7 +481,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
-                Toast.makeText(Bluetooth_reception.this, a + " , " + b, Toast.LENGTH_SHORT).show();
                 bool=true;
             }
         }
@@ -537,11 +552,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 i.dataP(strBuf);
 
                 if(sending_acceleration()) {
-                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
+                    currentX = String.format("%.3f",latitude);
+                    currentY = String.format("%.3f",longitude);
+                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
                 }
-                else{
+               /* else{
                     showMessage("Receive: " + strBuf);
-                }
+                }*/
 
                 return true;
             }
