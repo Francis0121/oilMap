@@ -55,7 +55,7 @@
         android:layout_below="@+id/textView18" />
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:text="50,000"
         android:textSize="14dp"
@@ -102,6 +102,6 @@
         android:text="랭킹"
         android:id="@+id/rankingBtn"
         android:layout_below="@+id/circle_progress"
-        android:layout_toEndOf="@+id/textView22" />
+        android:layout_alignEnd="@+id/textView22" />
 
 </RelativeLayout>

@@ -48,4 +48,9 @@ public class MockDriveServiceImpl implements DriveService{
         }
         return newDrivePoint;
     }
+
+    @Override
+    public List<Driving> selectDrivingFromFuelBillPn(Integer fuelBillPn) {
+        return null;
+    }
 }

@@ -1,6 +1,9 @@
 package com.oilMap.server.drive;
 
+import com.oilMap.server.bill.FuelBill;
+import com.oilMap.server.bill.FuelBillService;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +14,13 @@ import java.util.List;
 @Service
 public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveService {
 
-    // TODO - TEST CASE를 생성 필요
+    @Autowired
+    private FuelBillService fuelBillService;
     
     @Override
     public void insertDriving(Driving driving) {
+        FuelBill fuelBill = fuelBillService.selectMaxFuelBill(driving.getId());
+        driving.setFuelBillPn(fuelBill.getPn());
         getSqlSession().insert("drive.insertDriving", driving);
     }
 
@@ -31,5 +37,10 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
     @Override
     public List<DrivePoint> selectDrivePoint(String id) {
         return getSqlSession().selectList("drive.selectDrivePoint", id);
+    }
+
+    @Override
+    public List<Driving> selectDrivingFromFuelBillPn(Integer fuelBillPn) {
+        return getSqlSession().selectList("drive.selectDrivingFromFuelBillPn", fuelBillPn);
     }
 }
