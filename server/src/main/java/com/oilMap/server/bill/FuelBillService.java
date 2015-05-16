@@ -12,4 +12,6 @@ public interface FuelBillService {
     FuelBill selectMaxFuelBill(String id);
 
     Map<String, Object> selectMainInfo(String id);
+
+    void calculateBill(FuelBill fuelBill) throws Exception;
 }
