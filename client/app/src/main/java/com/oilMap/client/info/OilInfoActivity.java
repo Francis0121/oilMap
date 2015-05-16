@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,12 +63,11 @@ public class OilInfoActivity extends Activity {
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         this.id = pref.getString("id", "");
 
-        Button rankBtn = (Button) findViewById(R.id.rankingBtn);
+        ImageButton rankBtn = (ImageButton) findViewById(R.id.rankingBtn);
         rankBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent ranking = new Intent(OilInfoActivity.this, RankingActivity.class);
                 startActivity(ranking);
-                finish();
             }
         });
 
