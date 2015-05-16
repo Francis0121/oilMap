@@ -50,6 +50,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     //급가속 시 서버로 보냄/////
     public double km_per_liter=0;
     public double first_dis=0,first_fuel=0;
+    public double fuel_capacity=0.0; // 현제 연료량
     ////지우기
     public double rpm_last=0.0, rpm_now=0.0, rpm_sub=999.0;
     public long time_last=0;
@@ -275,14 +276,14 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         ///////////////////////////////////////////////
         //연결 후 디바이스 목록 안보이게
         ListView listview = (ListView)findViewById(R.id.listDevice);
-        //listview.setVisibility(View.GONE);
+        listview.setVisibility(View.GONE);
         listview.setVisibility(View.INVISIBLE);
 
 
         // 연결 후 메인 액티비티로 복귀!!!/////
-        Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
+      /*  Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
-        startActivity(intent);
+        startActivity(intent);*/
         ///////////////////////////////////////////
 
     }
@@ -427,6 +428,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         long time_interval = time_now-time_last;
         rpm_now = i.obd.getRpm();
 
+        // 1초차이 있음
         if(time_interval >= 1){
             if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*2)))) { //급가속 했을 때
                 //서버로 전송
@@ -435,8 +437,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getLongitude();
                 bool=true;
             }
-
         }
+        // 0초차이
         else{
             if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub*2)))) { //급가속 했을 때
                 //서버로 전송
@@ -459,12 +461,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     // 데이터 송수신 스레드
     private class SocketThread extends Thread {
 
-        private final BluetoothSocket mmSocket; // 클라이언트 소켓
+        private BluetoothSocket mmSocket=null; // 클라이언트 소켓
         private InputStream mmInStream; // 입력 스트림
         ////
-        byte[] buffer = new byte[1024];
-        int bytes=0;
-        String strBuf=null;
+        private byte[] buffer = new byte[1024];
+        private int bytes=0;
+        private String strBuf=null;
+        private double last_fuel_per=0;
         ////
 
         public SocketThread(BluetoothSocket socket) {
@@ -476,14 +479,21 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             try {
                 mmInStream = socket.getInputStream();
                 dataParsingSet(mmInStream);
-                ///////////////////////////////////////////
+                last_fuel_per=i.obd.getFuel();
+
+                dataParsingSet(mmInStream);
+                rpm_last = i.obd.getRpm(); //처음 rpm 구하기
+                time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
+
+                // 연료량(L) = 순간 사용량(L) / 사용된 양(%) * 현재남은 양(%)
+                fuel_capacity=((i.obd.getFuelUse()/1000) / (i.obd.getFuel()-last_fuel_per)) * i.obd.getFuel();
+                showMessage(String.format("%.3f",fuel_capacity));
+                //
+                //////////////////////////////////////////////////////////////////////////////////////
                 ///// server 연동
                 //소켓
                 sending();
 
-                rpm_last = i.obd.getRpm(); //처음 rpm 구하기
-                time_last=d.getTime(); // 처음 수신 시간구하기
-                ///////////////////////////////////////////
             } catch (IOException e) {
                 showMessage("Get Stream error");
             }
@@ -506,10 +516,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 i.dataP(strBuf);
 
                 if(sending_acceleration()) {
-                    ;//showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
+                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
                 }
                 else{
-                    ;// showMessage("Receive: " + strBuf);
+                    showMessage("Receive: " + strBuf);
                 }
 
                 return true;
@@ -549,7 +559,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     public void onDestroy() {
         ////////////////////////////////////////
         //종료하기 전 서버로 마지막 정보 보내는 부분
-        sending();
+        //sending();
         /////////////////////////////////////////
 
         super.onDestroy();
