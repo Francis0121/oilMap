@@ -6,9 +6,9 @@
     <insert id="insertDriving" parameterType="Driving">
         INSERT INTO
           `driving`
-          ( `id`,`distance`, `fuelQuantity`, `inputDate` )
+          ( `id`,`fuelBillPn` `distance`, `fuelQuantity`, `inputDate` )
         VALUES
-          ( #{id}, #{distance}, #{fuelQuantity}, SYSDATE() )
+          ( #{id}, #{fuelBillPn}, #{distance}, #{fuelQuantity}, SYSDATE() )
     </insert>
     
     <insert id="insertDrivePoint" parameterType="DrivePoint">
@@ -21,7 +21,7 @@
     
     <select id="selectDrivingInfo" parameterType="String" resultType="Driving">
         SELECT
-          `id`, `distance`, `fuelQuantity`, `inputDate`
+          `id`, `fuelBillPn`, `distance`, `fuelQuantity`, `inputDate`
         FROM
           `driving`
         WHERE
@@ -35,6 +35,17 @@
           `drive_point`
         WHERE
           `id` = #{id}
+    </select>
+    
+    <select id="selectDrivingFromFuelBillPn" parameterType="Integer" resultType="Driving">
+        SELECT
+          `id`, `fuelBillPn`, `distance`, `fuelQuantity`, `inputDate`
+        FROM
+          `driving`
+        WHERE
+          `fuelBillPn` = #{fuelBillPn}
+        ORDER BY
+          `inputDate` ASC
     </select>
     
 </mapper>

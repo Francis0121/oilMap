@@ -9,7 +9,7 @@
     $(function(){
         $('#crawler').on('click', function(){
             $.postJSON(contextPath+'/crawler', {}, function(result){
-               $('#console').text(result);
+               $('#console').text(JSON.stringify(result));
             });
         });
     });

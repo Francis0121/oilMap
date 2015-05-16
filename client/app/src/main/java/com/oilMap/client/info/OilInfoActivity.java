@@ -101,40 +101,12 @@ public class OilInfoActivity extends Activity {
         });
 
 
-        listView = (ListView) findViewById(R.id.listView);
-        String[] values = new String[] { "Date : 2015-05-01  Fuel : 80%", "2015-05-02 78%", "2015-05-03 76%",
-                "2015-05-04 60%", "2015-05-05 55%", "2015-05-06 51%", "2015-05-07 80%", "2015-05-08 80%",
-                "2015-05-09 80%" };
-
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(2000).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                list.remove(item);
-                                adapter.notifyDataSetChanged();
-                                view.setAlpha(1);
-                            }
-                        });
-            }
-
-        });
-
         dateTextView = (TextView) findViewById(R.id.textView19);
         moneyTextView = (TextView) findViewById(R.id.textView22);
 
         new OilInfoAsyncTask().execute();
+
+        listView = (ListView) findViewById(R.id.listView);
     }
 
     @Override
@@ -160,7 +132,7 @@ public class OilInfoActivity extends Activity {
             TextView textView=(TextView) view.findViewById(android.R.id.text1);
             /*YOUR CHOICE OF COLOR*/
             textView.setTextColor(Color.WHITE);
-
+            textView.setTextSize(12);
             return view;
         }
 
@@ -215,6 +187,26 @@ public class OilInfoActivity extends Activity {
                     dateTextView.setText(date);
                     moneyTextView.setText(strBill);
                 }
+                Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
+
+                List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) stringObjectMap.get("drivingList");
+
+                List<String> list = new ArrayList<String>();
+                for (int i = 0; i < drivingListMap.size()-1; i++) {
+                    Map<String, Object> drivingMapBefore = drivingListMap.get(i);
+                    Map<String, Object> drivingMapEnd = drivingListMap.get(i+1);
+
+                    Double calculate = (Double)drivingMapBefore.get("fuelQuantity") - (Double)drivingMapEnd.get("fuelQuantity") ;
+                    Double distance = ((Double)drivingMapEnd.get("distance") - (Double)drivingMapBefore.get("distance"));
+                    Double cash = (calculate  * avgGasoline);
+                    DecimalFormat df = new DecimalFormat("#,##0");
+                    String strCash = df.format(cash);
+
+                    list.add("Date : "+ ( (String)drivingMapEnd.get("inputDate") ).substring(0, 10) + " - Cash : " + strCash  + "￦ - Efficiency :" +  distance/calculate + "km/l" ) ;
+                }
+                final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
+                listView.setAdapter(adapter);
+
             }
 
         }
