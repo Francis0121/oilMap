@@ -94,8 +94,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // ListView 초기화
         initListView();
 
-        //Thread GpsThread=new GpsThread();
-        //GpsThread.start();
 
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
@@ -104,10 +102,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             getParedDevice();
         ////
         gps = new GpsInfo(Bluetooth_reception.this);
-        // while(true){
-        //gpsUsing();
-        // SystemClock.sleep(1000);
-        // }
     }
 
     private void init() {
@@ -456,8 +450,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean sending_acceleration() {
-
-
         boolean bool=false;
         long time_now=d.getTime();
         long time_interval =0;
@@ -471,6 +463,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
                 //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
+
                 bool=true;
             }
 
@@ -560,25 +553,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             catch (JSONException e) {
                 e.printStackTrace();
                 return true; // json 예외 허용
-            }
-        }
-    }
-
-    private class GpsThread extends Thread{
-        GpsInfo gps = null;
-        public GpsThread(){
-        }
-
-        public void run(){
-            // GPS 사용유무 가져오기
-            gps = new GpsInfo(Bluetooth_reception.this);
-
-            if (gps.isGetLocation()) {
-
-                double latitude = gps.getLatitude();
-                double longitude = gps.getLongitude();
-                showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
-
             }
         }
     }
