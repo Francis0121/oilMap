@@ -7,6 +7,7 @@ import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,15 @@ public class FuelBillServiceImpl extends SqlSessionDaoSupport implements FuelBil
     public Map<String, Object> selectMainInfo(String id) {
         Map<String, Object> map = new HashMap<String, Object>();
         FuelBill fuelBill = selectMaxFuelBill(id);
-        map.put("fuelBill", fuelBill);
+        if(fuelBill != null && fuelBill.getPn() != null) {
+            map.put("fuelBill", fuelBill);
+            List<Driving> drivingList = driveService.selectDrivingFromFuelBillPn(fuelBill.getPn());
+            map.put("drivingList", drivingList);
+        }else{
+            map.put("fuelBill", new FuelBill());
+            map.put("drivingList", new ArrayList<Driving>());
+        }
 
-        List<Driving> drivingList = driveService.selectDrivingFromFuelBillPn(fuelBill.getPn());
-        map.put("drivingList", drivingList);
         return map;
     }
 }
