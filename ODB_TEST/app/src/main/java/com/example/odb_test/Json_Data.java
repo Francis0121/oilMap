@@ -19,12 +19,15 @@ public class Json_Data implements Serializable {
     public double getRpm() {
         return rpm;
     }
+
     public void setRpm(double rpm) {
         this.rpm = rpm;
     }
+
     public double getFuel() {
         return fuel;
     }
+
     public void setFuel(double fuel) {
         this.fuel = fuel;
     }
@@ -32,9 +35,11 @@ public class Json_Data implements Serializable {
     public double getDistance() {
         return distance;
     }
+
     public void setDistance(double distance) {
         this.distance = distance;
     }
+
     public String retJson() {
         //Json객체 셋팅 후 그 객체의 스트링 반환
         try {

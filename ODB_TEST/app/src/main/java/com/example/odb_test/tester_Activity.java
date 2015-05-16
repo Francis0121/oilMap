@@ -484,7 +484,7 @@ public class tester_Activity extends Activity {
             public void run() {
                 while (true) {
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
-                    jd.setFuel(Double.parseDouble(String.format("%.3f", oil_consumption)));
+                    jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
                     jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     if (mSocketThread.write(jd.retJson()))
