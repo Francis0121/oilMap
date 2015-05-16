@@ -15,11 +15,13 @@ import android.util.*;
 import android.view.*;
 import android.widget.*;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.info.MainPage;
 import com.oilMap.client.info.NavigationActivity;
 import com.oilMap.client.info.OilInfoActivity;
+import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.json.JSONException;
 
@@ -42,11 +44,43 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     ServerThread mSThread = null; // 서버 소켓 접속 스레드
     SocketThread mSocketThread = null; // 데이터 송수신 스레드
 
+    private BottomSheet bottomSheet;
+    private BackPressCloseHandler backPressCloseHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+;
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.gps_main);
+        // ~ BottomSheet
+        bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list_main).listener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case R.id.main_bluetooth:
+                        Intent main = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+                        startActivity(main);
+                        Bluetooth_reception.this.finish();
+                        break;
+
+                    case R.id.logout_bluetooth:
+                        SharedPreferences pref = Bluetooth_reception.this.getSharedPreferences("userInfo", 0);
+                        SharedPreferences.Editor prefEdit = pref.edit();
+                        prefEdit.putString("id","");
+                        prefEdit.commit();
+
+                        Intent idCheck = new Intent(Bluetooth_reception.this, MainActivity.class);
+                        startActivity(idCheck);
+                        Bluetooth_reception.this.finish();
+                        break;
+                }
+            }
+        }).build();
+
+        this.backPressCloseHandler = new BackPressCloseHandler(this);
+
 
         mTextMsg = (TextView)findViewById(R.id.textMessage);
         mBA = BluetoothAdapter.getDefaultAdapter();
@@ -59,6 +93,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         if( isBlue )
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        this.backPressCloseHandler.onBackPressed(this.bottomSheet);
     }
 
     // 블루투스 사용 가능상태 판단
@@ -112,7 +152,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 원격 디바이스 검색 중지
         stopFindDevice();
 
-        showMessage("OBD를 선택하세요!");
+        showMessage("Bluetooth 장치 OBD를 선택해주세요.");
 
         // 디바이스 검색 시작
         mBA.startDiscovery();
