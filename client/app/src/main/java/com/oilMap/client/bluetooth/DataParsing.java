@@ -29,9 +29,9 @@ public class DataParsing extends Activity {
 
         ////////////////////////////////////////
         //JSONObject 객체 파싱
-        obd.setRpm(jsonOb.getDouble("fuel_use"));
+        obd.setRpm(jsonOb.getDouble("fuel"));
         obd.setRpm(jsonOb.getDouble("rpm"));
-        obd.setFuel(jsonOb.getDouble("fuel"));
+        obd.setFuelLevel(jsonOb.getDouble("fuel_level"));
         obd.setDistance(jsonOb.getDouble("distance"));
         obd.setTime(jsonOb.getLong("time"));
         /////////////////////////////////////////

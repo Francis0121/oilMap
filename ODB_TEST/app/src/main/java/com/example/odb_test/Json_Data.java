@@ -13,19 +13,19 @@ import java.util.Date;
 public class Json_Data implements Serializable {
 
     JSONObject jsonOb = null;
-    private double fuel_use = 0.0;
-    private double rpm = 0.0;
     private double fuel = 0.0;
+    private double rpm = 0.0;
+    private double fuel_level = 0.0;
     private double distance = 0.0;
     private long time = 0;
     private Date d;
 
-    public double getFuelUse() {
-        return fuel_use;
+    public double getFuel() {
+        return fuel;
     }
 
-    public void setFuelUse(double fuel_use) {
-        this.fuel_use = fuel_use;
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
     }
 
     public double getRpm() {
@@ -36,12 +36,12 @@ public class Json_Data implements Serializable {
         this.rpm = rpm;
     }
 
-    public double getFuel() {
-        return fuel;
+    public double getFuelLevel() {
+        return fuel_level;
     }
 
-    public void setFuel(double fuel) {
-        this.fuel = fuel;
+    public void setFuelLevel(double fuel_level) {
+        this.fuel_level = fuel_level;
     }
 
     public double getDistance() {
@@ -64,7 +64,7 @@ public class Json_Data implements Serializable {
         //Json객체 셋팅 후 그 객체의 스트링 반환
         try {
             jsonOb = new JSONObject();
-            jsonOb.put("fuel_use", getFuelUse());
+            jsonOb.put("fuel_level", getFuelLevel());
             jsonOb.put("rpm", getRpm());
             jsonOb.put("fuel", getFuel());
             jsonOb.put("distance", getDistance());

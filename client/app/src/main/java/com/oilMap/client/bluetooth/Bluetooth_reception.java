@@ -457,7 +457,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         rpm_now = i.obd.getRpm();
 
         // 1초차이 있음
-            if((rpm_sub!=0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*3)))) { //급가속 했을 때
+            if((rpm_sub>0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*3)))) { //급가속 했을 때
                 //서버로 전송
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
@@ -504,8 +504,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 rpm_last = i.obd.getRpm(); //처음 rpm 구하기
                 time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
 
-                // 연료량(L) = 순간 사용량(L) / 사용된 양(%) * 현재남은 양(%)
-                fuel_capacity=((i.obd.getFuelUse()/1000) / (i.obd.getFuel()-last_fuel_per)) * i.obd.getFuel();
+
                 showMessage(String.format("%.3f",fuel_capacity));
                 //
                 //////////////////////////////////////////////////////////////////////////////////////
@@ -540,9 +539,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     currentY = String.format("%.3f",longitude);
                     showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
                 }
-               /* else{
+                else{
                     showMessage("Receive: " + strBuf);
-                }*/
+                }
 
                 return true;
             }
