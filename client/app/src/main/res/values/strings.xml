@@ -26,5 +26,6 @@
 
     <string name="setting">Setting</string>
     <string name="logout">LogOut</string>
+    <string name="bluetooth">Bluetooth</string>
     <string name="title_activity_oil_info">OilMap</string>
 </resources>

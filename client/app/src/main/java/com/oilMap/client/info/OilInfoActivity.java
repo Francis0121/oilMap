@@ -32,7 +32,7 @@ public class OilInfoActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
-                    case R.id.setting:
+                    case R.id.bluetooth:
                         Intent blue_exe = new Intent(OilInfoActivity.this, Bluetooth_reception.class);
                         blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(blue_exe);

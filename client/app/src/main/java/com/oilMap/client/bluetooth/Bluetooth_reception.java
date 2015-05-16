@@ -19,6 +19,7 @@ import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.info.MainPage;
 import com.oilMap.client.info.NavigationActivity;
+import com.oilMap.client.info.OilInfoActivity;
 
 import org.json.JSONException;
 
@@ -239,7 +240,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
 
       // 연결 후 메인 액티비티로 복귀!!!/////
-        Intent intent = new Intent(getBaseContext(), NavigationActivity.class);
+        Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
         ///////////////////////////////////////////

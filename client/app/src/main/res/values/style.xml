@@ -9,7 +9,7 @@
         <item name="android:textColorHint">#42ffffff</item>
         <item name="bs_dialogBackground">@color/bs_dark_divider_color</item>
         <item name="bs_dividerColor">@color/bs_divider_color</item>
-        <item name="bs_numColumns">2</item>
+        <item name="bs_numColumns">3</item>
     </style>
 
 </resources>
