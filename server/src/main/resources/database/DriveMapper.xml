@@ -14,9 +14,27 @@
     <insert id="insertDrivePoint" parameterType="DrivePoint">
         INSERT INTO
           `drive_point`
-          ( `id`, `position`, `inputDate` )
+          ( `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate` )
         VALUES
-          ( #{id}, #{position}, SYSDATE() )
+          ( #{id}, #{latitude}, #{longitude}, #{startSpeed}, #{endSpeed}, SYSDATE() )
     </insert>
+    
+    <select id="selectDrivingInfo" parameterType="String" resultType="Driving">
+        SELECT
+          `id`, `distance`, `fuelQuantity`, `inputDate`
+        FROM
+          `driving`
+        WHERE
+          `id` = #{id}
+    </select>
+    
+    <select id="selectDrivePoint" parameterType="String" resultType="DrivePoint">
+        SELECT
+          `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate`
+        FROM
+          `drive_point`
+        WHERE
+          `id` = #{id}
+    </select>
     
 </mapper>

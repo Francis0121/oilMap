@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         android:layout_width="100dp"
@@ -22,7 +22,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         android:layout_width="100dp"
@@ -32,7 +32,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_box_white"
-        android:drawableTop="@drawable/ic_launcher"/>
+        android:drawableTop="@drawable/ic_icon"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -48,5 +48,14 @@
         android:id="@+id/logout"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/infobtn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="지도Test"
+        android:id="@+id/maptest"
+        android:layout_below="@+id/BTTestBtn"
+        android:layout_alignEnd="@+id/userbtn"
+        android:layout_marginTop="45dp" />
 
 </RelativeLayout>

@@ -1,19 +1,3 @@
-/*
- * Copyright 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.oilMap.client.auth;
 
 import android.accounts.AccountManager;
@@ -24,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -38,6 +23,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
 import com.oilMap.client.info.NavigationActivity;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The TokenInfoActivity is a simple app that allows users to acquire, inspect and invalidate
  * authentication tokens for a different accounts and scopes.
@@ -47,9 +38,8 @@ import com.oilMap.client.info.NavigationActivity;
  */
 public class AuthActivity extends Activity {
 
-    private static final String TAG = "PlayHelloActivity";
+    private static final String TAG = "AuthActivity";
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
-    //private TextView mOut;
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
     static final int REQUEST_CODE_RECOVER_FROM_AUTH_ERROR = 1001;
@@ -60,15 +50,12 @@ public class AuthActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.google_auth);
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.activity_loading);
 
         getUsername();
-        //startActivity(new Intent(this, LoadingActivity.class));
-
-        //mOut = (TextView) findViewById(R.id.message);
     }
 
     @Override   //아래코드는 선택된 계정을 선택하여 콜백하는 과정
@@ -79,6 +66,7 @@ public class AuthActivity extends Activity {
                 getUsername();
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "You must pick an account", Toast.LENGTH_SHORT).show();
+                finish();
             }
         } else if ((requestCode == REQUEST_CODE_RECOVER_FROM_AUTH_ERROR ||
                 requestCode == REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR)
@@ -106,15 +94,6 @@ public class AuthActivity extends Activity {
         show("Unknown error, click the button again");
     }
 
-    /** Called by button in the layout */
-//    public void greetTheUser(View view) {
-//        getUsername();
-//    }
-
-    /** Attempt to get the user name. If the email address isn't known yet,
-     * then call pickUserAccount() method so the user can pick an account.
-     */
-    //추가 범위 추가하기
     private void getUsername() {
         if (mEmail == null) {
             pickUserAccount();
@@ -146,7 +125,6 @@ public class AuthActivity extends Activity {
         return false;
     }
 
-
     /**
      * This method is a hook for background threads and async tasks that need to update the UI.
      * It does this by launching a runnable under the UI thread.
@@ -164,17 +142,16 @@ public class AuthActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
+                // ~ SharedPreference Register
                 SharedPreferences pref = getSharedPreferences("userInfo", 0);
-                //SharedPreferences.Editor prefEdit = pref.edit();
                 SharedPreferences.Editor prefEdit = pref.edit();
                 prefEdit.putString("id", auth.getId());
                 prefEdit.commit();
 
-                Intent intent = new Intent(AuthActivity.this, NavigationActivity.class);
-                intent.putExtra("auth", auth);
-                startActivity(intent);
-                finish();
+                auth.setEmail(mEmail);
+
+                // ~ Register Server auth information. And move activity
+                new AuthRegisterAsnycTask().execute(auth);
             }
         });
     }
@@ -217,5 +194,64 @@ public class AuthActivity extends Activity {
     private AbstractGetNameTask getTask(
             AuthActivity activity, String email, String scope) {
         return new GetNameInForeground(activity, email, scope);
+    }
+
+    private class AuthRegisterAsnycTask extends AsyncTask<Auth, Void, Map<String, Object>> {
+
+        private Map<String, Object> request = new HashMap<String, Object>();
+
+        @Override
+        protected Map<String, Object> doInBackground(Auth... auths) {
+            if(auths.length < 1){
+                throw new RuntimeException("Id is null");
+            }
+
+            try {
+                // ~ ID 조회
+                Auth auth = auths[0];
+                String url = getString(R.string.contextPath) +"/auth/isExist";
+                request.put("id", auth.getId());
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
+                Map<String, Object> messages = responseEntity.getBody();
+
+                // ~ 서버에 값이 존재한다면
+                if((Boolean)messages.get("result")){
+                    messages.put("auth", auth);
+                    return messages;
+                }
+
+                // ~ ID 등록
+                url = getString(R.string.contextPath) + "/auth/insert";
+                request.put("email", auth.getEmail());
+                request.put("name", auth.getName());
+                restTemplate = new RestTemplate();
+                responseEntity = restTemplate.postForEntity(url, request, Map.class);
+                messages = responseEntity.getBody();
+                messages.put("auth", auth);
+                return messages;
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                throw new RuntimeException("Communication error occur");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, Object> response) {
+            super.onPostExecute(response);
+            Log.d(TAG, response.toString());
+
+            if((Boolean)response.get("result")){
+                Log.d(TAG, "Auth register success");
+
+                // ~ AuthActivity
+                Intent intent = new Intent(AuthActivity.this, NavigationActivity.class);
+                intent.putExtra("auth", (Auth)response.get("auth"));
+                startActivity(intent);
+                finish();
+            }else{
+                throw new RuntimeException("Auth select communication failed");
+            }
+        }
     }
 }

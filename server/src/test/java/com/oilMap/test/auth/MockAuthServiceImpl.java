@@ -65,5 +65,10 @@ public class MockAuthServiceImpl implements AuthService{
         authList = new ArrayList<Auth>();
     }
 
+    @Override
+    public Auth selectAuth(String id) {
+        return null;
+    }
+
 
 }

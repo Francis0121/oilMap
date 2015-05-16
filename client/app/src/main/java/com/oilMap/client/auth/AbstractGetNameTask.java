@@ -132,11 +132,9 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void> {
      */
     private Auth getInfo(String jsonResponse) throws JSONException {
         JSONObject profile = new JSONObject(jsonResponse);
-        Auth auth = new Auth(profile.getString(ID_KEY), profile.getString(NAME_KEY), profile.getString(GENDER_KEY), profile.getString(LOCALE_KEY));
-
+        Auth auth = new Auth(profile.getString(ID_KEY), "", profile.getString(NAME_KEY), profile.getString(GENDER_KEY), profile.getString(LOCALE_KEY));
         Log.d(TAG, profile.toString());
         Log.d(TAG, auth.toString());
-
         return auth;
     }
 }

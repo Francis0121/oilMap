@@ -7,24 +7,65 @@ public class DrivePoint {
 
     private String id;
     
-    /**
-     * 급 가속 위치
-     */
-    private Integer position;
+    private Double latitude;
+    
+    private Double longitude;
+    
+    private Double startSpeed;
+    
+    private Double endSpeed;
     
     private String inputDate;
 
     public DrivePoint() {
+    
     }
 
-    public DrivePoint(String id, Integer position) {
+    public DrivePoint(String id, Double latitude, Double longitude, Double startSpeed, Double endSpeed) {
         this.id = id;
-        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.startSpeed = startSpeed;
+        this.endSpeed = endSpeed;
     }
 
-    public DrivePoint(String id, Integer position, String inputDate) {
-        this.id = id;
-        this.position = position;
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getStartSpeed() {
+        return startSpeed;
+    }
+
+    public void setStartSpeed(Double startSpeed) {
+        this.startSpeed = startSpeed;
+    }
+
+    public Double getEndSpeed() {
+        return endSpeed;
+    }
+
+    public void setEndSpeed(Double endSpeed) {
+        this.endSpeed = endSpeed;
+    }
+
+    public String getInputDate() {
+        return inputDate;
+    }
+
+    public void setInputDate(String inputDate) {
         this.inputDate = inputDate;
     }
 
@@ -36,19 +77,14 @@ public class DrivePoint {
         this.id = id;
     }
 
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
-
     @Override
     public String toString() {
         return "DrivePoint{" +
                 "id='" + id + '\'' +
-                ", position=" + position +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", startSpeed=" + startSpeed +
+                ", endSpeed=" + endSpeed +
                 ", inputDate='" + inputDate + '\'' +
                 '}';
     }

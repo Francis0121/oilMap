@@ -14,6 +14,7 @@ import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.gps.MapsActivity;
 
 /**
  * Created by yeonsang on 2015-03-28.
@@ -59,6 +60,17 @@ public class MainPage extends Fragment implements View.OnClickListener{
 
                 Intent idCheck = new Intent(getActivity(), MainActivity.class);
                 startActivity(idCheck);
+                getActivity().finish();
+            }
+        });
+
+
+        Button maptest = (Button) rootView.findViewById(R.id.maptest);
+        maptest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent map = new Intent(getActivity(), MapsActivity.class);
+                startActivity(map);
                 getActivity().finish();
             }
         });
