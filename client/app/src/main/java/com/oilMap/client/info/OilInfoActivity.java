@@ -35,6 +35,7 @@ public class OilInfoActivity extends Activity {
                     case R.id.setting:
                         Intent blue_exe = new Intent(OilInfoActivity.this, Bluetooth_reception.class);
                         blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(blue_exe);
                         break;
 
                     case R.id.logout:
