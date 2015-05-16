@@ -10,17 +10,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity;
+import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
@@ -28,7 +28,6 @@ import com.oilMap.client.util.BackPressCloseHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.oilMap.client.R;
 
 public class OilInfoActivity extends Activity {
 
@@ -44,6 +43,15 @@ public class OilInfoActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.activity_oil_info);
+
+        Button rankBtn = (Button) findViewById(R.id.rankingBtn);
+        rankBtn.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent ranking = new Intent(OilInfoActivity.this, RankingActivity.class);
+                startActivity(ranking);
+                finish();
+            }
+        });
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
