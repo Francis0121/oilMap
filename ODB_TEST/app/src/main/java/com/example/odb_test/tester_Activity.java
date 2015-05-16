@@ -496,7 +496,7 @@ public class tester_Activity extends Activity {
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     try {
-                        if (mSocketThread.write(jd.retJson() + "\\0"))
+                        if (mSocketThread.write(jd.retJson() + 0x00))
                             showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel() + "/" + jd.getDistance() + "/" + jd.getTime());
                         else
                             showMessage("Socket Disconnected");
