@@ -15,24 +15,25 @@ public class Driving {
     /**
      * 운행 종료 후 기름양
      */
-    private Integer fuelQuantity;
+    private Double fuelQuantity;
     
     private String inputDate;
 
     public Driving() {
     }
 
-    public Driving(String id, Double distance, Integer fuelQuantity) {
+    public Driving(String id, Double distance, Double fuelQuantity) {
         this.id = id;
         this.distance = distance;
         this.fuelQuantity = fuelQuantity;
     }
 
-    public Driving(String id, Double distance, Integer fuelQuantity, String inputDate) {
-        this.id = id;
-        this.distance = distance;
+    public Double getFuelQuantity() {
+        return fuelQuantity;
+    }
+
+    public void setFuelQuantity(Double fuelQuantity) {
         this.fuelQuantity = fuelQuantity;
-        this.inputDate = inputDate;
     }
 
     public String getId() {
@@ -50,15 +51,7 @@ public class Driving {
     public void setDistance(Double distance) {
         this.distance = distance;
     }
-
-    public Integer getFuelQuantity() {
-        return fuelQuantity;
-    }
-
-    public void setFuelQuantity(Integer fuelQuantity) {
-        this.fuelQuantity = fuelQuantity;
-    }
-
+    
     public String getInputDate() {
         return inputDate;
     }

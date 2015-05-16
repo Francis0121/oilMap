@@ -22,8 +22,6 @@ import java.util.Map;
 @RequestMapping("drive")
 public class DriveController {
     
-    // TODO - TEST CASE를 생성 필요
-    
     private static Logger logger = LoggerFactory.getLogger(DriveController.class);
     
     @Autowired
@@ -33,7 +31,8 @@ public class DriveController {
     @RequestMapping(value = "/driving", method = RequestMethod.POST)
     public Map<String, Object> driving(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        drivingService.insertDriving(new Driving((String) request.get("id"), (Double) request.get("distance"), (Integer) request.get("fuelQuantity")));
+        drivingService.insertDriving(new Driving((String) request.get("id"), (Double) request.get("distance"), (Double) request.get("fuelQuantity")));
+        response.put("result", true);
         return response;
     }
 
@@ -41,7 +40,9 @@ public class DriveController {
     @RequestMapping(value = "/drivePoint", method = RequestMethod.POST)
     public Map<String, Object> drivePoint(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        drivingService.insertDrivePoint(new DrivePoint((String)request.get("id"), (Integer)request.get("positio")));
+        DrivePoint drivePoint = new DrivePoint((String)request.get("id"), (Double) request.get("latitude"), (Double) request.get("longitude"), (Double) request.get("startSpeed"), (Double) request.get("endSpeed"));
+        drivingService.insertDrivePoint(drivePoint);
+        response.put("result", true);
         return response;
     }
 }

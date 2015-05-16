@@ -3,6 +3,8 @@ package com.oilMap.server.drive;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Francis on 2015-05-06.
  */
@@ -19,5 +21,15 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
     @Override
     public void insertDrivePoint(DrivePoint drivePoint) {
         getSqlSession().insert("drive.insertDrivePoint", drivePoint);
+    }
+
+    @Override
+    public List<Driving> selectDrivingInfo(String id) {
+        return getSqlSession().selectList("drive.selectDrivingInfo", id);
+    }
+
+    @Override
+    public List<DrivePoint> selectDrivePoint(String id) {
+        return getSqlSession().selectList("drive.selectDrivePoint", id);
     }
 }
