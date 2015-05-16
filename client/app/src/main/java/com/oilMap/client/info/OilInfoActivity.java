@@ -33,7 +33,6 @@ import com.oilMap.client.R;
 public class OilInfoActivity extends Activity {
 
     private BottomSheet bottomSheet;
-    SMSReceiver smsReceiver = new SMSReceiver();
     private BackPressCloseHandler backPressCloseHandler;
     private CircleProgress circleProgress;
     private ListView listView;
