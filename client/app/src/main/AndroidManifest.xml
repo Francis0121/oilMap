@@ -78,8 +78,16 @@
         <activity
             android:name=".gps.MapsActivity">
         </activity>
+
+        <activity
+            android:name=".info.OilInfoActivity"
+            android:label="@string/title_activity_oil_info" >
+        </activity>
+
         <!-- SMS 관련 -->
         <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+
     </application>
 
 </manifest>
