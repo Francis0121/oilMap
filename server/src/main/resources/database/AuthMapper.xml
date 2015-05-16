@@ -26,4 +26,13 @@
           `id` = #{id}
     </delete>
     
+    <select id="selectAuth" parameterType="String">
+        SELECT
+          `id`, `name,` `email, `registerDate`,
+        FROM
+          `auth`
+        WHER
+          `id` = #{id}
+    </select>
+    
 </mapper>

@@ -12,4 +12,6 @@ public interface AuthService {
     Auth selectIsExist(Auth auth);
     
     void deleteAll();
+
+    Auth selectAuth(String id);
 }
