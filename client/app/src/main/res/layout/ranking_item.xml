@@ -19,8 +19,8 @@
         android:layout_width="100dp"
         android:layout_height="60dp"
         android:includeFontPadding="false"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical|center_horizontal" />
+        android:layout_gravity="left"
+        android:gravity="center_vertical" />
 
     <ImageView
         android:id="@+id/item_imageview"

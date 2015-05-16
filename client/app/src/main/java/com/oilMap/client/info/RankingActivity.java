@@ -31,26 +31,25 @@ public class RankingActivity extends Activity {
         ArrayList<RankingItem> data = new ArrayList<>();
 
         for(int i = 0; i < 30; i++){
+            String num = String.valueOf(i+1);
 
             if(i < 3) {
                 switch (i) {
                     case 0:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking01, "Efficiency " + " 3.14" + "km/L");
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking01, "Efficiency " + " 3.14" + "km/L");
                         break;
                     case 1:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking02, "Efficiency " + " 3.14" + "km/L");
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking02, "Efficiency " + " 3.14" + "km/L");
                         break;
                     case 2:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking03, "Efficiency " + " 3.14" + "km/L");
+                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking03, "Efficiency " + " 3.14" + "km/L");
                         break;
                 }
             }else{
-                rankingArray[i] = new RankingItem(R.drawable.effeicency, "a_a", R.drawable.ranking04, "Efficiency " + " 3.14" + "km/L");
+                rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking04, "Efficiency " + " 3.14" + "km/L");
             }
             data.add(rankingArray[i]);
         }
-
-
 
         RankingviewAdapter adapter = new RankingviewAdapter(this, R.layout.ranking_item, data);
         listView.setAdapter(adapter);
