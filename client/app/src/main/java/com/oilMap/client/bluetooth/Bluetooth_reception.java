@@ -4,29 +4,41 @@ package com.oilMap.client.bluetooth;
  * Created by 정성진 on 2015-04-15.
  */
 
-import java.io.*;
-import java.util.*;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import android.app.*;
-import android.bluetooth.*;
-import android.content.*;
-import android.location.Location;
-import android.os.*;
-import android.text.format.Time;
-import android.util.*;
-import android.view.*;
-import android.widget.*;
-
-import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.gps.GpsInfo;
-import com.oilMap.client.info.MainPage;
-import com.oilMap.client.info.NavigationActivity;
 import com.oilMap.client.info.OilInfoActivity;
-import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
 
@@ -37,6 +49,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     BluetoothAdapter mBA;
     ListView mListDevice;
     ArrayList<String> mArDevice; // 원격 디바이스 목록
+    CurrentPosition currentPosition = new CurrentPosition();
+
+    double a = currentPosition.x;
+    double b = currentPosition.y;
+
+    String aa = String.format("%.3f",a);
+    String bb = String.format("%.3f",b);
 
     static final String  BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
 
@@ -62,7 +81,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ;
+
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
@@ -86,18 +105,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         ////
         gps = new GpsInfo(Bluetooth_reception.this);
         // while(true){
-        gpsUsing();
+        //gpsUsing();
         // SystemClock.sleep(1000);
         // }
     }
-
-    public void gpsUsing(){
-        if (gps.isGetLocation()) {
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-            showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
-        }
-    }
+//
+//    public void gpsUsing(){
+//        if (gps.isGetLocation()) {
+//            double latitude = gps.getLatitude();
+//            double longitude = gps.getLongitude();
+//            showMessage(String.format("%.3f",latitude)+"/"+String.format("%.3f",longitude));
+//        }
+//    }
 
 
 
@@ -158,7 +177,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         mBA.startDiscovery();
 
         // 원격 디바이스 검색 이벤트 리시버 등록
-        registerReceiver(mBlueRecv, new IntentFilter( BluetoothDevice.ACTION_FOUND ));
+        registerReceiver(mBlueRecv, new IntentFilter(BluetoothDevice.ACTION_FOUND));
     }
 
     // 디바이스 검색 중지
@@ -419,8 +438,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         km_per_liter=(i.obd.getDistance()-first_dis) /(first_fuel-i.obd.getFuel()) ;
     }
 
-    // 가속했을때
+    // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean sending_acceleration() {
+
 
         boolean bool=false;
         long time_now=d.getTime();
@@ -433,6 +453,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
+                Toast.makeText(Bluetooth_reception.this, a + " , " + b, Toast.LENGTH_SHORT).show();
                 bool=true;
             }
 
@@ -443,6 +464,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
+                Toast.makeText(Bluetooth_reception.this, a + " , " + b, Toast.LENGTH_SHORT).show();
                 bool=true;
             }
         }
