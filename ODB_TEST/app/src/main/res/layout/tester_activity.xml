@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Fuel use : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/fueluseText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Car rpm : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/rpmText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Current Gear : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/gearText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Car Spped : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/spdText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Oil consumption : "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/oilconText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/accelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed UP" />
+
+        <Button
+            android:id="@+id/fasterAccelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed UP! UP! UP!" />
+
+        <Button
+            android:id="@+id/brakeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed DOWN" />
+
+        <Button
+            android:id="@+id/staticSpeedBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed FIX" />
+
+        <Button
+            android:id="@+id/backBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="EXIT" />
+    </LinearLayout>
+</LinearLayout>
