@@ -100,16 +100,6 @@ public class OilInfoActivity extends Activity {
 
         this.backPressCloseHandler = new BackPressCloseHandler(this);
 
-        circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
-        circleProgress.setProgress(10);
-        circleProgress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                circleProgress.setProgress(80);
-            }
-        });
-
-
         dateTextView = (TextView) findViewById(R.id.textView19);
         moneyTextView = (TextView) findViewById(R.id.textView22);
 
@@ -219,6 +209,9 @@ public class OilInfoActivity extends Activity {
                 final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
 
+
+                circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
+                circleProgress.setProgress( ((Double) drivingListMap.get(drivingListMap.size()-1).get("fuelQuantity")).intValue() );
             }
 
         }

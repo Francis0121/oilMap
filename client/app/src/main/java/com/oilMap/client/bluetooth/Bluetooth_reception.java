@@ -462,7 +462,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getFuel(); //전송할 데이터 3개
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
-
+                //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
 
                 bool=true;
             }
@@ -539,7 +539,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                     currentX = String.format("%.3f",latitude);
                     currentY = String.format("%.3f",longitude);
                     showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" + currentX +  " , "  + currentY );
-
                 }
                /* else{
                     showMessage("Receive: " + strBuf);

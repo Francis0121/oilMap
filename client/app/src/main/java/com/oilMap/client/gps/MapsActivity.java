@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +28,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.activity_full_map);
 
         Intent config = getIntent();
@@ -35,10 +39,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         init();
 
-        /*this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
-
-        Log.d("MapsActivity", "onCreate");*/
     }
 
     private void init() {
