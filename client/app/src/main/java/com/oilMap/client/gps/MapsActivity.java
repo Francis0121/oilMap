@@ -69,8 +69,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon));
             mGoogleMap.addMarker(optFirst).showInfoWindow();
         }
-
-
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
