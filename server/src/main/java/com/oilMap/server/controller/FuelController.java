@@ -25,9 +25,9 @@ public class FuelController {
 
     @ResponseBody
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Map<String, Object> insert(@RequestBody Map<String,  Object> request){
+    public Map<String, Object> insert(@RequestBody Map<String,  Object> request) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
-        fuelService.insert(new FuelBill((String) request.get("id"), (String) request.get("title"), (Integer) request.get("bill")));
+        fuelService.calculateBill(new FuelBill((String) request.get("id"), (String) request.get("title"), (Integer) request.get("bill")));
         response.put("result", true);
         return response;
     }
@@ -38,7 +38,6 @@ public class FuelController {
         Map<String, Object> response = new HashMap<String, Object>();
         response.putAll(fuelService.selectMainInfo((String) request.get("id")));
         response.put("result", true);
-        
         Double avgGasoline = http.sendGet();
         response.put("avgGasoline", avgGasoline);
         return response;

@@ -93,7 +93,7 @@ public class SMSReceiver extends BroadcastReceiver {
         protected void onPostExecute(Map<String, Object> stringObjectMap) {
             super.onPostExecute(stringObjectMap);
             Log.d(TAG, stringObjectMap.toString());
-            if((Boolean) request.get("result")){
+            if((Boolean) stringObjectMap.get("result")){
                 Log.d(TAG, "Bill Async task success");
             }
         }
