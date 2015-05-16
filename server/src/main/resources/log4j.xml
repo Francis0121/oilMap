@@ -10,6 +10,17 @@
 		</layout>
 	</appender>
 	
+	<appender name="filelog" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="/var/log/tomcat_oilmap"/>
+		<param name="MaxFileSize" value="10MB"/>
+		<param name="MaxBackupIndex" value="30"/>
+		<param name="Append" value="true"/>
+		<param name="DatePattern" value="'.'yyMMdd"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %-5p: %C - %m%n" />
+		</layout>
+	</appender>
+	
 	<!-- Application Loggers -->
 	<logger name="com.oilMap.server">
 		<level value="debug" />
@@ -41,5 +52,20 @@
 		<priority value="debug" />
 		<appender-ref ref="console" />
 	</root>
+
+	<logger name="com.eikids.server">
+		<level value="info"/>
+		<appender-ref ref="filelog" />
+	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="info" />
+		<appender-ref ref="filelog" />
+	</logger>
+
+	<logger name="org.springframework.jdbc.datasource">
+		<level value="info"/>
+		<appender-ref ref="filelog" />
+	</logger>
 	
 </log4j:configuration>
