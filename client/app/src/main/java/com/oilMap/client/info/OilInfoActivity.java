@@ -173,23 +173,30 @@ public class OilInfoActivity extends Activity {
             Log.d(TAG, stringObjectMap.toString());
 
             if((Boolean)stringObjectMap.get("result")){
+                circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
                 Map<String, Object> map = (Map<String, Object>) stringObjectMap.get("fuelBill");
+                Integer bill = 100;
                 if(map == null || map.get("pn") == null){
                     dateTextView.setText("Data doesn't exist.");
                     moneyTextView.setText("Data doesn't exist.");
+                    circleProgress.setMax(bill);
+                    circleProgress.setProgress(bill);
                 }else{
                     String date = ((String) map.get("billDate")).substring(0, 16);
-                    Integer bill = (Integer) map.get("bill");
+                    bill = (Integer) map.get("bill");
                     DecimalFormat df = new DecimalFormat("#,##0");
                     String strBill = df.format(bill);
 
                     dateTextView.setText(date);
                     moneyTextView.setText(strBill);
+                    circleProgress.setMax(bill);
                 }
                 Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
 
                 List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) stringObjectMap.get("drivingList");
                 List<String> list = new ArrayList<String>();
+
+                Double totalCash = 0.0;
                 if(drivingListMap.size() > 1) {
                     for (int i = 0; i < drivingListMap.size() - 1; i++) {
                         Map<String, Object> drivingMapBefore = drivingListMap.get(i);
@@ -202,6 +209,7 @@ public class OilInfoActivity extends Activity {
                         String strCash = df.format(cash);
 
                         list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + distance / calculate + "km/l");
+                        totalCash += cash;
                     }
                 }else{
                     list.add("Data doesn't exist");
@@ -209,9 +217,7 @@ public class OilInfoActivity extends Activity {
                 final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
 
-
-                circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
-                circleProgress.setProgress( ((Double) drivingListMap.get(drivingListMap.size()-1).get("fuelQuantity")).intValue() );
+                circleProgress.setProgress(bill- totalCash.intValue());
             }
 
         }

@@ -82,6 +82,7 @@
         custom:circle_finished_color="@color/circle_finished_color"
         custom:circle_unfinished_color="@color/circle_unfinished_color"
         custom:circle_text_color="#ffffff"
+        custom:circle_suffix_text="￦"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
