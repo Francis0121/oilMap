@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class DataParsing {
 
     Obd obd = new Obd();
+    boolean firstReception = true;
 
     public void dataP(String data) throws JSONException {
 
@@ -29,7 +30,9 @@ public class DataParsing {
         //JSONObject 객체 파싱
         obd.setRpm(jsonOb.getDouble("rpm"));
         obd.setFuel(jsonOb.getDouble("fuel"));
+        obd.setDistance(jsonOb.getDouble("distance"));
         /////////////////////////////////////////
+
     }
 
 }

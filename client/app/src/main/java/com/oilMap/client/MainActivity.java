@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.auth.AuthActivity;
 import com.oilMap.client.info.NavigationActivity;
+import com.oilMap.client.info.OilInfoActivity;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -85,7 +86,7 @@ public class MainActivity extends Activity {
                 Auth auth = new Auth((String)authMap.get("id"), (String)authMap.get("email"), (String)authMap.get("name"), "", "");
                 Log.d(TAG, respones.toString());
 
-                Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
+                Intent intent = new Intent(MainActivity.this, OilInfoActivity.class);
                 intent.putExtra("auth", auth);
                 startActivity(intent);
                 finish();

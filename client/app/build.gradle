@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.oilMap.client"
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 22
     }
 
     buildTypes {
@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:22.0.3'
     compile files('libs/jackson-annotations-2.5.0.jar')
     compile files('libs/jackson-core-2.5.0.jar')
     compile files('libs/jackson-databind-2.5.0.jar')
@@ -37,4 +37,5 @@ dependencies {
     compile project(':achartengine-0.7.0')
     compile 'com.google.android.gms:play-services:7.3.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    compile 'com.cocosw:bottomsheet:1.1.0'
 }

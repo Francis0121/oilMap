@@ -243,6 +243,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
         ///////////////////////////////////////////
+
     }
 
     // 클라이언트 소켓 생성을 위한 스레드
@@ -366,6 +367,94 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         mSocketThread.start();
     }
 
+    //////////////////////////////////////////////////////////////
+    //처음, 끝 정보 서버로 보냄
+    public void sending() {
+        //i.obd.getDistance(); //전송할 데이터 2개
+        //i.obd.getFuel();
+    }
+
+    //급가속 시 서버로 보냄
+    double rpm_last=0, rpm_now=0, rpm_sub=9999;
+    public void sending_acceleration() {
+        rpm_now = i.obd.getRpm();
+
+        if(rpm_now-rpm_last >= rpm_sub*2) { //급가속 했을 때
+            //서버로 전송
+            //i.obd.getFuel(); //전송할 데이터 3개
+            //i.obd.getLatitude();
+            //i.obd.getLongitude();
+        }
+
+        rpm_sub = rpm_now-rpm_last;
+    }
+    ////////////////////////////////////////////////////////////////
+
+
+    // 데이터 송수신 스레드
+    private class SocketThread extends Thread {
+
+        private final BluetoothSocket mmSocket; // 클라이언트 소켓
+        private InputStream mmInStream; // 입력 스트림
+        ////
+        byte[] buffer = new byte[1024];
+        int bytes=0;
+        String strBuf=null;
+        ////
+
+        public SocketThread(BluetoothSocket socket) {
+
+            mmSocket = socket;
+
+            // 입력 스트림에서 데이터를 읽는다
+            // 입력 스트림 구한다
+            try {
+                mmInStream = socket.getInputStream();
+                dataParsingSet(mmInStream);
+                ///////////////////////////////////////////
+                ///// server 연동
+                //소켓
+                sending();
+                rpm_last = i.obd.getRpm();
+                ///////////////////////////////////////////
+            } catch (IOException e) {
+                showMessage("Get Stream error");
+            }
+        }
+
+        // 소켓에서 수신된 데이터를 화면에 표시한다
+        public void run() {
+
+           while (dataParsingSet(mmInStream)) {
+                showMessage("Receive: " + strBuf);
+
+                SystemClock.sleep(1);
+            }
+        }
+        public boolean dataParsingSet(InputStream inStream){
+            try {
+                bytes = inStream.read(buffer);
+                strBuf = new String(buffer, 0, bytes);
+
+                //////////////////////////////////////////////////////////////////
+                //파싱
+                i.dataP(strBuf);
+                sending_acceleration();
+
+                return true;
+            }
+            catch (IOException e) {
+                showMessage("Socket disconnected");
+                return false;
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
+    /*
     // 데이터 송수신 스레드
     private class SocketThread extends Thread {
 
@@ -415,9 +504,15 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             }
         }
     }
+    */
 
-    // 앱이 종료될 때
+    // 블루투스 종료될 때
     public void onDestroy() {
+        ////////////////////////////////////////
+        //종료하기 전 서버로 마지막 정보 보내는 부분
+        sending();
+        /////////////////////////////////////////
+
         super.onDestroy();
 
         // 디바이스 검색 중지

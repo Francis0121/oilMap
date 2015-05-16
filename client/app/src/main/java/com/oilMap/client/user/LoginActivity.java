@@ -17,6 +17,7 @@ import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.etc.LoadingActivity;
 import com.oilMap.client.gps.MapsActivity;
 import com.oilMap.client.info.NavigationActivity;
+import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -42,7 +43,7 @@ public class LoginActivity extends Activity {
     }
 
     public  void onBackPressed(){
-        backPressCloseHandler.onBackpressed();
+        backPressCloseHandler.onBackPressed();
     }
 
 

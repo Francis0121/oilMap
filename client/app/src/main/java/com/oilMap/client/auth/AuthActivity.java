@@ -22,6 +22,7 @@ import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
 import com.oilMap.client.info.NavigationActivity;
+import com.oilMap.client.info.OilInfoActivity;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -245,7 +246,7 @@ public class AuthActivity extends Activity {
                 Log.d(TAG, "Auth register success");
 
                 // ~ AuthActivity
-                Intent intent = new Intent(AuthActivity.this, NavigationActivity.class);
+                Intent intent = new Intent(AuthActivity.this, OilInfoActivity.class);
                 intent.putExtra("auth", (Auth)response.get("auth"));
                 startActivity(intent);
                 finish();
