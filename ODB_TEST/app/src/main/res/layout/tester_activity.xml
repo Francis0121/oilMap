@@ -4,21 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15px"
+            android:textSize="18sp" />
+        >
+    </LinearLayout>
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
 
-        <TableRow>
-
-            <TextView
-                android:id="@+id/bluetooth"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="15px"
-                android:textSize="18sp" />
-        </TableRow>
 
         <TableRow>
 
