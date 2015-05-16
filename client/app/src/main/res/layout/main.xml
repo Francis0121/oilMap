@@ -18,13 +18,12 @@
 
     </RelativeLayout>
 
-    <pl.droidsonroids.gif.GifImageView
-        android:layout_width="218dp"
-        android:layout_height="244dp"
-        android:src="@drawable/main_image"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal" />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/main_image"/>
 
     <TextView
         android:layout_width="wrap_content"

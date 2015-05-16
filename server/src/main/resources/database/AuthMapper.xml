@@ -26,12 +26,12 @@
           `id` = #{id}
     </delete>
     
-    <select id="selectAuth" parameterType="String">
+    <select id="selectAuth" parameterType="String" resultType="Auth">
         SELECT
-          `id`, `name,` `email, `registerDate`,
+          `id`, `name`, `email`, `registerDate`
         FROM
           `auth`
-        WHER
+        WHERE
           `id` = #{id}
     </select>
     

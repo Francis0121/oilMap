@@ -11,7 +11,7 @@
 	</appender>
 	
 	<appender name="filelog" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="file" value="/var/log/tomcat_oilmap"/>
+		<param name="file" value="/var/log/tomcat_oilmap/log.out"/>
 		<param name="MaxFileSize" value="10MB"/>
 		<param name="MaxBackupIndex" value="30"/>
 		<param name="Append" value="true"/>

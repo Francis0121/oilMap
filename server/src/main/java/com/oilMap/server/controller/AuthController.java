@@ -66,7 +66,7 @@ public class AuthController {
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     public Map<String, Object> select(@RequestBody Map<String,Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        if(authService.selectIsExist(new Auth((String)request.get("id"))) != null){
+        if(authService.selectIsExist(new Auth((String)request.get("id"))) == null){
             response.put("result", false);
             return response;
         }
