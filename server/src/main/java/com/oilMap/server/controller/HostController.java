@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 public class HostController {
 	
@@ -25,8 +28,10 @@ public class HostController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/crawler", method = RequestMethod.POST)
-	public Boolean crawler() throws Exception {
-		Boolean isSuccess = http.sendGet();
-		return isSuccess;
+	public Map<String, Object> crawler() throws Exception {
+		Double avgGasoline = http.sendGet();
+		Map<String, Object> response = new HashMap<String, Object>();
+		response.put("avgGasoline", avgGasoline);
+		return response;
 	}
 }

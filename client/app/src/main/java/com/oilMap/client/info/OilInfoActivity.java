@@ -6,13 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,17 +28,29 @@ import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.oilMap.client.R;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 public class OilInfoActivity extends Activity {
 
+    private static final String TAG = "OilInfoActivity";
+
     private BottomSheet bottomSheet;
-    SMSReceiver smsReceiver = new SMSReceiver();
     private BackPressCloseHandler backPressCloseHandler;
     private CircleProgress circleProgress;
     private ListView listView;
+    private String id;
+
+    private TextView dateTextView;
+    private TextView moneyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +58,9 @@ public class OilInfoActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.activity_oil_info);
+
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        this.id = pref.getString("id", "");
 
         Button rankBtn = (Button) findViewById(R.id.rankingBtn);
         rankBtn.setOnClickListener(new View.OnClickListener(){
@@ -92,35 +110,12 @@ public class OilInfoActivity extends Activity {
         });
 
 
+        dateTextView = (TextView) findViewById(R.id.textView19);
+        moneyTextView = (TextView) findViewById(R.id.textView22);
+
+        new OilInfoAsyncTask().execute();
+
         listView = (ListView) findViewById(R.id.listView);
-        String[] values = new String[] { "Date : 2015-05-01  Fuel : 80%", "2015-05-02 78%", "2015-05-03 76%",
-                "2015-05-04 60%", "2015-05-05 55%", "2015-05-06 51%", "2015-05-07 80%", "2015-05-08 80%",
-                "2015-05-09 80%" };
-
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(2000).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                list.remove(item);
-                                adapter.notifyDataSetChanged();
-                                view.setAlpha(1);
-                            }
-                        });
-            }
-
-        });
     }
 
     @Override
@@ -146,7 +141,7 @@ public class OilInfoActivity extends Activity {
             TextView textView=(TextView) view.findViewById(android.R.id.text1);
             /*YOUR CHOICE OF COLOR*/
             textView.setTextColor(Color.WHITE);
-
+            textView.setTextSize(12);
             return view;
         }
 
@@ -161,5 +156,68 @@ public class OilInfoActivity extends Activity {
             return true;
         }
 
+    }
+
+    private class OilInfoAsyncTask extends AsyncTask<Void, Void, Map<String, Object>>{
+
+        private Map<String, Object> request = new HashMap<String, Object>();
+
+        @Override
+        protected Map<String, Object> doInBackground(Void... params) {
+            try {
+                String url = getString(R.string.contextPath) + "/fuelBill/select";
+                request.put("id", OilInfoActivity.this.id);
+
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, this.request, Map.class);
+                Map<String, Object> messages = responseEntity.getBody();
+                return messages;
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                throw new RuntimeException("Communication error occur");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, Object> stringObjectMap) {
+            Log.d(TAG, stringObjectMap.toString());
+
+            if((Boolean)stringObjectMap.get("result")){
+                Map<String, Object> map = (Map<String, Object>) stringObjectMap.get("fuelBill");
+                if(map == null){
+                    dateTextView.setText("Data doesn't exist.");
+                    moneyTextView.setText("Data doesn't exist.");
+                }else{
+                    String date = ((String) map.get("billDate")).substring(0, 16);
+                    Integer bill = (Integer) map.get("bill");
+                    DecimalFormat df = new DecimalFormat("#,##0");
+                    String strBill = df.format(bill);
+
+                    dateTextView.setText(date);
+                    moneyTextView.setText(strBill);
+                }
+                Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
+
+                List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) stringObjectMap.get("drivingList");
+
+                List<String> list = new ArrayList<String>();
+                for (int i = 0; i < drivingListMap.size()-1; i++) {
+                    Map<String, Object> drivingMapBefore = drivingListMap.get(i);
+                    Map<String, Object> drivingMapEnd = drivingListMap.get(i+1);
+
+                    Double calculate = (Double)drivingMapBefore.get("fuelQuantity") - (Double)drivingMapEnd.get("fuelQuantity") ;
+                    Double distance = ((Double)drivingMapEnd.get("distance") - (Double)drivingMapBefore.get("distance"));
+                    Double cash = (calculate  * avgGasoline);
+                    DecimalFormat df = new DecimalFormat("#,##0");
+                    String strCash = df.format(cash);
+
+                    list.add("Date : "+ ( (String)drivingMapEnd.get("inputDate") ).substring(0, 10) + " - Cash : " + strCash  + "￦ - Efficiency :" +  distance/calculate + "km/l" ) ;
+                }
+                final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
+                listView.setAdapter(adapter);
+
+            }
+
+        }
     }
 }

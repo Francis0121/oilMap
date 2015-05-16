@@ -14,4 +14,6 @@ public interface DriveService {
     List<Driving> selectDrivingInfo(String id);
 
     List<DrivePoint> selectDrivePoint(String id);
+
+    List<Driving> selectDrivingFromFuelBillPn(Integer fuelBillPn);
 }

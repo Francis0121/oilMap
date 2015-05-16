@@ -7,6 +7,8 @@ public class Driving {
     
     private String id;
 
+    private Integer fuelBillPn;
+    
     /**
      * 운행 종료 후 이동거리 
      */
@@ -26,6 +28,14 @@ public class Driving {
         this.id = id;
         this.distance = distance;
         this.fuelQuantity = fuelQuantity;
+    }
+
+    public Integer getFuelBillPn() {
+        return fuelBillPn;
+    }
+
+    public void setFuelBillPn(Integer fuelBillPn) {
+        this.fuelBillPn = fuelBillPn;
     }
 
     public Double getFuelQuantity() {
@@ -64,6 +74,7 @@ public class Driving {
     public String toString() {
         return "Driving{" +
                 "id='" + id + '\'' +
+                ", fuelBillPn=" + fuelBillPn +
                 ", distance=" + distance +
                 ", fuelQuantity=" + fuelQuantity +
                 ", inputDate='" + inputDate + '\'' +
