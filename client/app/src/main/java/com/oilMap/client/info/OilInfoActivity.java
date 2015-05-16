@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -15,6 +17,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,17 +28,29 @@ import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.oilMap.client.R;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 public class OilInfoActivity extends Activity {
+
+    private static final String TAG = "OilInfoActivity";
 
     private BottomSheet bottomSheet;
     private BackPressCloseHandler backPressCloseHandler;
     private CircleProgress circleProgress;
     private ListView listView;
+    private String id;
+
+    private TextView dateTextView;
+    private TextView moneyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +58,9 @@ public class OilInfoActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.activity_oil_info);
+
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        this.id = pref.getString("id", "");
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
@@ -112,6 +130,11 @@ public class OilInfoActivity extends Activity {
             }
 
         });
+
+        dateTextView = (TextView) findViewById(R.id.textView19);
+        moneyTextView = (TextView) findViewById(R.id.textView22);
+
+        new OilInfoAsyncTask().execute();
     }
 
     @Override
@@ -152,5 +175,48 @@ public class OilInfoActivity extends Activity {
             return true;
         }
 
+    }
+
+    private class OilInfoAsyncTask extends AsyncTask<Void, Void, Map<String, Object>>{
+
+        private Map<String, Object> request = new HashMap<String, Object>();
+
+        @Override
+        protected Map<String, Object> doInBackground(Void... params) {
+            try {
+                String url = getString(R.string.contextPath) + "/fuelBill/select";
+                request.put("id", OilInfoActivity.this.id);
+
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, this.request, Map.class);
+                Map<String, Object> messages = responseEntity.getBody();
+                return messages;
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                throw new RuntimeException("Communication error occur");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, Object> stringObjectMap) {
+            Log.d(TAG, stringObjectMap.toString());
+
+            if((Boolean)stringObjectMap.get("result")){
+                Map<String, Object> map = (Map<String, Object>) stringObjectMap.get("fuelBill");
+                if(map == null){
+                    dateTextView.setText("Data doesn't exist.");
+                    moneyTextView.setText("Data doesn't exist.");
+                }else{
+                    String date = ((String) map.get("billDate")).substring(0, 16);
+                    Integer bill = (Integer) map.get("bill");
+                    DecimalFormat df = new DecimalFormat("#,##0");
+                    String strBill = df.format(bill);
+
+                    dateTextView.setText(date);
+                    moneyTextView.setText(strBill);
+                }
+            }
+
+        }
     }
 }

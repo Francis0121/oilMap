@@ -55,7 +55,7 @@
         android:layout_below="@+id/textView18" />
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:text="50,000"
         android:textSize="14dp"

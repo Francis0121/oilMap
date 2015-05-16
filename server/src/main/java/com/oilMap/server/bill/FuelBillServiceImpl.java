@@ -16,6 +16,6 @@ public class FuelBillServiceImpl extends SqlSessionDaoSupport implements FuelBil
 
     @Override
     public FuelBill selectMaxFuelBill(String id) {
-        return getSqlSession().selectOne("fuelBIll.selectMaxFuelBill", id);
+        return getSqlSession().selectOne("fuelBill.selectMaxFuelBill", id);
     }
 }

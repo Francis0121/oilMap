@@ -12,7 +12,7 @@
     
     <select id="selectMaxFuelBill" parameterType="String" resultType="FuelBill">
         SELECT
-          MAX(`pn`), `id`, `title`, `bill`, `billDate`
+          MAX(`pn`) AS `pn`, `id`, `title`, `bill`, `billDate`
         FROM
           `fuel_bill`
         WHERE

@@ -29,10 +29,10 @@ public class FuelController {
     }
     
     @ResponseBody
-    @RequestMapping(value = "/select/{id}", method = RequestMethod.POST)
-    public Map<String, Object> selectData(@RequestBody Map<String, Object> request, @PathVariable("id") String id){
+    @RequestMapping(value = "/select", method = RequestMethod.POST)
+    public Map<String, Object> selectData(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        FuelBill fuelBill = fuelService.selectMaxFuelBill(id);
+        FuelBill fuelBill = fuelService.selectMaxFuelBill((String) request.get("id"));
         response.put("fuelBill", fuelBill);
         response.put("result", true);
         return response;
