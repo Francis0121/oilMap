@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -41,14 +43,17 @@ public class tester_Activity extends Activity {
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
+    final static double OIL_FULL_CAPACITY = 5000; // 기름 최대용량
     final static double RPM_LIMIT = 2000; // RPM 제한
     public double car_rpm = 500; // 기본 500 rpm
     public double car_speed = 0; //
     public double oil_capacity = 5000; // 5000L
     public double fuel_use = 500; // 엔진에 주입되는 기름소비량
-    public double oil_consumption = 0; // 기름소비량
     public double distance = 1000; // 현재 1000km를 탄상태
     public int current_gear = 0;
+
+    public Calendar cal = Calendar.getInstance();
+    public long time = 0; // 엔진 시작후 경과된 시간
 
     TextView fuel_use_text;
     TextView rpm_text;
@@ -176,6 +181,9 @@ public class tester_Activity extends Activity {
     // rpm 관리
     TimerTask rpmTimeTask = new TimerTask() {
         public void run() {
+            cal.setTime(new Date(System.currentTimeMillis()));
+            time = cal.getTimeInMillis();
+
             // 정속주행이 아니라면
             if (!static_flag) {
                 // 악셀중일때
@@ -229,18 +237,16 @@ public class tester_Activity extends Activity {
             ////////
 
             // 순간속도 1초 만큼 거리 추가
-            distance += car_speed / 3600;
+            distance += car_speed / 3600; // km/h -> km/s
         }
     };
     // 매초 속도와 기름소비량 정보를 계산하여 보여준다.
     TimerTask timeTimerTask = new TimerTask() {
         public void run() {
 
-            oil_consumption = fuel_use / 60 / FUEL_EFFICIENCY;  // 1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
-
             // rpm따른 남은 기름량이 0보다 커야 계산가능
             if ((car_rpm > 0) && (oil_capacity > 0)) {
-                oil_capacity -= oil_consumption;
+                oil_capacity -= fuel_use / 1000 / 100;  // 1cc=0.001 ...  1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
             }
             // Fuel consumption
             Handler fueluseHandler = fuel_use_text.getHandler();
@@ -483,15 +489,22 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
+                    jd.setFuelUse(Double.parseDouble(String.format("%.5f", fuel_use)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
-                    jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
+                    jd.setFuel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
                     jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
+                    jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
-                    if (mSocketThread.write(jd.retJson()))
-                        showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel());// + strBuf);
-                    else
-                        showMessage("Socket Disconnected");
-                    SystemClock.sleep(1000);
+                    try {
+                        if (mSocketThread.write(jd.retJson() + "\0"))
+                            showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel() + "/" + jd.getDistance() + "/" + jd.getTime());
+                        else
+                            showMessage("Socket Disconnected");
+                        SystemClock.sleep(1000);
+                    } catch (NullPointerException e) {
+                        ;
+                    }
+
                 }
 
             }
