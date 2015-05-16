@@ -38,8 +38,8 @@ public class tester_Activity extends Activity {
 
     ////////////////////////////////////////////////////*/
     final static double BASIC_RPM = 500;
-    final static double RPM_RANGE = 30.0; //rpm 증가값
-    final static double FASTER_RPM_RANGE = 60.0; //rpm 증가값 기본 rpm의 2배
+    final static double RPM_RANGE = 50.0; //rpm 증가값
+    final static double FASTER_RPM_RANGE = 100.0; //rpm 증가값 기본 rpm의 2배
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
@@ -489,9 +489,9 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    jd.setFuelUse(Double.parseDouble(String.format("%.5f", fuel_use)));
+                    jd.setFuelUse(Double.parseDouble(String.format("%.3f", fuel_use)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
-                    jd.setFuel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
+                    jd.setFuel(Double.parseDouble(String.format("%.5f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
                     jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
