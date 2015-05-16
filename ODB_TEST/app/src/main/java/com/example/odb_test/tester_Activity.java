@@ -489,14 +489,14 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    jd.setFuelUse(Double.parseDouble(String.format("%.3f", fuel_use)));
+                    jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
-                    jd.setFuel(Double.parseDouble(String.format("%.5f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
+                    jd.setFuelLevel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
                     jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     try {
-                        if (mSocketThread.write(jd.retJson() + "\0"))
+                        if (mSocketThread.write(jd.retJson() + "\\0"))
                             showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel() + "/" + jd.getDistance() + "/" + jd.getTime());
                         else
                             showMessage("Socket Disconnected");
