@@ -14,7 +14,7 @@ import android.provider.Settings;
 
 /**
  * Created by 김현준 on 2015-05-16.
- */
+ *///s//
 public class GpsInfo extends Service implements LocationListener {
     private final Context mContext;
 
@@ -109,6 +109,8 @@ public class GpsInfo extends Service implements LocationListener {
             locationManager.removeUpdates(GpsInfo.this);
         }
     }
+
+    ///////////////////////////////         GPS 위도 경도 정보             ////////////////////////////////////
 
     /**
      * 위도값

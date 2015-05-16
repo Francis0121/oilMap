@@ -66,6 +66,7 @@ public class AuthActivity extends Activity {
                 getUsername();
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "You must pick an account", Toast.LENGTH_SHORT).show();
+                finish();
             }
         } else if ((requestCode == REQUEST_CODE_RECOVER_FROM_AUTH_ERROR ||
                 requestCode == REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR)
