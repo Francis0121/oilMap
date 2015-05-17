@@ -3,9 +3,11 @@ package com.oilMap.client.gps;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,9 +44,6 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
         }
 
         try {
-//            SharedPreferences pref = context.getSharedPreferences("userInfo", 0);
-//            String id = pref.getString("id", "");
-
             Map<String, Object> request = new HashMap<>();
             request.put("id", params[0]);
             Log.d(TAG, request.toString());
@@ -59,6 +58,8 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
             throw new RuntimeException("Driving async task communication error occur");
         }
     }
+
+
 
     @Override
     protected void onPostExecute(Map<String, Object> response) {
@@ -78,6 +79,7 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
             option.title("Position");// 제목 미리보기
             option.snippet("Speed " + count);
             option.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
+
             this.googleMap.addMarker(option).showInfoWindow();
             Log.d(TAG, latLng.toString());
         }

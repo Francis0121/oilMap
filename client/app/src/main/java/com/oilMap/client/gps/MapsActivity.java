@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Point;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -24,6 +25,8 @@ import com.oilMap.client.R;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
 
+    private static final String TAG = "MapsActivity";
+
     private GoogleMap mGoogleMap;
     private String id;
 
@@ -42,16 +45,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
         init();
     }
 
-    public void setPosition(LatLng latLng){
-        // 마커 설정.
-        MarkerOptions optFirst = new MarkerOptions();
-        optFirst.position(latLng);// 위도 • 경도
-        optFirst.title("Current Position");// 제목 미리보기
-        optFirst.snippet("Snippet");
-        optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
-        mGoogleMap.addMarker(optFirst).showInfoWindow();
-    }
-
     private void init() {
         GooglePlayServicesUtil.isGooglePlayServicesAvailable(MapsActivity.this);
         mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
@@ -66,11 +59,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             double latitude = gps.getLatitude();
             double longitude = gps.getLongitude();
 
-
             LatLng latLng = new LatLng(latitude, longitude);// Creating a LatLng object for the current location
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));// Showing the current location in Google Map
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+
             new MapsAsyncTask(MapsActivity.this, mGoogleMap).execute(id);
+            mGoogleMap.setMyLocationEnabled(true);
+            mGoogleMap.setOnMyLocationChangeListener(myLocationChangeListener);
         }
     }
 
@@ -99,4 +94,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
         Log.d("화면좌표", "화면좌표: X(" + String.valueOf(screenPt.x) + "), Y("
                 + String.valueOf(screenPt.y) + ")");
     }
+
+    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            Log.d(TAG, "Call on my location change listener");
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions option = new MarkerOptions();
+            option.position(loc);// 위도 • 경도
+            option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));;
+
+            mGoogleMap.addMarker(option);
+            if(mGoogleMap != null){
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            }
+        }
+    };
 }
