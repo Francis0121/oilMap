@@ -58,7 +58,7 @@
         SELECT
             b.`pn` AS `batch.pn`, b.`batchDate` AS `batch.batchDate`,
             a.`id` AS `auth.id`, a.`email` AS `auth.email`, a.`name` AS `auth.name`,
-            e.`efficiency` AS `efficiency.efficiency`
+            e.`efficiency` AS `efficiency.efficiency`, e.`ranking` AS `efficiency.ranking`
         FROM
             `efficiency` e, `batch` b, `auth` a
         WHERE

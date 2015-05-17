@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.gps.MapsActivity;
+import com.oilMap.client.ranking.Efficiency;
 import com.oilMap.client.ranking.Ranking;
 import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
@@ -74,24 +75,26 @@ public class RankingActivity extends Activity {
             Integer count = 1;
             for(Ranking ranking : rankings){
                 RankingItem rankingItem = null;
-                Double efficiency = ranking.getEfficiency().getEfficiency();
+                Efficiency e = ranking.getEfficiency();
+                Double efficiency = e.getEfficiency();
                 DecimalFormat df = new DecimalFormat("#,##0.0");
                 String strEfficiency= df.format(efficiency);
+
 
                 if(count < 3) {
                     switch (count) {
                         case 1:
-                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking01, "Efficiency " + strEfficiency  + "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, "Efficiency " + strEfficiency  + "km/L", ranking.getAuth().getId());
                             break;
                         case 2:
-                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking02, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
                             break;
                         case 3:
-                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking03, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
                             break;
                     }
                 }else{
-                    rankingItem = new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking04, "Efficiency " + strEfficiency + "km/L", ranking.getAuth().getId());
+                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, "Efficiency " + strEfficiency + "km/L", ranking.getAuth().getId());
                 }
 
                 if(rankingItem != null) {
