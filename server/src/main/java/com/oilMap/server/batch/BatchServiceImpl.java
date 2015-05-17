@@ -45,12 +45,15 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
                     Driving drivingBefore = drivings.get(i);
                     Driving drivingEnd = drivings.get(i+1);
                     
-                    Double fuelQuantity = drivingBefore.getFuelQuantity() - drivingEnd.getFuelQuantity();
-                    Double distance = drivingEnd.getDistance() - drivingBefore.getDistance();
+                    // ~ 같은 연료 상황일 때 계산
+                    if(drivingBefore.getFuelBillPn().equals(drivingEnd.getFuelBillPn())) {
+                        Double fuelQuantity = drivingBefore.getFuelQuantity() - drivingEnd.getFuelQuantity();
+                        Double distance = drivingEnd.getDistance() - drivingBefore.getDistance();
 
-                    if(fuelQuantity.intValue() > 0) {
-                        totalEfficiency += distance / fuelQuantity;
-                        calCount++;
+                        if (fuelQuantity.intValue() > 0) {
+                            totalEfficiency += distance / fuelQuantity;
+                            calCount++;
+                        }
                     }
                 }
                 efficiencyVal = totalEfficiency / calCount;
@@ -79,6 +82,9 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
                 e.setRanking(rank);
             }
             
+            if(e.getEfficiency() == null || e.getEfficiency() < 0){
+                e.setEfficiency(0.0);
+            }
             logger.debug(e.toString());
             insertEfficiency(e);
         }
