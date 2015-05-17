@@ -45,4 +45,12 @@ public class DriveController {
         response.put("result", true);
         return response;
     }
+    
+    @ResponseBody
+    @RequestMapping(value ="/position", method = RequestMethod.POST)
+    public Map<String, Object> position(@RequestBody Map<String, Object> request){
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.putAll(drivingService.selectPosition((String) request.get("id")));
+        return response;
+    }
 }

@@ -48,4 +48,29 @@
           `inputDate` ASC
     </select>
     
+    <select id="selectPositionCount" parameterType="DrivePointFilter" resultType="Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `drive_point`
+        WHERE
+            `id` = #{id}
+        AND
+            DATE_FORMAT(`inputDate`, '%Y-%m-%d') BETWEEN #{endDate} AND #{startDate}
+    </select>
+    
+    <select id="selectPosition" parameterType="DrivePointFilter" resultType="DrivePoint">
+        SELECT
+            `latitude`, `longitude`
+        FROM
+            `drive_point`
+        WHERE
+            `id` = #{id}
+        AND
+            DATE_FORMAT(`inputDate`, '%Y-%m-%d') BETWEEN #{endDate} AND #{startDate}
+        ORDER BY
+            `inputDate` DESC
+        LIMIT #{pagination.itemSeqBegin}, #{pagination.numItemsPerPage}
+    </select>
+    
 </mapper>

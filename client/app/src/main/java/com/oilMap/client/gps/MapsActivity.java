@@ -25,6 +25,7 @@ import com.oilMap.client.R;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
 
     private GoogleMap mGoogleMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
         MapsInitializer.initialize(getApplicationContext());
 
         init();
+    }
 
+    public void setPosition(LatLng latLng){
+        // 마커 설정.
+        MarkerOptions optFirst = new MarkerOptions();
+        optFirst.position(latLng);// 위도 • 경도
+        optFirst.title("Current Position");// 제목 미리보기
+        optFirst.snippet("Snippet");
+        optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
+        mGoogleMap.addMarker(optFirst).showInfoWindow();
     }
 
     private void init() {
@@ -55,22 +65,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             double latitude = gps.getLatitude();
             double longitude = gps.getLongitude();
 
-            // Creating a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
 
-            // Showing the current location in Google Map
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-            // Map 을 zoom 합니다.
+            LatLng latLng = new LatLng(latitude, longitude);// Creating a LatLng object for the current location
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));// Showing the current location in Google Map
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
-
-            // 마커 설정.
-            MarkerOptions optFirst = new MarkerOptions();
-            optFirst.position(latLng);// 위도 • 경도
-            optFirst.title("Current Position");// 제목 미리보기
-            optFirst.snippet("Snippet");
-            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
-            mGoogleMap.addMarker(optFirst).showInfoWindow();
+            new MapsAsyncTask(MapsActivity.this, mGoogleMap).execute();
         }
     }
 
