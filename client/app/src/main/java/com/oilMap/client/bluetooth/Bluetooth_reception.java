@@ -434,16 +434,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         first_dis=i.obd.getDistance(); //전송할 데이터 2개
         first_fuel=i.obd.getFuel();
     }
-    ///지우기
-    public void last_sending() {
-        km_per_liter=(i.obd.getDistance()-first_dis) /(first_fuel-i.obd.getFuel()) ;
-    }
 
     // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public boolean sending_acceleration() {
         boolean bool=false;
-        long time_now=d.getTime();
         long time_interval =0;
+        long time_now=i.obd.getTime();
         time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
         rpm_now = i.obd.getRpm();
 
@@ -454,11 +450,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //i.obd.getLatitude();
                 //i.obd.getLongitude();
                 //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
-
                 bool=true;
             }
-
-
         rpm_sub = rpm_now-rpm_last;
         rpm_last = rpm_now;
         time_last=time_now;
@@ -477,7 +470,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         private byte[] buffer = new byte[1024];
         private int bytes=0;
         private String strBuf=null;
-        private double last_fuel_per=0;
         ////
 
         public SocketThread(BluetoothSocket socket) {
@@ -489,7 +481,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             try {
                 mmInStream = socket.getInputStream();
                 dataParsingSet(mmInStream);
-                last_fuel_per=i.obd.getFuel();
 
                 dataParsingSet(mmInStream);
                 rpm_last = i.obd.getRpm(); //처음 rpm 구하기
@@ -555,9 +546,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         super.onDestroy();
 
-        last_sending();
-        String txt = String.format("%.3f", km_per_liter);
-        Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
+        sending();
+
 
         // 디바이스 검색 중지
         stopFindDevice();////////////////////////////////////
