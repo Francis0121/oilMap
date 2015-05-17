@@ -1,6 +1,7 @@
 package com.oilMap.client.bluetooth;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -32,12 +33,27 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
 
     @Override
     protected Map<String, Object> doInBackground(Object... params) {
-        if(params[0] == null){
+        if(params[0] == null || params[1] == null || params[2] == null || params[3] == null ){
             return null;
         }
 
+
         try {
+            SharedPreferences pref = mContext.getSharedPreferences("userInfo", 0);
+            String id = pref.getString("id", "");
+
+            Double latitude = (Double) params[0];
+            Double longitude = (Double) params[1];
+            Double rpmNow = (Double) params[2];
+            Double rpmLast = (Double) params[3];
+
             Map<String, Object> request = new HashMap<>();
+            request.put("id", id);
+            request.put("latitude", latitude);
+            request.put("longitude", longitude);
+            request.put("startSpeed", rpmNow);
+            request.put("endSpeed", rpmLast);
+
             String url = mContext.getString(R.string.contextPath) + "/drive/drivePoint";
 
             RestTemplate restTemplate = new RestTemplate();

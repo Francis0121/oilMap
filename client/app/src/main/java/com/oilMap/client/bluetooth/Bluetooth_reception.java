@@ -7,15 +7,12 @@ package com.oilMap.client.bluetooth;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
@@ -38,47 +34,42 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
 
-    static final int ACTION_ENABLE_BT = 101;
-    public DataParsing i = new DataParsing(); ////////////////////////////
+    public DataParsing i = new DataParsing(); // Data Parsing Class
 
-    TextView mTextMsg;
+    /********************** Bluetooth *************************************/
+    static final int ACTION_ENABLE_BT = 101;
+
     BluetoothAdapter mBA;
     ListView mListDevice;
     ArrayList<String> mArDevice; // 원격 디바이스 목록
 
-    String currentX, currentY;
-
     static final String  BLUE_NAME = "BluetoothEx";  // 접속시 사용하는 이름
-
     // 접속시 사용하는 고유 ID
     static final UUID BLUE_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
-    ClientThread mCThread = null; // 클라이언트 소켓 접속 스레드
-    ServerThread mSThread = null; // 서버 소켓 접속 스레드
-    SocketThread mSocketThread = null; // 데이터 송수신 스레드
+    Thread mCThread = null; // 클라이언트 소켓 접속 스레드
+    Thread mSocketThread = null; // 데이터 송수신 스레드
 
     //급가속 시 서버로 보냄/////
-    public double km_per_liter=0;
-    public double first_dis=0,first_fuel=0;
-    public double fuel_capacity=0.0; // 현제 연료량
     ////지우기
     public double rpm_last=0.0, rpm_now=0.0, rpm_sub=999.0;
     public long time_last=0;
     public Date d=new Date();
     double latitude;
     double longitude;
-    ///////////////////////
-    //////
 
+    /****************Data Handling*********************/
+    TextView mTextMsg;
+    DataHandling data_handling=null;
+    /****************GPS*********************/
     GpsInfo gps = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -87,23 +78,27 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.gps_main);
 
+
+        /********************GPS*************************/
         MapsInitializer.initialize(getApplicationContext());
-
         init();
+        gps = new GpsInfo(Bluetooth_reception.this);
 
+        /*************************DataHandling**********************/
         mTextMsg = (TextView)findViewById(R.id.textMessage);
+        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg);
+
+        /********************** Bluetooth *************************************/
+
         mBA = BluetoothAdapter.getDefaultAdapter();
-
-        // ListView 초기화
-        initListView();
-
+        initListView();  // ListView 초기화
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
         if( isBlue )
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
-        ////
-        gps = new GpsInfo(Bluetooth_reception.this);
+
+
     }
 
     private void init() {
@@ -120,7 +115,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         }
     }
-
 
 
     // 블루투스 사용 가능상태 판단
@@ -174,7 +168,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 원격 디바이스 검색 중지
         stopFindDevice();
 
-        showMessage("Bluetooth 장치 OBD를 선택해주세요.");
+        data_handling.showMessage("Bluetooth 장치 OBD를 선택해주세요.");
 
         // 디바이스 검색 시작
         mBA.startDiscovery();
@@ -243,12 +237,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     // 페어링된 원격 디바이스 목록 구하기
     public void getParedDevice() {
 
-        if( mSThread != null ) return;
-
-        // 서버 소켓 접속을 위한 스레드 생성 & 시작
-        mSThread = new ServerThread();
-        mSThread.start();
-
         // 블루투스 어댑터에서 페어링된 원격 디바이스 목록을 구한다
         Set<BluetoothDevice> devices = mBA.getBondedDevices();
 
@@ -281,10 +269,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 디바이스 검색 중지
         stopFindDevice();
 
-        // 서버 소켓 스레드 중지
-        mSThread.cancel();
-        mSThread = null;
-
         if( mCThread != null ) return;
 
         // 상대방 디바이스를 구한다
@@ -315,12 +299,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         private BluetoothSocket mmCSocket;
 
         // 원격 디바이스와 접속을 위한 클라이언트 소켓 생성
-        public ClientThread(BluetoothDevice  device) {
+        public ClientThread(BluetoothDevice device) {
 
             try {
                 mmCSocket = device.createInsecureRfcommSocketToServiceRecord(BLUE_UUID);
             } catch(IOException e) {
-                showMessage("Create Client Socket error");
+                data_handling.showMessage("Create Client Socket error");
                 return;
             }
         }
@@ -330,13 +314,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             try {
                 mmCSocket.connect();
             } catch(IOException e) {
-                showMessage("Connect to server error");
+                data_handling.showMessage("Connect to server error");
 
                 // 접속이 실패했으면 소켓을 닫는다
                 try {
                     mmCSocket.close();
                 } catch (IOException e2) {
-                    showMessage("Client Socket close error");
+                    data_handling.showMessage("Client Socket close error");
                 }
                 return;
             }
@@ -344,126 +328,15 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
             onConnected(mmCSocket);
         }
-
         // 클라이언트 소켓 중지
-        public void cancel() {
+        public void interrupt() {
             try {
                 mmCSocket.close();
             } catch (IOException e) {
-                showMessage("Client Socket close error");
+                data_handling.showMessage("Client Socket close error");
             }
         }
     }
-
-    // 서버 소켓을 생성해서 접속이 들어오면 클라이언트 소켓을 생성하는 스레드
-    private class ServerThread extends Thread {
-
-        private BluetoothServerSocket mmSSocket;
-
-        // 서버 소켓 생성
-        public ServerThread() {
-            try {
-                mmSSocket = mBA.listenUsingInsecureRfcommWithServiceRecord(BLUE_NAME, BLUE_UUID);
-            } catch(IOException e) {
-                showMessage("Get Server Socket Error");
-            }
-        }
-
-        public void run() {
-
-            BluetoothSocket cSocket = null;
-
-            // 원격 디바이스에서 접속을 요청할 때까지 기다린다
-            try {
-                cSocket = mmSSocket.accept();
-            } catch(IOException e) {
-                showMessage("Socket Accept Error");
-                return;
-            }
-
-            // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-            onConnected(cSocket);
-        }
-
-        // 서버 소켓 중지
-        public void cancel() {
-
-            try {
-                mmSSocket.close();
-            } catch (IOException e) {
-                showMessage("Server Socket close error");
-            }
-        }
-    }
-
-    // 메시지를 화면에 표시
-    public void showMessage(String strMsg) {
-
-        // 메시지 텍스트를 핸들러에 전달
-        Message msg = Message.obtain(mHandler, 0, strMsg);
-        mHandler.sendMessage(msg);
-        Log.d("tag1", strMsg);
-    }
-
-    // 메시지 화면 출력을 위한 핸들러
-    Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-
-            if (msg.what == 0) {
-                String strMsg = (String)msg.obj;
-                mTextMsg.setText(strMsg);
-            }
-        }
-    };
-
-    // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
-    public void onConnected(BluetoothSocket socket) {
-
-        showMessage("Socket connected");
-
-        // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
-        if( mSocketThread != null )
-            mSocketThread = null;
-
-        // 데이터 송수신 스레드를 시작
-        mSocketThread = new SocketThread(socket);
-        mSocketThread.start();
-    }
-
-    //////////////////////////////////////////////////////////////
-    //처음, 끝 정보 서버로 보냄
-    public void sending() {
-        first_dis=i.obd.getDistance(); //전송할 데이터 2개
-        first_fuel=i.obd.getFuel();
-
-        new DrivingAsyncTask(Bluetooth_reception.this).execute(first_dis, first_fuel);
-    }
-
-    // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public boolean sending_acceleration() {
-        boolean bool=false;
-        long time_interval =0;
-        long time_now=i.obd.getTime();
-        time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
-        rpm_now = i.obd.getRpm();
-
-        // 1초차이 있음
-            if((rpm_sub>0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*3)))) { //급가속 했을 때
-                //서버로 전송
-                //i.obd.getFuel(); //전송할 데이터 3개
-                //i.obd.getLatitude();
-                //i.obd.getLongitude();
-                //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
-                bool=true;
-            }
-        rpm_sub = rpm_now-rpm_last;
-        rpm_last = rpm_now;
-        time_last=time_now;
-
-        return bool;
-    }
-    ////////////////////////////////////////////////////////////////
-
 
     // 데이터 송수신 스레드
     private class SocketThread extends Thread {
@@ -490,14 +363,17 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 rpm_last = i.obd.getRpm(); //처음 rpm 구하기
                 time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
 
-                //
-                //////////////////////////////////////////////////////////////////////////////////////
-                ///// server 연동
-                //소켓
-                sending();
+                //처음 연비 보내기!!!!!!//////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel());
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
 
             } catch (IOException e) {
-                showMessage("Get Stream error");
+                data_handling.showMessage("Get Stream error");
             }
         }
 
@@ -508,29 +384,36 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 SystemClock.sleep(1000);
             }
         }
+        // 수신받은 데이터를 파싱하여 obd객체에 셋팅
         public boolean dataParsingSet(InputStream inStream){
             try {
                 bytes=inStream.read(buffer);
                 strBuf = new String(buffer, 0, bytes);
 
-                //////////////////////////////////////////////////////////////////
-                //파싱
-                i.dataP(strBuf);
+                i.dataP(strBuf); //파싱
 
-               if(sending_acceleration()) {
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
+               if(data_handling.sending_acceleration(rpm_sub,i.obd.getTime(),time_last,i.obd.getRpm(),rpm_last)) {
                    i.obd.setLatitude(latitude);
                    i.obd.setLongitude(longitude);
+                   data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
 
-                    showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
+
+                   data_handling.sending_data_for_location(latitude,longitude);
+                   //////////////////////////////////////////////////////////////////////////////////////////////////////
+                   //////////////////////////////////////////////////////////////////////////////////////////////////////
+                   //////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
                 else{
-                    showMessage("Receive: " + strBuf);
+                   data_handling.showMessage("Receive: " + strBuf);
                 }
 
                 return true;
             }
             catch (IOException e) {
-                showMessage("Socket disconnected");
+                data_handling.showMessage("Socket disconnected");
                 return false;
             }
             catch (JSONException e) {
@@ -539,33 +422,46 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             }
         }
     }
+    // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
+    public void onConnected(BluetoothSocket socket) {
+
+        data_handling.showMessage("Socket connected");
+
+        // 데이터 송수신 스레드가 생성되어 있다면 삭제한다
+        if( mSocketThread != null )
+            mSocketThread = null;
+
+        // 데이터 송수신 스레드를 시작
+        mSocketThread = new SocketThread(socket);
+        mSocketThread.start();
+    }
 
 
     // 블루투스 종료될 때
     public void onDestroy() {
-        ////////////////////////////////////////
-        //종료하기 전 서버로 마지막 정보 보내는 부분
-        //sending();
-        /////////////////////////////////////////
-
         super.onDestroy();
 
-        sending();
-
-
+        //끝날때 연비 보내기!!!!!!//////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel()); // 종료전 자료전송
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         // 디바이스 검색 중지
         stopFindDevice();////////////////////////////////////
 
         // 스레드를 종료
         if( mCThread != null ) {
-            mCThread.cancel();
+            mCThread.interrupt();
             mCThread = null;
         }
 
-        if( mSThread != null ) {
-            mSThread.cancel();
-            mSThread = null;
-        }
+//        if( mSThread != null ) {
+//            mSThread.cancel();
+//            mSThread = null;
+//        }
 
         if( mSocketThread != null )
             mSocketThread = null;
