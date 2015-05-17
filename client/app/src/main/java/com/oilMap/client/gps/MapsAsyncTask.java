@@ -27,7 +27,6 @@ public class MapsAsyncTask extends AsyncTask<Void, Void, Map<String,Object>> {
 
     private static final String TAG = "MapsAsyncTask";
 
-    private Map<Marker, Map<String, Object>> markerHashMap= new HashMap<>();
     private Context context;
     private GoogleMap googleMap;
 
