@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
@@ -58,7 +59,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     //급가속 시 서버로 보냄/////
     ////지우기
-    public double rpm_last=0.0, rpm_now=0.0, rpm_sub=999.0;
+    public double rpm_last=0.0;
+    public int rpm_sub=999;
     public long time_last=0;
     public Date d=new Date();
     double latitude;
@@ -355,20 +357,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 입력 스트림 구한다
             try {
                 mmInStream = socket.getInputStream();
-                dataParsingSet(mmInStream);
-
-                dataParsingSet(mmInStream);
-                rpm_last = i.obd.getRpm(); //처음 rpm 구하기
-                time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
-
-                //처음 연비 보내기!!!!!!//////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel());
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
 
             } catch (IOException e) {
                 data_handling.showMessage("Get Stream error");
@@ -377,7 +365,29 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // 소켓에서 수신된 데이터를 화면에 표시한다
         public void run() {
+            // 처음 자료 보내기
+            while (true) {
+                // 첫 데이터가 정상적이면서 rpm이 0보다 크면 초기 값으로 설정과 전송후 반복문나간다
+                if(dataParsingSet(mmInStream) && (i.obd.getRpm() > 0)  ) {
+                    rpm_last = i.obd.getRpm(); //처음 rpm 구하기
+                    time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
+
+                    //처음 연비 보내기!!!!!!//////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel());
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////
+                    break;
+                }
+            }
+
+            // 데이터 받기
             while (dataParsingSet(mmInStream)) {
+                rpmCompare();
+
                 buffer = new byte[512]; //버퍼 초기화
                 SystemClock.sleep(1000);
             }
@@ -388,27 +398,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 bytes=inStream.read(buffer);
                 strBuf = new String(buffer, 0, bytes);
 
-                i.dataP(strBuf); //파싱
-
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
-               if(data_handling.sending_acceleration(rpm_sub,i.obd.getTime(),time_last,i.obd.getRpm(),rpm_last)) {
-                   i.obd.setLatitude(latitude);
-                   i.obd.setLongitude(longitude);
-                   data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" );
-
-
-                   data_handling.sending_data_for_location(latitude,longitude);
-                   //////////////////////////////////////////////////////////////////////////////////////////////////////
-                   //////////////////////////////////////////////////////////////////////////////////////////////////////
-                   //////////////////////////////////////////////////////////////////////////////////////////////////////
-                }
-                else{
-                   data_handling.showMessage("Receive: " + i.obd.getFuelEfficiency()+"/ "
-                           + i.obd.getFuel() +"/ " + i.obd.getRpm() + "/ " +i.obd.getFuelLevel() + "/ "
-                           + i.obd.getTime() + "/ " + i.obd.getDistance() );
-                }
+                i.dataP(strBuf);
 
                 return true;
             }
@@ -420,6 +410,31 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 e.printStackTrace();
                 return true; // json 예외 허용
             }
+        }
+        // rpm 증가 차이를 비교하여 급가속 위치 구분
+        public void rpmCompare(){
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
+            if(data_handling.sending_acceleration(rpm_sub,i.obd.getTime(),time_last,i.obd.getRpm(),rpm_last)) {
+                i.obd.setLatitude(latitude);
+                i.obd.setLongitude(longitude);
+                data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" +rpm_last+"/"+i.obd.getRpm()+"/"+ rpm_sub );
+                data_handling.sending_data_for_location(latitude,longitude);
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+            else{
+                data_handling.showMessage("Receive: " + "연비:"+ i.obd.getFuelEfficiency()+"/ 연료:"
+                        + i.obd.getFuel() +"/ RPM:" + i.obd.getRpm() + "/ 연료%" +i.obd.getFuelLevel() + "/ 시간:"
+                        + i.obd.getTime() + "/ 거리:" + i.obd.getDistance() +"/" +rpm_sub);
+            }
+
+            // 다음 연산을 위함
+            rpm_sub = (int)(i.obd.getRpm()-rpm_last);
+            rpm_last = i.obd.getRpm();
+            time_last = i.obd.getTime();
         }
     }
     // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
@@ -445,7 +460,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////
-        data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel()); // 종료전 자료전송
+        data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(), i.obd.getFuel()); // 종료전 자료전송
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////

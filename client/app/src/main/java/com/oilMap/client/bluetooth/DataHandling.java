@@ -44,18 +44,15 @@ public class DataHandling {
     /**
     * 급가속시 실행
     */
-    public boolean sending_acceleration(double rpm_sub, long time_now, long time_last, double rpm_now, double rpm_last) {
+    public boolean sending_acceleration(int rpm_sub, long time_now, long time_last, double rpm_now, double rpm_last) {
         boolean bool=false;
         long time_interval =0;
         time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
 //
 //        // 1초차이 있음
-        if((rpm_sub>0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*1)))) { //급가속 했을 때
+        if((rpm_sub >= 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*2)))) { //급가속 했을 때
            bool=true;
        }
-        rpm_sub = rpm_now-rpm_last;
-        rpm_last = rpm_now;
-        time_last=time_now;
 
         return bool;
     }
