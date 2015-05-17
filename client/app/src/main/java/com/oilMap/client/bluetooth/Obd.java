@@ -5,21 +5,30 @@ package com.oilMap.client.bluetooth;
  */
 public class Obd{
 
-    private double fuel;
-    private double rpm;
-    private double fuel_level;
-    private double distance;
-    private long time;
-
     private double latitude;
     private double longitude;
 
+    private double fuel_efficiency=0.0;
+    private double fuel = 0.0;
+    private double rpm = 0.0;
+    private double fuel_level = 0.0;
+    private double distance = 0.0;
+    private long time = 0;
+
+
+    public double getFuelEfficiency() {
+        return fuel_efficiency;
+    }
+
+    public void setFuelEfficiency(double fuel_efficiency) {
+        this.fuel_efficiency = fuel_efficiency;
+    }
 
     public double getFuel() {
         return fuel;
     }
 
-    public void setFuelUse(double fuel_use) {
+    public void setFuel(double fuel) {
         this.fuel = fuel;
     }
 
@@ -39,10 +48,21 @@ public class Obd{
         this.fuel_level = fuel_level;
     }
 
-    public double getDistance() { return distance; }
+    public double getDistance() {
+        return distance;
+    }
 
-    public void setDistance(double distance) { this.distance = distance; }
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 
+    public void setTime(long time) {
+        this.time = time % 1000;
+    }
+
+    public long getTime() {
+        return time;
+    }
 
     public double getLatitude() { return latitude; }
 
@@ -55,9 +75,5 @@ public class Obd{
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-
-    public long getTime() { return time; }
-
-    public void setTime(long time) { this.time = time; }
 
 }
