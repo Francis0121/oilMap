@@ -38,6 +38,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -93,7 +96,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // ListView 초기화
         initListView();
-
 
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
@@ -433,6 +435,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     public void sending() {
         first_dis=i.obd.getDistance(); //전송할 데이터 2개
         first_fuel=i.obd.getFuel();
+
+        new DrivingAsyncTask(Bluetooth_reception.this).execute(first_dis, first_fuel);
     }
 
     // 가속했을때//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

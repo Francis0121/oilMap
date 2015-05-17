@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by Francis on 2015-05-06.
  */
 @Controller
-@RequestMapping("drive")
+@RequestMapping("/drive")
 public class DriveController {
     
     private static Logger logger = LoggerFactory.getLogger(DriveController.class);
