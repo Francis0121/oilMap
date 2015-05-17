@@ -80,7 +80,7 @@ public class SMSReceiver extends BroadcastReceiver {
                         .setContentTitle("OilMap")
                         .setContentText(strCash + "원이 주유되었습니다.")
                         //.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.actionbar_icon))           //icon크기 만들기
-                        .setSmallIcon(R.drawable.actionbar_icon)
+                        .setSmallIcon(R.drawable.notification_icon)
                         .setColor(context.getResources().getColor(R.color.orange_bg_color))
                         .setTicker("주유정보가 입력되었습니다.")
                         .setAutoCancel(true)
