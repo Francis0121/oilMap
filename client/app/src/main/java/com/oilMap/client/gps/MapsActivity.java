@@ -69,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             optFirst.position(latLng);// 위도 • 경도
             optFirst.title("Current Position");// 제목 미리보기
             optFirst.snippet("Snippet");
-            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon));
+            optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
             mGoogleMap.addMarker(optFirst).showInfoWindow();
         }
     }
