@@ -10,6 +10,8 @@ public class Efficiency {
     private String id;
     
     private Double efficiency;
+    
+    private Integer ranking;
 
     public Efficiency() {
     }
@@ -44,12 +46,21 @@ public class Efficiency {
         this.efficiency = efficiency;
     }
 
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Integer ranking) {
+        this.ranking = ranking;
+    }
+
     @Override
     public String toString() {
         return "Efficiency{" +
                 "batchPn=" + batchPn +
                 ", id='" + id + '\'' +
                 ", efficiency=" + efficiency +
+                ", ranking=" + ranking +
                 '}';
     }
 }

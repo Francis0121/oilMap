@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -28,6 +26,7 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
         startBatch(batch);
         
         // ~ ID 조회
+        List<Efficiency> efficiencies = new ArrayList<Efficiency>();
         List<String> auths = selectAuths();
         logger.debug(auths.toString());
         
@@ -58,8 +57,32 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
             }
             
             Efficiency efficiency = new Efficiency(batch.getPn(), id, efficiencyVal);
-            insertEfficiency(efficiency);
+            efficiencies.add(efficiency);
         }
+
+        
+        Collections.sort(efficiencies, new Comparator<Efficiency>() {
+            @Override
+            public int compare(Efficiency e1, Efficiency e2) {
+                return Double.compare(e2.getEfficiency(), e1.getEfficiency());
+            }
+        });
+        
+        int rank = 0;
+        Double beforeEfficiency = 0.0;
+        for(Efficiency e : efficiencies){
+
+            if(!beforeEfficiency.equals(e.getEfficiency())){
+                e.setRanking(++rank);
+                beforeEfficiency = e.getEfficiency();
+            }else{
+                e.setRanking(rank);
+            }
+            
+            logger.debug(e.toString());
+            insertEfficiency(e);
+        }
+        
     }
 
     @Override

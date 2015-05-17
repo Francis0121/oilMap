@@ -16,9 +16,9 @@
     <insert id="insertEfficiency" parameterType="Efficiency">
         INSERT INTO
           `efficiency`
-          ( `batchPn`, `id`, `efficiency`)
+          ( `batchPn`, `id`, `efficiency`,`ranking`)
         VALUES
-          ( #{batchPn}, #{id}, #{efficiency} )
+          ( #{batchPn}, #{id}, #{efficiency}, #{ranking} )
     </insert>
     
     <select id="selectAuths" resultType="String">
