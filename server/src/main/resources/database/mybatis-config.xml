@@ -11,5 +11,11 @@
 		<typeAlias type="com.oilMap.server.drive.DrivePointFilter" alias="DrivePointFilter"/>
 		
 		<typeAlias type="com.oilMap.server.bill.FuelBill" alias="FuelBill"/>
-	</typeAliases>
+		
+		<typeAlias type="com.oilMap.server.batch.Batch" alias="Batch"/>
+		<typeAlias type="com.oilMap.server.batch.Efficiency" alias="Efficiency"/>
+
+		<typeAlias type="com.oilMap.server.batch.Ranking" alias="Ranking"/>
+		<typeAlias type="com.oilMap.server.batch.RankingFilter" alias="RankingFilter"/>
+ 	</typeAliases>
 </configuration>

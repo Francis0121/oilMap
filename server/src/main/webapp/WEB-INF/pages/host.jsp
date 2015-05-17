@@ -3,6 +3,9 @@
 
 <button type="button" id="crawler">Crawler</button>
 
+<button type="button" id="batch">Batch</button>
+
+
 <p id="console"></p>
 
 <script>
@@ -10,6 +13,12 @@
         $('#crawler').on('click', function(){
             $.postJSON(contextPath+'/crawler', {}, function(result){
                $('#console').text(JSON.stringify(result));
+            });
+        });
+
+        $('#batch').on('click', function(){
+            $.postJSON(contextPath+'/ranking', {}, function(result){
+                $('#console').text(JSON.stringify(result));
             });
         });
     });

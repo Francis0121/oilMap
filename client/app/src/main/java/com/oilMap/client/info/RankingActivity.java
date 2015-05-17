@@ -2,7 +2,9 @@ package com.oilMap.client.info;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -10,14 +12,26 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.oilMap.client.R;
+import com.oilMap.client.auth.Auth;
 import com.oilMap.client.gps.MapsActivity;
+import com.oilMap.client.ranking.Ranking;
+import com.oilMap.client.ranking.RankingFilter;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-05-16.
  */
 public class RankingActivity extends Activity {
+
+    private static final String TAG = "RankingActivity";
+    private RankingFilter rankingFilter = new RankingFilter();
 
     RankingItem[] rankingArray = new RankingItem[30];
 
@@ -63,5 +77,31 @@ public class RankingActivity extends Activity {
                 startActivity(map);
             }
         });
+
+        new RankingAsnycTask().execute();
     }
+
+
+    private class RankingAsnycTask extends AsyncTask<Void, Void, List<Ranking>> {
+
+        @Override
+        protected List<Ranking> doInBackground(Void... params) {
+
+            try {
+                String url = getString(R.string.contextPath) + "/select/ranking";
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<List> responseEntity = restTemplate.postForEntity(url, rankingFilter, List.class);
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage(), e);
+                throw new RuntimeException("Communication error occur");
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Ranking> rankings) {
+            Log.d(TAG, rankings.toString());
+        }
+    }
+
 }

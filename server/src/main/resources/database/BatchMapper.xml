@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="batch">
+
+    <insert id="startBatch" parameterType="Batch">
+        INSERT INTO
+          `batch`
+          ( `batchDate`)
+        VALUES
+          ( SYSDATE() )
+        <selectKey keyProperty="pn" resultType="Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <insert id="insertEfficiency" parameterType="Efficiency">
+        INSERT INTO
+          `efficiency`
+          ( `batchPn`, `id`, `efficiency`)
+        VALUES
+          ( #{batchPn}, #{id}, #{efficiency} )
+    </insert>
+    
+    <select id="selectAuths" resultType="String">
+        SELECT
+            `id`
+        FROM
+            `auth`
+        ORDER BY
+            `id` ASC
+    </select>
+    
+    <select id="selectDriving" parameterType="String" resultType="Driving">
+        SELECT
+          `id`, `fuelBillPn`, `distance`, `fuelQuantity`, `inputDate`
+        FROM
+          `driving`
+        WHERE
+          id = #{value}
+    </select>
+    
+    <select id="selectRankingCount" parameterType="RankingFilter" resultType="Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `efficiency` e, `batch` b, `auth` a
+        WHERE
+            b.`pn` = e.`batchPn`
+        AND
+            a.`id` = e.`id`
+        AND
+            b.`pn` = (
+                SELECT MAX(`pn`) FROM `batch`
+            )
+    </select>
+    
+    <select id="selectRanking" parameterType="RankingFilter" resultType="Ranking">
+        SELECT
+            b.`pn` AS `batch.pn`, b.`batchDate` AS `batch.batchDate`,
+            a.`id` AS `auth.id`, a.`email` AS `auth.email`, a.`name` AS `auth.name`,
+            e.`efficiency` AS `efficiency.efficiency`
+        FROM
+            `efficiency` e, `batch` b, `auth` a
+        WHERE
+            b.`pn` = e.`batchPn`
+        AND
+            a.`id` = e.`id`
+        AND
+            b.`pn` = (
+                SELECT MAX(`pn`) FROM `batch`
+            )
+        ORDER BY
+            e.`efficiency` DESC, a.`name` ASC
+        LIMIT #{pagination.itemSeqBegin}, #{pagination.numItemsPerPage}
+    </select>
+    
+</mapper>
