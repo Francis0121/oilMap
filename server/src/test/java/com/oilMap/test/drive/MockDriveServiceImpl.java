@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Francis on 2015-05-16.
@@ -51,6 +52,11 @@ public class MockDriveServiceImpl implements DriveService{
 
     @Override
     public List<Driving> selectDrivingFromFuelBillPn(Integer fuelBillPn) {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> selectPosition(String id) {
         return null;
     }
 }

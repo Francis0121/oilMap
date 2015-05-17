@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class DrivingAsyncTask  extends AsyncTask<Object, Void, Map<String, Object>>{
 
-    private static final String TAG = "DrivintAsyncTask";
+    private static final String TAG = "DrivingPointAsyncTask";
 
     private Context mContext;
 
