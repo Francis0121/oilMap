@@ -1,31 +1,36 @@
 package com.oilMap.client.user;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SMSReceiver extends BroadcastReceiver {
 
     private static final String TAG = "SMSReceiver";
-
     private Integer price;
     private String id;
     private Context context;
     private String msg;
+    private Notification mNoti;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -59,6 +64,30 @@ public class SMSReceiver extends BroadcastReceiver {
                 Log.d(TAG, "PRICE : " + this.price);
 
                 new BillAsyncTask().execute();
+
+                NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                DecimalFormat df = new DecimalFormat("#,##0");
+                String strCash = df.format(this.price);
+
+                PendingIntent mPendingIntent = PendingIntent.getActivity(
+                        context.getApplicationContext(),0,
+                        new Intent(context.getApplicationContext(), MainActivity.class),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+                mNoti = new NotificationCompat.Builder(context.getApplicationContext())
+                        .setContentTitle("OilMap")
+                        .setContentText(strCash + "원이 주유되었습니다.")
+                        //.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.actionbar_icon))           //icon크기 만들기
+                        .setSmallIcon(R.drawable.actionbar_icon)
+                        .setColor(context.getResources().getColor(R.color.orange_bg_color))
+                        .setTicker("주유정보가 입력되었습니다.")
+                        .setAutoCancel(true)
+                        .setContentIntent(mPendingIntent)
+                        .build();
+
+                mNM.notify(7777,mNoti);
             }
         }
     }
