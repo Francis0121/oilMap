@@ -13,12 +13,21 @@ import java.util.Date;
 public class Json_Data implements Serializable {
 
     JSONObject jsonOb = null;
+    private double fuel_efficiency=0.0;
     private double fuel = 0.0;
     private double rpm = 0.0;
     private double fuel_level = 0.0;
     private double distance = 0.0;
     private long time = 0;
-    private Date d;
+
+
+    public double getFuelEfficiency() {
+        return fuel_efficiency;
+    }
+
+    public void setFuelEfficiency(double fuel_efficiency) {
+        this.fuel_efficiency = fuel_efficiency;
+    }
 
     public double getFuel() {
         return fuel;
@@ -64,11 +73,12 @@ public class Json_Data implements Serializable {
         //Json객체 셋팅 후 그 객체의 스트링 반환
         try {
             jsonOb = new JSONObject();
-            jsonOb.put("fuel_level", getFuelLevel());
-            jsonOb.put("rpm", getRpm());
-            jsonOb.put("fuel", getFuel());
-            jsonOb.put("distance", getDistance());
-            jsonOb.put("time", getTime());
+            jsonOb.put("fuel_efficiency", getFuelEfficiency());     // 연비
+            jsonOb.put("fuel_level", getFuelLevel());               // 기름량 (%)
+            jsonOb.put("rpm", getRpm());                             // RPM
+            jsonOb.put("fuel", getFuel());                           // 기름량 (L)
+            jsonOb.put("distance", getDistance());                  // 총 거리
+            jsonOb.put("time", getTime());                           // 시간
         } catch (JSONException e) {
             e.printStackTrace();
         }

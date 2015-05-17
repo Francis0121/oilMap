@@ -42,7 +42,7 @@ public class tester_Activity extends Activity {
     final static double FASTER_RPM_RANGE = 100.0; //rpm 증가값 기본 rpm의 2배
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
-    final static double FUEL_EFFICIENCY = 11; // 연비 11km/L
+    final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
     final static double OIL_FULL_CAPACITY = 5000; // 기름 최대용량
     final static double RPM_LIMIT = 2000; // RPM 제한
     public double car_rpm = 500; // 기본 500 rpm
@@ -489,6 +489,7 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
+                    jd.setFuelEfficiency(Double.parseDouble(String.format("%.2f", FUEL_EFFICIENCY_BASE+(car_speed%6)))); // 평균연비 15km/l 기준으로 랜덤계산
                     jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
                     jd.setFuelLevel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
@@ -496,8 +497,10 @@ public class tester_Activity extends Activity {
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     try {
-                        if (mSocketThread.write(jd.retJson() + 0x00))
-                            showMessage("Send: " + jd.getRpm() + "/" + jd.getFuel() + "/" + jd.getDistance() + "/" + jd.getTime());
+                        if (mSocketThread.write(jd.retJson() + "\0"))
+                            showMessage("Send: " + jd.getFuelEfficiency()+"/ "
+                                    + jd.getFuel() +"/ " + jd.getRpm() + "/ " +jd.getFuelLevel() + "/ "
+                                    + jd.getTime() + "/ " + jd.getDistance() );
                         else
                             showMessage("Socket Disconnected");
                         SystemClock.sleep(1000);

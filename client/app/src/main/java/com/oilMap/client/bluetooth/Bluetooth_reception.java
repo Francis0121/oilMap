@@ -97,8 +97,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         if( isBlue )
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
-
-
     }
 
     private void init() {
@@ -407,7 +405,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                    //////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
                 else{
-                   data_handling.showMessage("Receive: " + strBuf);
+                   data_handling.showMessage("Receive: " + i.obd.getFuelEfficiency()+"/ "
+                           + i.obd.getFuel() +"/ " + i.obd.getRpm() + "/ " +i.obd.getFuelLevel() + "/ "
+                           + i.obd.getTime() + "/ " + i.obd.getDistance() );
                 }
 
                 return true;
@@ -457,11 +457,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             mCThread.interrupt();
             mCThread = null;
         }
-
-//        if( mSThread != null ) {
-//            mSThread.cancel();
-//            mSThread = null;
-//        }
 
         if( mSocketThread != null )
             mSocketThread = null;

@@ -45,19 +45,12 @@ public class DataHandling {
     * 급가속시 실행
     */
     public boolean sending_acceleration(double rpm_sub, long time_now, long time_last, double rpm_now, double rpm_last) {
-        boolean bool=true;
+        boolean bool=false;
         long time_interval =0;
-//        long time_now=i.obd.getTime();
-       time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
-//        rpm_now = i.obd.getRpm();
+        time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
 //
 //        // 1초차이 있음
         if((rpm_sub>0.0) && ((rpm_now-rpm_last >= (rpm_sub/time_interval*1)))) { //급가속 했을 때
-//            //서버로 전송
-//            //i.obd.getFuel(); //전송할 데이터 3개
-//            //i.obd.getLatitude();
-//            //i.obd.getLongitude();
-//            //Toast.makeText(Bluetooth_reception.this, aa + " , " + bb, Toast.LENGTH_SHORT).show();
            bool=true;
        }
         rpm_sub = rpm_now-rpm_last;
