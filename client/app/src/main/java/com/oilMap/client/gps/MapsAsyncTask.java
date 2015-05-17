@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by Francis on 2015-05-17.
  */
-public class MapsAsyncTask extends AsyncTask<Void, Void, Map<String,Object>> {
+public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
 
     private static final String TAG = "MapsAsyncTask";
 
@@ -36,14 +36,17 @@ public class MapsAsyncTask extends AsyncTask<Void, Void, Map<String,Object>> {
     }
 
     @Override
-    protected Map<String, Object> doInBackground(Void... params) {
+    protected Map<String, Object> doInBackground(String... params) {
+        if(params[0] ==null){
+            return null;
+        }
 
         try {
-            SharedPreferences pref = context.getSharedPreferences("userInfo", 0);
-            String id = pref.getString("id", "");
+//            SharedPreferences pref = context.getSharedPreferences("userInfo", 0);
+//            String id = pref.getString("id", "");
 
             Map<String, Object> request = new HashMap<>();
-            request.put("id", id);
+            request.put("id", params[0]);
             Log.d(TAG, request.toString());
 
             String url = context.getString(R.string.contextPath) + "/drive/position";

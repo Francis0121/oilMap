@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.oilMap.client.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 김현준 on 2015-05-16.
@@ -18,10 +19,10 @@ import java.util.ArrayList;
 public class RankingviewAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private ArrayList<RankingItem> data;
+    private List<RankingItem> data;
     private int layout;
 
-    public RankingviewAdapter(Context context, int layout, ArrayList<RankingItem> data){
+    public RankingviewAdapter(Context context, int layout, List<RankingItem> data){
         this.inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data=data;
         this.layout=layout;

@@ -25,6 +25,7 @@ import com.oilMap.client.R;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
 
     private GoogleMap mGoogleMap;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
         setContentView(R.layout.activity_full_map);
 
         Intent config = getIntent();
-        String Id = config.getExtras().getString("id");         //아이디값을 받아옴
+        this.id = config.getExtras().getString("id");         //아이디값을 받아옴
 
         MapsInitializer.initialize(getApplicationContext());
 
@@ -69,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             LatLng latLng = new LatLng(latitude, longitude);// Creating a LatLng object for the current location
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));// Showing the current location in Google Map
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
-            new MapsAsyncTask(MapsActivity.this, mGoogleMap).execute();
+            new MapsAsyncTask(MapsActivity.this, mGoogleMap).execute(id);
         }
     }
 

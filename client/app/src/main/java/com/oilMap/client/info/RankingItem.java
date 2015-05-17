@@ -15,11 +15,12 @@ public class RankingItem {
         this.Id = Id;
     }
 
-    public RankingItem(int icon, String Id, int rankingIcon, String efficiency){
+    public RankingItem(int icon, String Id, int rankingIcon, String efficiency, String key){
         this.icon = icon;
         this.Id = Id;
         this.rankingIcon = rankingIcon;
         this.efficiency = efficiency;
+        this.key = key;
     }
 
     public String getKey() {
@@ -46,4 +47,14 @@ public class RankingItem {
         return efficiency;
     }
 
+    @Override
+    public String toString() {
+        return "RankingItem{" +
+                "key='" + key + '\'' +
+                ", efficiency='" + efficiency + '\'' +
+                ", icon=" + icon +
+                ", Id='" + Id + '\'' +
+                ", rankingIcon=" + rankingIcon +
+                '}';
+    }
 }

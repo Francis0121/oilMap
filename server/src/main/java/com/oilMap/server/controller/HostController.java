@@ -57,7 +57,9 @@ public class HostController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/select/ranking", method = RequestMethod.POST)
-	public List<Ranking> selectRanking(@RequestBody RankingFilter rankingFilter){
-		return batchService.selectRanking(rankingFilter);
+	public Map<String, Object> selectRanking(@RequestBody RankingFilter rankingFilter){
+		Map<String, Object> response = new HashMap<String, Object>();
+		response.put("rankingList", batchService.selectRanking(rankingFilter));
+		return response;
 	}
 }

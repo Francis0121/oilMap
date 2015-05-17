@@ -16,10 +16,13 @@ import com.oilMap.client.auth.Auth;
 import com.oilMap.client.gps.MapsActivity;
 import com.oilMap.client.ranking.Ranking;
 import com.oilMap.client.ranking.RankingFilter;
+import com.oilMap.client.ranking.RankingResponse;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +35,8 @@ public class RankingActivity extends Activity {
 
     private static final String TAG = "RankingActivity";
     private RankingFilter rankingFilter = new RankingFilter();
-
-    RankingItem[] rankingArray = new RankingItem[30];
+    private ListView listView;
+    private List<RankingItem> rankingItemData = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,56 +44,20 @@ public class RankingActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.ranking_list);
 
-        ListView listView = (ListView) findViewById(R.id.rankingListView);
-        ArrayList<RankingItem> data = new ArrayList<>();
-
-        for(int i = 0; i < 30; i++){
-            String num = String.valueOf(i+1);
-
-            if(i < 3) {
-                switch (i) {
-                    case 0:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking01, "Efficiency " + " 3.14" + "km/L");
-                        break;
-                    case 1:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking02, "Efficiency " + " 3.14" + "km/L");
-                        break;
-                    case 2:
-                        rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking03, "Efficiency " + " 3.14" + "km/L");
-                        break;
-                }
-            }else{
-                rankingArray[i] = new RankingItem(R.drawable.effeicency, num + ". a_a", R.drawable.ranking04, "Efficiency " + " 3.14" + "km/L");
-            }
-            data.add(rankingArray[i]);
-        }
-
-        RankingviewAdapter adapter = new RankingviewAdapter(this, R.layout.ranking_item, data);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String passId = rankingArray[position].getKey();
-                Intent map = new Intent(RankingActivity.this, MapsActivity.class);
-                map.putExtra("id", passId);
-                startActivity(map);
-            }
-        });
-
+        this.listView = (ListView) findViewById(R.id.rankingListView);
         new RankingAsnycTask().execute();
     }
 
 
-    private class RankingAsnycTask extends AsyncTask<Void, Void, List<Ranking>> {
+    private class RankingAsnycTask extends AsyncTask<Void, Void, RankingResponse> {
 
         @Override
-        protected List<Ranking> doInBackground(Void... params) {
+        protected RankingResponse doInBackground(Void... params) {
 
             try {
                 String url = getString(R.string.contextPath) + "/select/ranking";
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<List> responseEntity = restTemplate.postForEntity(url, rankingFilter, List.class);
+                ResponseEntity<RankingResponse> responseEntity = restTemplate.postForEntity(url, rankingFilter, RankingResponse.class);
                 return responseEntity.getBody();
             } catch (Exception e) {
                 Log.e("Error", e.getMessage(), e);
@@ -99,8 +66,52 @@ public class RankingActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(List<Ranking> rankings) {
-            Log.d(TAG, rankings.toString());
+        protected void onPostExecute(RankingResponse rankingResponse) {
+            Log.d(TAG, rankingResponse.toString());
+
+            List<Ranking> rankings = rankingResponse.getRankingList();
+
+            Integer count = 1;
+            for(Ranking ranking : rankings){
+                RankingItem rankingItem = null;
+                Double efficiency = ranking.getEfficiency().getEfficiency();
+                DecimalFormat df = new DecimalFormat("#,##0.0");
+                String strEfficiency= df.format(efficiency);
+
+                if(count < 3) {
+                    switch (count) {
+                        case 1:
+                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking01, "Efficiency " + strEfficiency  + "km/L", ranking.getAuth().getId());
+                            break;
+                        case 2:
+                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking02, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            break;
+                        case 3:
+                            rankingItem= new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking03, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            break;
+                    }
+                }else{
+                    rankingItem = new RankingItem(R.drawable.effeicency, count + "."+ranking.getAuth().getName(), R.drawable.ranking04, "Efficiency " + strEfficiency + "km/L", ranking.getAuth().getId());
+                }
+
+                if(rankingItem != null) {
+                    rankingItemData.add(rankingItem);
+                }
+                count++;
+            }
+
+            RankingviewAdapter adapter = new RankingviewAdapter(RankingActivity.this, R.layout.ranking_item, rankingItemData);
+            listView.setAdapter(adapter);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String authId = rankingItemData.get(position).getKey();
+                    Intent map = new Intent(RankingActivity.this, MapsActivity.class);
+                    map.putExtra("id", authId);
+                    startActivity(map);
+                }
+            });
         }
     }
 
