@@ -12,11 +12,16 @@
     
     <select id="selectMaxFuelBill" parameterType="String" resultType="FuelBill">
         SELECT
-          MAX(`pn`) AS `pn`, `id`, `title`, `bill`, `billDate`
+            `pn`, `id`, `title`, `bill`, `billDate`
         FROM
-          `fuel_bill`
+            `fuel_bill`
         WHERE
-          `id` = #{id}
+            `pn` =
+            (	SELECT MAX(`pn`) AS `pn`
+                FROM `fuel_bill`
+                WHERE
+                id = #{id}
+            )
     </select>
 
 </mapper>
