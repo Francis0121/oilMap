@@ -207,7 +207,13 @@ public class OilInfoActivity extends Activity {
                         DecimalFormat df = new DecimalFormat("#,##0");
                         String strCash = df.format(cash);
 
-                        list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + distance / calculate + "km/l");
+                        Double efficiency = + distance / calculate;
+                        DecimalFormat df2 = new DecimalFormat("#,##0.0");
+                        String strEfficiency = df2.format(efficiency);
+
+                        if(!strCash.equals("0")) {
+                            list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + strEfficiency + "km/l");
+                        }
                         totalCash += cash;
                     }
                 }else{
