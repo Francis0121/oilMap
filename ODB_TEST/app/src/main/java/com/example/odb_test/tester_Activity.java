@@ -38,8 +38,8 @@ public class tester_Activity extends Activity {
 
     ////////////////////////////////////////////////////*/
     final static double BASIC_RPM = 500;
-    final static double RPM_RANGE = 50.0; //rpm 증가값
-    final static double FASTER_RPM_RANGE = 100.0; //rpm 증가값 기본 rpm의 2배
+    final static double RPM_RANGE = 50.0; //rpm 증가값(연료증가량)
+    final static double FASTER_RPM_RANGE = 150.0; //rpm증가값(연료증가량)
     final static double DECREASE_RPM = 200; // 감소되는 rpm
     final static double DECREASE_SPEED = 3; // 감소되는 속도
     final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
@@ -471,6 +471,7 @@ public class tester_Activity extends Activity {
         private class SocketThread extends Thread {
 
             private OutputStream mmOutStream; // 출력 스트림
+            private String str;
 
             public SocketThread(BluetoothSocket socket) {
                 // 입력 스트림과 출력 스트림을 구한다
@@ -497,7 +498,8 @@ public class tester_Activity extends Activity {
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     try {
-                        if (mSocketThread.write(jd.retJson() + "\0"))
+                        str=jd.retJson();
+                        if (mSocketThread.write( str + "\0"))
                             showMessage("Send: " + jd.getFuelEfficiency()+"/ "
                                     + jd.getFuel() +"/ " + jd.getRpm() + "/ " +jd.getFuelLevel() + "/ "
                                     + jd.getTime() + "/ " + jd.getDistance() );
