@@ -85,6 +85,10 @@
             android:name=".info.OilInfoActivity"
             android:theme="@style/CustomTheme"
             android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.BLE_START"/>
+            </intent-filter>
+
         </activity>
     </application>
     <!-- SMS 관련 -->

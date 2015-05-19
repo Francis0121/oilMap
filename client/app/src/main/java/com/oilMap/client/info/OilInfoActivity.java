@@ -1,13 +1,18 @@
 package com.oilMap.client.info;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +39,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.oilMap.client.R;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import pl.droidsonroids.gif.GifImageView;
 
 public class OilInfoActivity extends Activity {
 
@@ -52,6 +61,9 @@ public class OilInfoActivity extends Activity {
 
     private TextView dateTextView;
     private TextView moneyTextView;
+
+    private TimerTask mTask;
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +117,79 @@ public class OilInfoActivity extends Activity {
         new OilInfoAsyncTask().execute();
 
         listView = (ListView) findViewById(R.id.listView);
+
+        // ~ Oil Visibilty
+        mTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOil();
+                    }
+                });
+            }
+        };
+
+        mTimer = new Timer();
+        mTimer.schedule(mTask, 100, 100);
     }
+
+    private int imageType = 1;
+    private void runOil() {
+
+        SharedPreferences socket = getSharedPreferences("socket", 0);
+        String status = socket.getString("status", "0");
+        String imageType = socket.getString("imageType", "1");
+
+        final GifImageView gifImageView = (GifImageView) findViewById(R.id.oilInfoCarGif);
+
+        if (gifImageView.getVisibility() == View.VISIBLE) {
+            if (status.equals("0")) {
+                Log.d(TAG, "GONE");
+                gifImageView.setVisibility(View.GONE);
+            }
+        } else {
+            if (status.equals("1")) {
+                if(!imageType.equals("1")) {
+                    Log.d(TAG, "NORMAL_VISIBLE");
+                    gifImageView.setVisibility(View.VISIBLE);
+                    gifImageView.setImageResource(R.drawable.normal_ac);
+                    setSharedPreference("1", "1");
+                }
+            } else if (status.equals("2")) {
+                if(!imageType.equals("2")) {
+                    Log.d(TAG, "FAST_VISIBLE");
+                    gifImageView.setVisibility(View.VISIBLE);
+                    gifImageView.setImageResource(R.drawable.large_ac);
+                    setSharedPreference("2", "2");
+                }
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        setSharedPreference("1", "2");
+                        gifImageView.setVisibility(View.GONE);
+                    }
+                };
+
+                Handler handler = new Handler();
+                handler.postDelayed(runnable, 5000);
+            }
+        }
+    }
+
+    private void setSharedPreference(String status, String imageType){
+        Log.d(TAG, "setSharedPreference status " + status + " " + imageType);
+        SharedPreferences pref = getSharedPreferences("socket", 0);
+        SharedPreferences.Editor prefEdit = pref.edit();
+        prefEdit.putString("status", status);
+        if(imageType != null) {
+            prefEdit.putString("imageType", imageType);
+        }
+        prefEdit.commit();
+    }
+
+
 
     @Override
     protected void onResume() {
@@ -122,6 +206,13 @@ public class OilInfoActivity extends Activity {
     @Override
     public void onBackPressed() {
         this.backPressCloseHandler.onBackPressed(this.bottomSheet);
+    }
+
+    @Override
+    protected void onDestroy() {
+        setSharedPreference("0", "1");
+        mTimer.cancel();
+        super.onDestroy();
     }
 
     private class StableArrayAdapter extends ArrayAdapter<String> {

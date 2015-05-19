@@ -113,9 +113,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/normal_ac"
-        android:id="@+id/carImageView"
+        android:id="@+id/oilInfoCarGif"
         android:layout_above="@+id/textView21"
-        android:layout_alignStart="@+id/textView21" />
+        android:layout_alignStart="@+id/textView21"
+        android:visibility="gone" />
 
 
     <ImageButton

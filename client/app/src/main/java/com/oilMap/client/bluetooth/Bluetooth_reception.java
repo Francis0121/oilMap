@@ -12,10 +12,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,6 +43,8 @@ import java.util.UUID;
 
 
 public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
+
+    private static final String TAG = "Bluetooth_reception";
 
     public DataParsing i = new DataParsing(); // Data Parsing Class
 
@@ -75,6 +77,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     //GifImageView gifImageView;
     /****************GPS*********************/
     GpsInfo gps = null;
+
+
+    private void setSharedPreference(String status, String imageType){
+        Log.d(TAG, "setSharedPreference " + status + " " + imageType);
+        SharedPreferences pref = getSharedPreferences("socket", 0);
+        SharedPreferences.Editor prefEdit = pref.edit();
+        prefEdit.putString("status", status);
+        if(imageType != null) {
+            prefEdit.putString("imageType", imageType);
+        }
+        prefEdit.commit();
+    }
 
 
     @Override
@@ -120,6 +134,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //
             }});
         /**********************************************************************************/
+        //setSharedPreference("2", "1");
     }
 
     private void init() {
@@ -392,6 +407,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         // 소켓에서 수신된 데이터를 화면에 표시한다
         public void run() {
+            setSharedPreference("1", "2");
             // 처음 자료 보내기
             while (true) {
                 // 첫 데이터가 정상적이면서 rpm이 0보다 크면 초기 값으로 설정과 전송후 반복문나간다
@@ -442,7 +458,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+                setSharedPreference("0", "1");
                 return false;
             }
             catch (JSONException e) {
@@ -463,6 +479,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
+                setSharedPreference("2", "1");
             }
             else{
                 data_handling.showMessage("Receive: " + "연비:"+ i.obd.getFuelEfficiency()+"/ 연료:"
@@ -508,5 +525,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             mSocketThread = null;
 
         //mBA.disable(); //블루투스 꺼짐
+        //setSharedPreference("0", "1");
     }
+
 }
