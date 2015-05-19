@@ -36,21 +36,23 @@
         android:layout_height="60dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:id="@+id/myRankingLeft"
-            android:divider="#f2f3f5"
-            android:dividerHeight="1.5dp"
             android:choiceMode="singleChoice"
             android:drawableLeft="@drawable/ic_icon"
             android:text="블라블라블라블라"
-            android:background="@drawable/layer_list_04"
+
             android:gravity="fill_vertical"
+            android:divider="#f2f3f5"
+            android:dividerHeight="1.5dp"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
+            android:layout_toStartOf="@+id/myRankingRight"
+            android:layout_alignParentTop="true" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:id="@+id/myRankingRight"
             android:divider="#f2f3f5"
@@ -58,10 +60,11 @@
             android:choiceMode="singleChoice"
             android:drawableLeft="@drawable/ic_icon"
             android:text="블라블라블라블라"
-            android:background="@drawable/layer_list_04"
+
             android:gravity="fill_vertical"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true" />
         </RelativeLayout>
 
     <ListView

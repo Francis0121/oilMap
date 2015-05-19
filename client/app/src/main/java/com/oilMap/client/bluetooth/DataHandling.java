@@ -1,12 +1,13 @@
 package com.oilMap.client.bluetooth;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.oilMap.client.gps.GpsInfo;
+import com.oilMap.client.R;
 
 /**
  * Created by 나홍철 on 2015-05-17.
@@ -61,6 +62,10 @@ public class DataHandling {
      */
     public void sending_data_for_fuel_efficiency(double distance, double fuel) {
         new DrivingAsyncTask(this.mContext).execute(distance, fuel);
+        //가속 이미지
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.normal_ac);
+
+
     }
 
     /**
@@ -70,5 +75,8 @@ public class DataHandling {
         Double startSpeed = 0.0;
         Double endSpeed = 0.0;
         new DrivePointAsyncTask(this.mContext).execute(latitude, longitude, startSpeed, endSpeed);
+        //급가속 이미지
+
+
     }
 }
