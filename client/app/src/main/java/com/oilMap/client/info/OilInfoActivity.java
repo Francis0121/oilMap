@@ -114,6 +114,12 @@ public class OilInfoActivity extends Activity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        new OilInfoAsyncTask().execute();
+    }
+
+    @Override
     public void onBackPressed() {
         this.backPressCloseHandler.onBackPressed(this.bottomSheet);
     }
