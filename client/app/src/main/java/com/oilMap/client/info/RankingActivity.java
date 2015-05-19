@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.oilMap.client.R;
 import com.oilMap.client.gps.MapsActivity;
@@ -142,20 +145,35 @@ public class RankingActivity extends Activity {
                 }
             });
 
-//            TextView myRankText = (TextView)findViewById(R.id.myRanking);
-//
-//            myRankText.setOnClickListener(new View.OnClickListener() {
-//
-//                public void onClick(View v) {
-//                    if (v.isClickable()) {
-//                        // Toast.makeText(PhoneUsefull.this, R.string.phoneusefull_kr1, 1).show();
-//                        String authId = rankingItemData.get(myPosition).getKey();
-//                        Intent map = new Intent(RankingActivity.this, MapsActivity.class);
-//                        map.putExtra("id", authId);
-//                        startActivity(map);
-//                    }
-//                }
-//            });
+
+            Ranking ranking = rankingResponse.getMyRanking();
+
+            TextView myName = (TextView) findViewById(R.id.myRankingLeft);
+            TextView content = (TextView) findViewById(R.id.myRankingRight);
+
+            Efficiency e = ranking.getEfficiency();
+            Double efficiency = e.getEfficiency();
+            DecimalFormat df = new DecimalFormat("#,##0.0");
+            String strEfficiency= df.format(efficiency);
+
+            Double cash = avsGasoline * efficiency;
+            DecimalFormat dfCash = new DecimalFormat("#,##0");
+            String strCash = dfCash.format(cash);
+
+            myName.setText(e.getRanking() + "."+ranking.getAuth().getName());
+            content.setText(strEfficiency + "km/L  -  "+ strCash + "￦");
+
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.relativeLayout01);
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SharedPreferences pref = getSharedPreferences("userInfo", 0);
+                    String id = pref.getString("id", "");
+                    Intent map = new Intent(RankingActivity.this, MapsActivity.class);
+                    map.putExtra("id", id);
+                    startActivity(map);
+                }
+            });
         }
     }
 }

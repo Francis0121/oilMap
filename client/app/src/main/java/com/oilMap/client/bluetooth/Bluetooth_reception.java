@@ -434,7 +434,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 i.obd.setLatitude(latitude);
                 i.obd.setLongitude(longitude);
                 data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" +rpm_last+"/"+i.obd.getRpm()+"/"+ rpm_sub );
-                data_handling.sending_data_for_location(latitude,longitude);
+                data_handling.sending_data_for_location(latitude,longitude, rpm_last,i.obd.getRpm());
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////

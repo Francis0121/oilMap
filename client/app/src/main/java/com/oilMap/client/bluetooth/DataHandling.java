@@ -52,7 +52,7 @@ public class DataHandling {
         time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
 //
 //        // 1초차이 있음
-        if((rpm_sub >= 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*2)))) { //급가속 했을 때
+        if((rpm_sub >= 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*2.5)))) { //급가속 했을 때
            bool=true;
        }
 
@@ -78,9 +78,9 @@ public class DataHandling {
     /**
     급가속 위치 정보 서버로 보냄
      */
-    public void sending_data_for_location(double latitude, double longitude) {
-        Double startSpeed = 0.0;
-        Double endSpeed = 0.0;
+    public void sending_data_for_location(double latitude, double longitude, double startSpeed, double endSpeed) {
+        //Double startSpeed = 0.0;
+        //Double endSpeed = 0.0;
         new DrivePointAsyncTask(this.mContext).execute(latitude, longitude, startSpeed, endSpeed);
         //급가속 이미지
 
