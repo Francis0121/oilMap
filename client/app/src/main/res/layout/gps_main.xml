@@ -65,6 +65,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayoutView"
         android:orientation="horizontal"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -72,9 +73,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Initialization"
+            android:id="@+id/InitBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BackPage"
             android:id="@+id/BackPageBtn"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_toStartOf="@+id/InitBtn" />
 
     </RelativeLayout>
 

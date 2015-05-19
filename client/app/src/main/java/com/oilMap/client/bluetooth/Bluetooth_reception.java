@@ -121,15 +121,26 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         }
         /*********************BackBtn****************************************************/
 
+        Button initBtn = (Button) findViewById(R.id.InitBtn);
+
+        initBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent initIntent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+                initIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
+                startActivity(initIntent);
+                finish();
+                //
+            }});
+
         Button backButton = (Button) findViewById(R.id.BackPageBtn);
         //  Back Button
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Intent intent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
-                startActivity(intent);
-                finish();
+                Intent backIntent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+                backIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
+                startActivity(backIntent);
                 //
             }});
         /**********************************************************************************/
