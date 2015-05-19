@@ -158,7 +158,7 @@ public class RankingActivity extends Activity {
             DecimalFormat dfCash = new DecimalFormat("#,##0");
             String strCash = dfCash.format(cash);
 
-            myName.setText(e.getRanking() + "."+ranking.getAuth().getName());
+            myName.setText(e.getRanking() + ". "+ranking.getAuth().getName());
             content.setText(strEfficiency + "km/L  -  "+ strCash + "￦");
 
             LinearLayout linearLayout = (LinearLayout) findViewById(R.id.relativeLayout01);
