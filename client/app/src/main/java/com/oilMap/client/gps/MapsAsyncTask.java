@@ -18,6 +18,7 @@ import com.oilMap.client.R;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,12 +73,17 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
             count++;
             Double latitude = (Double) drivePointMap.get("latitude");
             Double longitude = (Double) drivePointMap.get("longitude");
+            Double startSpeed = (Double) drivePointMap.get("startSpeed");
+            Double endSpeed = (Double) drivePointMap.get("endSpeed");
 
-            LatLng latLng = new LatLng(latitude, longitude);
+            DecimalFormat df = new DecimalFormat("#,##0.0");
+            String strSpeed = df.format( (endSpeed - startSpeed));
+
+           LatLng latLng = new LatLng(latitude, longitude);
             MarkerOptions option = new MarkerOptions();
             option.position(latLng);
-            option.title("Position");// 제목 미리보기
-            option.snippet("Speed " + count);
+            option.title("Position");
+            option.snippet("Diff RPM " +  strSpeed);
             option.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
 
             this.googleMap.addMarker(option).showInfoWindow();

@@ -61,7 +61,7 @@
     
     <select id="selectPosition" parameterType="DrivePointFilter" resultType="DrivePoint">
         SELECT
-            `latitude`, `longitude`
+            `latitude`, `longitude`, `startSpeed`, `endSpeed`
         FROM
             `drive_point`
         WHERE
