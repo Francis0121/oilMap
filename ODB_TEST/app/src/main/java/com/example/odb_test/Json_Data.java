@@ -81,11 +81,14 @@ public class Json_Data implements Serializable {
             jsonOb.put("fuel", getFuel());                           // 기름량 (L)
             jsonOb.put("distance", getDistance());                  // 총 거리
             jsonOb.put("time", getTime());                           // 시간
+            // java.util.ConcurrentModificationException 예외처리
+            if(jsonOb.toString()==null)
+                return "";
             str=jsonOb.toString();
+            return str;
         } catch (JSONException e) {
             e.printStackTrace();
             return "";
         }
-        return str;
     }
 }

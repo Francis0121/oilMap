@@ -52,10 +52,6 @@ public class tester_Activity extends Activity {
     final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
     final static double FUEL_EFFICIENCY_UP_LIMIT = 20; // 기준되는 평균연비 15km/L
     final static double FUEL_EFFICIENCY_DOWN_LIMIT = 10; // 기준되는 평균연비 15km/L
-    final static double FUEL_LIMIT = 2000; // 연료소비량 제한
-    final static double BASIC_FUEL_CONSUMPTION=1000;
-    final static double FUEL_RANGE = 100.0;
-    final static double FASTER_FUEL_RANGE = 200.0;
 
     public double oil_capacity = OIL_FULL_CAPACITY; // 총연료량 5000L
     public double fuel_efficiency = FUEL_EFFICIENCY_BASE; //연비
@@ -114,9 +110,6 @@ public class tester_Activity extends Activity {
         oil_capacity=Double.parseDouble(pref.getString("oil_capacity",Double.toString(OIL_FULL_CAPACITY)));
         distance=Double.parseDouble(pref.getString("distance",Double.toString(DISTANCE_INIT)));
         prefEdit.commit();
-
-//        prefEdit.putString("distance", Double.toString(oil_capacity));
-//        distance=Double.parseDouble(str);
 
         //////////////// Bluetooth///////////////////////////////////
         mTextMsg = (TextView) findViewById(R.id.bluetooth);
@@ -199,7 +192,7 @@ public class tester_Activity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-        //  Back Button
+        //  Back & Init Button
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Back",
@@ -211,13 +204,12 @@ public class tester_Activity extends Activity {
                 prefEdit.remove("oil_capacity");
                 prefEdit.remove("distance");
                 prefEdit.commit();
-
+                /**********************************/
 
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
                 finish();
-                //
             }
         });
 
