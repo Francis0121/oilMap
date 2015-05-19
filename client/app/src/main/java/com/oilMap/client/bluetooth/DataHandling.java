@@ -1,7 +1,6 @@
 package com.oilMap.client.bluetooth;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,11 +14,13 @@ import com.oilMap.client.R;
 public class DataHandling {
 
     private Context mContext;
-    private TextView mTextView;
+    private TextView mTextView, mRunTextView;
+    //private GifImageView mGifImageView;
 
-    public DataHandling(Context mContext, TextView mTextView) {
+    public DataHandling(Context mContext, TextView mTextView, TextView mRunTextView) {
         this.mTextView = mTextView;
         this.mContext = mContext;
+        this.mRunTextView = mRunTextView;
     }
 
     // 메시지를 화면에 표시
@@ -63,10 +64,16 @@ public class DataHandling {
     public void sending_data_for_fuel_efficiency(double distance, double fuel) {
         new DrivingAsyncTask(this.mContext).execute(distance, fuel);
         //가속 이미지
-        Drawable drawable = mContext.getResources().getDrawable(R.drawable.normal_ac);
-
-
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRunTextView.setText("Driving...");
+                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.white_bg_color));
+            }
+        });
     }
+
+
 
     /**
     급가속 위치 정보 서버로 보냄
@@ -77,6 +84,21 @@ public class DataHandling {
         new DrivePointAsyncTask(this.mContext).execute(latitude, longitude, startSpeed, endSpeed);
         //급가속 이미지
 
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRunTextView.setText("Accelerated.");
+                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.orange_bg_color));
+            }
+        });
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRunTextView.setText("Driving...");
+                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.white_bg_color));
+            }
+        }, 3000);
 
     }
 }
