@@ -207,15 +207,18 @@ public class tester_Activity extends Activity {
                         Toast.LENGTH_SHORT).show();
 
                 /*clear 기름량, 거리 데이터*/
-                prefEdit.clear();
+                prefEdit.remove("oil_capacity");
+                prefEdit.remove("distance");
                 prefEdit.commit();
-                /**/
+
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
-              /*  moveTaskToBack(true);
-                finish();
-                android.os.Process.killProcess(android.os.Process.myPid());*/
+
+                android.os.Process.killProcess(android.os.Process.myPid());
+                //moveTaskToBack(true);
+               // finish();
+                //
             }
         });
 
