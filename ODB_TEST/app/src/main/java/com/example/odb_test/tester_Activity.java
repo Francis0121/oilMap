@@ -76,7 +76,7 @@ public class tester_Activity extends Activity {
     public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
 
-    //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
+    //double GEAR_RATIO[] = {4.5, 3.5, 2.5, 1,5, 1};    // 5단 기어비 기어의 톱니수 비율
     public double REDUCTION_GEAR_RATIO = 2.890;
     public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
 
