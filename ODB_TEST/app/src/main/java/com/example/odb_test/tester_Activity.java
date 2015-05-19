@@ -52,10 +52,6 @@ public class tester_Activity extends Activity {
     final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
     final static double FUEL_EFFICIENCY_UP_LIMIT = 20; // 기준되는 평균연비 15km/L
     final static double FUEL_EFFICIENCY_DOWN_LIMIT = 10; // 기준되는 평균연비 15km/L
-    final static double FUEL_LIMIT = 2000; // 연료소비량 제한
-    final static double BASIC_FUEL_CONSUMPTION=1000;
-    final static double FUEL_RANGE = 100.0;
-    final static double FASTER_FUEL_RANGE = 200.0;
 
     public double oil_capacity = OIL_FULL_CAPACITY; // 총연료량 5000L
     public double fuel_efficiency = FUEL_EFFICIENCY_BASE; //연비
