@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.oilMap.client.R;
@@ -29,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-05-16.
@@ -112,17 +110,17 @@ public class RankingActivity extends Activity {
                 if(count < 3) {
                     switch (count) {
                         case 1:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, strEfficiency  + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + ". "+ranking.getAuth().getName(), R.drawable.ranking01, strEfficiency  + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 2:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + ". "+ranking.getAuth().getName(), R.drawable.ranking02, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 3:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + ". "+ranking.getAuth().getName(), R.drawable.ranking03, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                     }
                 }else{
-                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, strEfficiency + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
+                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + ". "+ranking.getAuth().getName(), R.drawable.ranking04, strEfficiency + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                 }
 
                 if(rankingItem != null) {
