@@ -31,6 +31,39 @@
             android:src="@drawable/actionbar_icon"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/myRankingLeft"
+            android:divider="#f2f3f5"
+            android:dividerHeight="1.5dp"
+            android:choiceMode="singleChoice"
+            android:drawableLeft="@drawable/ic_icon"
+            android:text="블라블라블라블라"
+            android:background="@drawable/layer_list_04"
+            android:gravity="fill_vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/myRankingRight"
+            android:divider="#f2f3f5"
+            android:dividerHeight="1.5dp"
+            android:choiceMode="singleChoice"
+            android:drawableLeft="@drawable/ic_icon"
+            android:text="블라블라블라블라"
+            android:background="@drawable/layer_list_04"
+            android:gravity="fill_vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
     <ListView
         android:id="@+id/rankingListView"
         android:layout_height="match_parent"
