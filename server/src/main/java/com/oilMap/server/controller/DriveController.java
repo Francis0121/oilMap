@@ -3,6 +3,7 @@ package com.oilMap.server.controller;
 import com.oilMap.server.drive.DrivePoint;
 import com.oilMap.server.drive.Driving;
 import com.oilMap.server.drive.DriveService;
+import com.oilMap.server.util.Http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import java.util.Map;
 public class DriveController {
     
     private static Logger logger = LoggerFactory.getLogger(DriveController.class);
+
+    @Autowired
+    private Http http;
     
     @Autowired
     private DriveService drivingService;
@@ -48,7 +52,7 @@ public class DriveController {
     
     @ResponseBody
     @RequestMapping(value ="/position", method = RequestMethod.POST)
-    public Map<String, Object> position(@RequestBody Map<String, Object> request){
+    public Map<String, Object> position(@RequestBody Map<String, Object> request) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();
         response.putAll(drivingService.selectPosition((String) request.get("id")));
         return response;

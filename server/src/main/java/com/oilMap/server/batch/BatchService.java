@@ -11,5 +11,6 @@ public interface BatchService {
     void updateRankingDatabase();
     
     List<Ranking> selectRanking(RankingFilter rankingFilter);
-    
+
+    Ranking selectRankingMy(String id);
 }

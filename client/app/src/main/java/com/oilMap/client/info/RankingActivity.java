@@ -2,6 +2,7 @@ package com.oilMap.client.info;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +45,10 @@ public class RankingActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.ranking_list);
+
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        String id = pref.getString("id", "");
+        rankingFilter.setId(id);
 
         this.listView = (ListView) findViewById(R.id.rankingListView);
         new RankingAsnycTask().execute();
@@ -88,7 +93,7 @@ public class RankingActivity extends Activity {
             Log.d(TAG, rankingResponse.toString());
 
             List<Ranking> rankings = rankingResponse.getRankingList();
-
+            Double avsGasoline = rankingResponse.getAvgGasoline();
             Integer count = 1;
             for(Ranking ranking : rankings){
                 RankingItem rankingItem = null;
@@ -97,20 +102,24 @@ public class RankingActivity extends Activity {
                 DecimalFormat df = new DecimalFormat("#,##0.0");
                 String strEfficiency= df.format(efficiency);
 
+                Double cash = avsGasoline * efficiency;
+                DecimalFormat dfCash = new DecimalFormat("#,##0");
+                String strCash = dfCash.format(cash);
+
                 if(count < 3) {
                     switch (count) {
                         case 1:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, "Efficiency " + strEfficiency  + "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, strEfficiency  + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 2:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 3:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                     }
                 }else{
-                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, "Efficiency " + strEfficiency + "km/L", ranking.getAuth().getId());
+                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, strEfficiency + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                 }
 
                 if(rankingItem != null) {

@@ -74,4 +74,23 @@
         LIMIT #{pagination.itemSeqBegin}, #{pagination.numItemsPerPage}
     </select>
     
+    <select id="selectRakingMy" parameterType="String" resultType="Ranking">
+        SELECT
+            b.`pn` AS `batch.pn`, b.`batchDate` AS `batch.batchDate`,
+            a.`id` AS `auth.id`, a.`email` AS `auth.email`, a.`name` AS `auth.name`,
+            e.`efficiency` AS `efficiency.efficiency`, e.`ranking` AS `efficiency.ranking`
+        FROM
+            `efficiency` e, `batch` b, `auth` a
+        WHERE
+            b.`pn` = e.`batchPn`
+        AND
+            a.`id` = e.`id`
+        AND
+            b.`pn` = (
+                SELECT MAX(`pn`) FROM `batch`
+            )
+        AND
+            a.`id` = #{value}
+    </select>
+    
 </mapper>
