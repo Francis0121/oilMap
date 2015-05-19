@@ -199,7 +199,7 @@ public class tester_Activity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-        //  Back Button
+        //  Back & Init Button
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Back",
@@ -211,13 +211,12 @@ public class tester_Activity extends Activity {
                 prefEdit.remove("oil_capacity");
                 prefEdit.remove("distance");
                 prefEdit.commit();
-
+                /**********************************/
 
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
                 finish();
-                //
             }
         });
 
