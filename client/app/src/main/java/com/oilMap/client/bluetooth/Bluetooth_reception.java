@@ -76,8 +76,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     /****************GPS*********************/
     GpsInfo gps = null;
 
-    /*************BackBtn*********************/
-    Button backButton = (Button) findViewById(R.id.BackPageBtn);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +110,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         /*********************BackBtn****************************************************/
 
+        Button backButton = (Button) findViewById(R.id.BackPageBtn);
         //  Back Button
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -433,6 +432,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // OBD와 접속 끊김
             catch (IOException e) {
                 data_handling.showMessage("Socket disconnected");
+                initListView();  // ListView 초기화
                 //OBD접속 끊길때 연비 보내기!!!!!!//////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
