@@ -19,11 +19,13 @@ import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-05-16.
@@ -52,15 +54,33 @@ public class RankingActivity extends Activity {
         @Override
         protected RankingResponse doInBackground(Void... params) {
 
+            String url = getString(R.string.contextPath) + "/select/ranking";
+            Boolean isSuccess = false;
+            RankingResponse rankingResponse = null;
             try {
-                String url = getString(R.string.contextPath) + "/select/ranking";
-                RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<RankingResponse> responseEntity = restTemplate.postForEntity(url, rankingFilter, RankingResponse.class);
-                return responseEntity.getBody();
-            } catch (Exception e) {
+                while (!isSuccess) {
+                    try {
+                        rankingResponse = postTemplate(url);
+                        if(rankingResponse != null) {
+                            isSuccess = true;
+                        }
+                    } catch (ResourceAccessException e) {
+                        Log.e("Error", e.getMessage(), e);
+                        isSuccess = false;
+                    }
+                }
+            }catch (Exception e){
                 Log.e("Error", e.getMessage(), e);
-                throw new RuntimeException("Communication error occur");
+                rankingResponse = new RankingResponse();
             }
+
+            return  rankingResponse;
+        }
+
+        private RankingResponse postTemplate(String url){
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<RankingResponse> responseEntity = restTemplate.postForEntity(url, rankingFilter, RankingResponse.class);
+            return responseEntity.getBody();
         }
 
         @Override

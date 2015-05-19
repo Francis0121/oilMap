@@ -108,6 +108,12 @@ public class OilInfoActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        new OilInfoAsyncTask().execute();
+    }
+
+    @Override
     public void onBackPressed() {
         this.backPressCloseHandler.onBackPressed(this.bottomSheet);
     }
@@ -211,10 +217,10 @@ public class OilInfoActivity extends Activity {
                         DecimalFormat df2 = new DecimalFormat("#,##0.0");
                         String strEfficiency = df2.format(efficiency);
 
-                        if(!strCash.equals("0")) {
+                        if(cash > 0.0) {
                             list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + strEfficiency + "km/l");
+                            totalCash += cash;
                         }
-                        totalCash += cash;
                     }
                 }else{
                     list.add("Data doesn't exist");
@@ -223,6 +229,12 @@ public class OilInfoActivity extends Activity {
                 listView.setAdapter(adapter);
 
                 circleProgress.setProgress(bill- totalCash.intValue());
+                circleProgress.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        new OilInfoAsyncTask().execute();
+                    }
+                });
             }
 
         }

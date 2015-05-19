@@ -8,6 +8,7 @@ import android.util.Log;
 import com.oilMap.client.R;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -39,29 +40,46 @@ public class DrivingAsyncTask  extends AsyncTask<Object, Void, Map<String, Objec
             return map;
         }
 
+
+        SharedPreferences pref = mContext.getSharedPreferences("userInfo", 0);
+        String id = pref.getString("id", "");
+        Double distance = (Double) params[0];
+        Double fuelQuantity = (Double) params[1];
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("distance", distance);
+        request.put("fuelQuantity", fuelQuantity);
+        request.put("id", id);
+        Log.d(TAG, request.toString());
+
+        String url = mContext.getString(R.string.contextPath) + "/drive/driving";
+        Boolean isSuccess = false;
+        Map<String, Object> response =  null;
         try {
-            SharedPreferences pref = mContext.getSharedPreferences("userInfo", 0);
-            String id = pref.getString("id", "");
-            Double distance = (Double) params[0];
-            Double fuelQuantity = (Double) params[1];
-
-            Map<String, Object> request = new HashMap<>();
-            request.put("distance", distance);
-            request.put("fuelQuantity", fuelQuantity);
-            request.put("id", id);
-            Log.d(TAG, request.toString());
-
-            String url = mContext.getString(R.string.contextPath) + "/drive/driving";
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
-            Map<String, Object> messages = responseEntity.getBody();
-            return messages;
-        } catch (Exception e) {
+            while (!isSuccess) {
+                try {
+                    response = postTemplate(url, request);
+                    if ((Boolean) response.get("result")) {
+                        isSuccess = true;
+                    }
+                } catch (ResourceAccessException e) {
+                    Log.e("Error", e.getMessage(), e);
+                    isSuccess = false;
+                }
+            }
+        }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
-            map.put("result", false);
-            return map;
+            response.put("result", false);
         }
 
+        return  response;
+    }
+
+    private Map<String, Object> postTemplate(String url, Map<String, Object> request){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
+        Map<String, Object> messages = responseEntity.getBody();
+        return messages;
     }
 
     @Override
