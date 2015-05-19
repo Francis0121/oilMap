@@ -22,8 +22,22 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
+        <TableRow>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:text="Fuel effi : "
+                android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/fueleffiText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15px"
+                android:textSize="18sp" />
+        </TableRow>
         <TableRow>
 
             <TextView

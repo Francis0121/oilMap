@@ -5,9 +5,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,24 +39,52 @@ public class tester_Activity extends Activity {
     public String strMsg; // 송신데이터
 
     ////////////////////////////////////////////////////*/
+    /*RPM*/
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 50.0; //rpm 증가값(연료증가량)
     final static double FASTER_RPM_RANGE = 150.0; //rpm증가값(연료증가량)
     final static double DECREASE_RPM = 200; // 감소되는 rpm
-    final static double DECREASE_SPEED = 3; // 감소되는 속도
-    final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
-    final static double OIL_FULL_CAPACITY = 5000; // 기름 최대용량
-    final static double RPM_LIMIT = 2000; // RPM 제한
-    public double car_rpm = 500; // 기본 500 rpm
-    public double car_speed = 0; //
-    public double oil_capacity = 5000; // 5000L
-    public double fuel_use = 500; // 엔진에 주입되는 기름소비량
-    public double distance = 1000; // 현재 1000km를 탄상태
-    public int current_gear = 0;
 
+    public double car_rpm = BASIC_RPM; // 기본 500 rpm
+
+    /*Fuel*/
+    final static double OIL_FULL_CAPACITY = 5000; // 기름 최대용량
+    final static double FUEL_EFFICIENCY_BASE = 15; // 기준되는 평균연비 15km/L
+    final static double FUEL_EFFICIENCY_UP_LIMIT = 20; // 기준되는 평균연비 15km/L
+    final static double FUEL_EFFICIENCY_DOWN_LIMIT = 10; // 기준되는 평균연비 15km/L
+    final static double FUEL_LIMIT = 2000; // 연료소비량 제한
+    final static double BASIC_FUEL_CONSUMPTION=1000;
+    final static double FUEL_RANGE = 100.0;
+    final static double FASTER_FUEL_RANGE = 200.0;
+
+    public double oil_capacity = OIL_FULL_CAPACITY; // 총연료량 5000L
+    public double fuel_efficiency = FUEL_EFFICIENCY_BASE; //연비
+
+    /*Speed*/
+    final static double DECREASE_SPEED = 3; // 감소되는 속도
+    final static double RPM_LIMIT = 2000; // RPM 제한
+
+    public double car_speed = 0; //
+    public double fuel_use = BASIC_RPM; // 엔진에 주입되는 기름소비량
+
+    /*Distance*/
+    final static double DISTANCE_INIT = 1000; // 감소되는 속도
+    public double distance = DISTANCE_INIT; // 현재 1000km를 탄상태
+
+    /*Gear*/
+    public int current_gear = 0;
+    public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
+    /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
+
+    //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
+    public double REDUCTION_GEAR_RATIO = 2.890;
+    public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
+
+    /*Time*/
     public Calendar cal = Calendar.getInstance();
     public long time = 0; // 엔진 시작후 경과된 시간
 
+    TextView fuel_efficiency_text;
     TextView fuel_use_text;
     TextView rpm_text;
     TextView gear_text;
@@ -68,18 +98,26 @@ public class tester_Activity extends Activity {
     public boolean acc_flag = false;
     public boolean faster_acc_flag = false;
     public boolean brk_flag = false;
-    public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
-    /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
 
-    //double GEAR_RATIO[] = {2.580, 2.120, 1.830, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
-    public double REDUCTION_GEAR_RATIO = 2.890;
-    public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
 
+    //////////// Preference 기름량, 총거리///////////////////////
+    SharedPreferences pref = null;
+    SharedPreferences.Editor prefEdit = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tester_activity);
+
+        //////////// Preference 기름량, 총거리///////////////////////
+        pref = getSharedPreferences("obdBt", 0);
+        prefEdit = pref.edit();
+        oil_capacity=Double.parseDouble(pref.getString("oil_capacity",Double.toString(OIL_FULL_CAPACITY)));
+        distance=Double.parseDouble(pref.getString("distance",Double.toString(DISTANCE_INIT)));
+        prefEdit.commit();
+
+//        prefEdit.putString("distance", Double.toString(oil_capacity));
+//        distance=Double.parseDouble(str);
 
         //////////////// Bluetooth///////////////////////////////////
         mTextMsg = (TextView) findViewById(R.id.bluetooth);
@@ -90,6 +128,7 @@ public class tester_Activity extends Activity {
             // 블루투스 수신 서버쓰레드 생성
             bt.getServerThread();
         ////////////////////////////////////////////////////////////////
+        fuel_efficiency_text = (TextView) findViewById(R.id.fueleffiText);
         fuel_use_text = (TextView) findViewById(R.id.fueluseText);
         rpm_text = (TextView) findViewById(R.id.rpmText);
         gear_text = (TextView) findViewById(R.id.gearText);
@@ -167,6 +206,10 @@ public class tester_Activity extends Activity {
                 Toast.makeText(getApplicationContext(), "Back",
                         Toast.LENGTH_SHORT).show();
 
+                /*clear 기름량, 거리 데이터*/
+                prefEdit.clear();
+                prefEdit.commit();
+                /**/
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
@@ -196,11 +239,13 @@ public class tester_Activity extends Activity {
                 } else if (faster_acc_flag) {
                     car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
                     fuel_use = (fuel_use < (RPM_LIMIT - FASTER_RPM_RANGE)) ? fuel_use + FASTER_RPM_RANGE : fuel_use;
+                    fuel_efficiency = (fuel_efficiency < FUEL_EFFICIENCY_UP_LIMIT) ? fuel_efficiency-0.3:fuel_efficiency; //연비 떨어짐
                 }
                 // 가속중이지 않다면 rpm은 줄어든다.
                 else {
                     car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM / GEAR_RATIO[current_gear]) ? BASIC_RPM : car_rpm - DECREASE_RPM / GEAR_RATIO[current_gear];
                     fuel_use = (fuel_use < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : fuel_use - DECREASE_RPM;
+                    fuel_efficiency = (fuel_efficiency > FUEL_EFFICIENCY_DOWN_LIMIT) ? fuel_efficiency+0.1:fuel_efficiency; //연비 상승
                 }
             }
         }
@@ -246,7 +291,16 @@ public class tester_Activity extends Activity {
 
             // rpm따른 남은 기름량이 0보다 커야 계산가능
             if ((car_rpm > 0) && (oil_capacity > 0)) {
-                oil_capacity -= fuel_use / 1000 / 100;  // 1cc=0.001 ...  1초당 rpm 따른 기름소비량 ///// 수정!!!!!!
+                oil_capacity -= car_speed/ 3600 / fuel_efficiency ;  // 1초당 소비되는 연료량= 속도(km/s) / 연비(km/l)
+            }    // Fuel consumption
+            Handler fuelefffiHandler = fuel_use_text.getHandler();
+            if (fuelefffiHandler != null) {
+                fuelefffiHandler.post(new Runnable() {
+                    public void run() {
+                        Log.d("timeTimerTask", "fuel effiency : " + fuel_efficiency);
+                        fuel_efficiency_text.setText(Double.toString(Double.parseDouble(String.format("%.2f", fuel_efficiency))));
+                    }
+                });
             }
             // Fuel consumption
             Handler fueluseHandler = fuel_use_text.getHandler();
@@ -325,6 +379,11 @@ public class tester_Activity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //////////Preference/////////////
+        prefEdit.putString("oil_capacity",Double.toString(oil_capacity));
+        prefEdit.putString("distance",Double.toString(distance));
+        prefEdit.commit();
+
         ///////////Bluetooth/////////////
         if (bt.mSThread != null) {
             bt.mSThread.cancel();
@@ -490,7 +549,7 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    jd.setFuelEfficiency(Double.parseDouble(String.format("%.2f", FUEL_EFFICIENCY_BASE+(car_speed%6)))); // 평균연비 15km/l 기준으로 랜덤계산
+                    jd.setFuelEfficiency(Double.parseDouble(String.format("%.2f", fuel_efficiency))); // 평균연비 15km/l 기준으로 랜덤계산
                     jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
                     jd.setFuelLevel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
@@ -509,9 +568,7 @@ public class tester_Activity extends Activity {
                     } catch (NullPointerException e) {
                         ;
                     }
-
                 }
-
             }
 
             // 데이터를 소켓으로 전송한다
