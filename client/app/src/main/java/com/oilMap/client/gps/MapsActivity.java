@@ -104,10 +104,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             option.position(loc);// 위도 • 경도
             option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));;
 
-            mGoogleMap.addMarker(option);
-            if(mGoogleMap != null){
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-            }
+//            mGoogleMap.addMarker(option);
+//            if(mGoogleMap != null){
+//                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+//            }
         }
     };
 }
