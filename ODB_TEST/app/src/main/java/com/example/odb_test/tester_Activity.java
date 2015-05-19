@@ -111,9 +111,6 @@ public class tester_Activity extends Activity {
         distance=Double.parseDouble(pref.getString("distance",Double.toString(DISTANCE_INIT)));
         prefEdit.commit();
 
-//        prefEdit.putString("distance", Double.toString(oil_capacity));
-//        distance=Double.parseDouble(str);
-
         //////////////// Bluetooth///////////////////////////////////
         mTextMsg = (TextView) findViewById(R.id.bluetooth);
 
