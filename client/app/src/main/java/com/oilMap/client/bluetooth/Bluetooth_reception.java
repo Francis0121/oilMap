@@ -21,11 +21,12 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
+import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.gps.GpsInfo;
 
@@ -67,8 +68,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     double longitude;
 
     /****************Data Handling*********************/
-    TextView mTextMsg;
+    TextView mTextMsg, mRunTextView;
     DataHandling data_handling=null;
+    //GifImageView gifImageView;
     /****************GPS*********************/
     GpsInfo gps = null;
 
@@ -88,7 +90,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         /*************************DataHandling**********************/
         mTextMsg = (TextView)findViewById(R.id.textMessage);
-        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg);
+        //gifImageView = (GifImageView) findViewById(R.id.carImageView);
+        mRunTextView = (TextView) findViewById(R.id.carRunTextView);
+        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg, mRunTextView);
 
         /********************** Bluetooth *************************************/
 
@@ -280,10 +284,16 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         ///////////////////////////////////////////////
         //연결 후 디바이스 목록 안보이게
-        ListView listview = (ListView)findViewById(R.id.listDevice);
-        listview.setVisibility(View.GONE);
-        listview.setVisibility(View.INVISIBLE);
+//        mListDevice.setVisibility(View.GONE);
+//        mListDevice.setVisibility(View.INVISIBLE);
 
+        RelativeLayout relativeLayoutListView= (RelativeLayout) findViewById(R.id.relativeLayoutListView);
+        relativeLayoutListView.setVisibility(View.GONE);
+
+        RelativeLayout relativeLayoutRunImage = (RelativeLayout) findViewById(R.id.relativeLayoutRunImage);
+        relativeLayoutRunImage.setVisibility(View.VISIBLE);
+
+        TextView runingText = (TextView) findViewById(R.id.carRunTextView);
 
         // 연결 후 메인 액티비티로 복귀!!!/////
       /*  Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
@@ -404,6 +414,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             }
             catch (IOException e) {
                 data_handling.showMessage("Socket disconnected");
+                Intent stop = new Intent(Bluetooth_reception.this, MainActivity.class);
+                startActivity(stop);
+                finish();
+
                 return false;
             }
             catch (JSONException e) {

@@ -46,11 +46,12 @@
         android:textIsSelectable="true" />
 
     <RelativeLayout
-        android:id="@+id/layoutInput"
+        android:id="@+id/relativeLayoutListView"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textMessage" >
+        android:layout_below="@id/textMessage"
+        android:visibility="visible">
 
         <ListView
             android:id="@+id/listDevice"
@@ -59,28 +60,44 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            android:layout_alignParentTop="true"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayoutRunImage">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:text="Driving..."
+            android:id="@+id/carRunTextView"
+            android:phoneNumber="true"
+            android:textColor="@color/white_bg_color"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:id="@+id/relativeLayout">
+            android:layout_marginBottom="44dp" />
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
 
             <pl.droidsonroids.gif.GifImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/stop_ac"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="88dp" />
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/normal_ac"
+                android:id="@+id/carImageView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
-
-
     </RelativeLayout>
-
 
 </LinearLayout>

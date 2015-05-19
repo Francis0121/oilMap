@@ -5,6 +5,7 @@
     <color name="custom_bg_color">#282828</color>
     <color name="circle_finished_color">#01568c</color>
     <color name="circle_unfinished_color">#bfe0f5</color>
+    <color name="white_bg_color">#fff</color>
 
     <style name="BottomSheet.StyleDialog" parent="BottomSheet.Dialog">
         <item name="android:backgroundDimAmount">.9</item>

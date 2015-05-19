@@ -105,9 +105,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMapCli
             option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));;
 
 //            mGoogleMap.addMarker(option);
-//            if(mGoogleMap != null){
-//                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-//            }
+            if(mGoogleMap != null){
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+            }
         }
     };
 }
