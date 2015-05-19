@@ -15,11 +15,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -74,6 +76,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     /****************GPS*********************/
     GpsInfo gps = null;
 
+    /*************BackBtn*********************/
+    Button backButton = (Button) findViewById(R.id.BackPageBtn);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -104,6 +109,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
         /******************************************************************************/
+
+        /*********************BackBtn****************************************************/
+
+        //  Back Button
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
+                startActivity(intent);
+                //
+            }});
+        /**********************************************************************************/
     }
 
     private void init() {
@@ -296,7 +313,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
         TextView runingText = (TextView) findViewById(R.id.carRunTextView);
 
-        // 연결 후 메인 액티비티로 복귀!!!/////
+        /************************* 연결 후 메인 액티비티로 복귀!!!/////************************/
         Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
