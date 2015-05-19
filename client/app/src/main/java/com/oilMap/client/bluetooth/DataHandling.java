@@ -6,21 +6,18 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.oilMap.client.R;
-
 /**
  * Created by 나홍철 on 2015-05-17.
  */
 public class DataHandling {
 
     private Context mContext;
-    private TextView mTextView, mRunTextView;
+    private TextView mTextView;
     //private GifImageView mGifImageView;
 
-    public DataHandling(Context mContext, TextView mTextView, TextView mRunTextView) {
+    public DataHandling(Context mContext, TextView mTextView) {
         this.mTextView = mTextView;
         this.mContext = mContext;
-        this.mRunTextView = mRunTextView;
     }
 
     // 메시지를 화면에 표시
@@ -55,7 +52,6 @@ public class DataHandling {
         if((rpm_sub >= 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*2.5)))) { //급가속 했을 때
            bool=true;
        }
-
         return bool;
     }
     /**
@@ -64,16 +60,7 @@ public class DataHandling {
     public void sending_data_for_fuel_efficiency(double distance, double fuel) {
         new DrivingAsyncTask(this.mContext).execute(distance, fuel);
         //가속 이미지
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mRunTextView.setText("Driving...");
-                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.white_bg_color));
-            }
-        });
     }
-
-
 
     /**
     급가속 위치 정보 서버로 보냄
@@ -81,22 +68,5 @@ public class DataHandling {
     public void sending_data_for_location(double latitude, double longitude, double startSpeed, double endSpeed) {
         new DrivePointAsyncTask(this.mContext).execute(latitude, longitude, startSpeed, endSpeed);
         //급가속 이미지
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mRunTextView.setText("Accelerated.");
-                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.orange_bg_color));
-            }
-        });
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRunTextView.setText("Driving...");
-                mRunTextView.setTextColor(mContext.getResources().getColor(R.color.white_bg_color));
-            }
-        }, 3000);
-
     }
 }

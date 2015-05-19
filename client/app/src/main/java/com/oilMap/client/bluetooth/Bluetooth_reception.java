@@ -74,7 +74,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     /****************Data Handling*********************/
     TextView mTextMsg, mRunTextView;
     DataHandling data_handling=null;
-    //GifImageView gifImageView;
     /****************GPS*********************/
     GpsInfo gps = null;
 
@@ -99,17 +98,16 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.gps_main);
 
-
         /********************GPS*************************/
         MapsInitializer.initialize(getApplicationContext());
         init();
         gps = new GpsInfo(Bluetooth_reception.this);
 
+
+
         /*************************DataHandling**********************/
         mTextMsg = (TextView)findViewById(R.id.textMessage);
-        //gifImageView = (GifImageView) findViewById(R.id.carImageView);
-        mRunTextView = (TextView) findViewById(R.id.carRunTextView);
-        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg, mRunTextView);
+        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg);
 
         /********************** Bluetooth *************************************/
 
@@ -117,20 +115,21 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         initListView();  // ListView 초기화
         // 블루투스 사용 가능상태 판단
         boolean isBlue = canUseBluetooth();
-        if( isBlue )
+        if( isBlue ) {
             // 페어링된 원격 디바이스 목록 구하기
             getParedDevice();
-        /******************************************************************************/
-
+        }
         /*********************BackBtn****************************************************/
 
         Button backButton = (Button) findViewById(R.id.BackPageBtn);
         //  Back Button
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
+
+                Intent intent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(intent);
+                finish();
                 //
             }});
         /**********************************************************************************/
@@ -148,7 +147,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         if (gps.isGetLocation()) {
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
-
         }
     }
 
@@ -176,6 +174,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 사용자에게 블루투스 활성화를 요청한다
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(intent, ACTION_ENABLE_BT);
+
         return false;
     }
 
@@ -268,6 +267,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         mListDevice = (ListView)findViewById(R.id.listDevice);
         mListDevice.setAdapter(adapter);
         mListDevice.setOnItemClickListener(this);
+
+        RelativeLayout relativeLayoutListView= (RelativeLayout) findViewById(R.id.relativeLayoutListView);
+        relativeLayoutListView.setVisibility(View.VISIBLE);
     }
 
     // 페어링된 원격 디바이스 목록 구하기
@@ -280,12 +282,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         for( BluetoothDevice device : devices ) {
             addDeviceToList(device.getName(), device.getAddress()); // 디바이스를 목록에 추가
         }
-
         // 원격 디바이스 검색 시작
         startFindDevice();
-
-        // 다른 디바이스에 자신을 노출
-        // setDiscoverable();
     }
 
     // ListView 항목 선택 이벤트 함수
@@ -313,22 +311,13 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 클라이언트 소켓 스레드 생성 & 시작
         mCThread = new ClientThread(device);
         mCThread.start();
-
         ///////////////////////////////////////////////
-        //연결 후 디바이스 목록 안보이게
-//        mListDevice.setVisibility(View.GONE);
-//        mListDevice.setVisibility(View.INVISIBLE);
 
         RelativeLayout relativeLayoutListView= (RelativeLayout) findViewById(R.id.relativeLayoutListView);
         relativeLayoutListView.setVisibility(View.GONE);
 
-        RelativeLayout relativeLayoutRunImage = (RelativeLayout) findViewById(R.id.relativeLayoutRunImage);
-        relativeLayoutRunImage.setVisibility(View.VISIBLE);
-
-        TextView runingText = (TextView) findViewById(R.id.carRunTextView);
-
         /************************* 연결 후 메인 액티비티로 복귀!!!/////************************/
-        Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
+        Intent intent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
         ///////////////////////////////////////////
@@ -417,16 +406,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
                     //처음 연비 보내기!!!!!!//////////////////////////////////////
                     //////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////
                     data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(),i.obd.getFuel());
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////
                     //////////////////////////////////////////////////////////////////////////////////////////////////////
                     break;
                 }
             }
-
             // 데이터 받기
             while (dataParsingSet(mmInStream)) {
                 rpmCompare();
@@ -448,17 +432,15 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // OBD와 접속 끊김
             catch (IOException e) {
                 data_handling.showMessage("Socket disconnected");
-                initListView();  // ListView 초기화
+                //initListView();  // ListView 초기화
                 //OBD접속 끊길때 연비 보내기!!!!!!//////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
+
                 data_handling.sending_data_for_fuel_efficiency(i.obd.getDistance(), i.obd.getFuel()); // 종료전 자료전송
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 setSharedPreference("0", "1");
+
                 return false;
             }
             catch (JSONException e) {

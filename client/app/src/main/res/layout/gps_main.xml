@@ -50,70 +50,32 @@
         android:id="@+id/relativeLayoutListView"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="320dp"
         android:layout_below="@id/textMessage"
-        android:visibility="visible">
+        >
 
         <ListView
             android:id="@+id/listDevice"
-            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-           />
-
-
-
+            />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLayoutView"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/relativeLayoutRunImage">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:text="Driving..."
-            android:id="@+id/carRunTextView"
-            android:phoneNumber="true"
-            android:textColor="@color/white_bg_color"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="44dp" />
-
+        android:layout_height="wrap_content"
+        >
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BackPage"
+            android:text="Initialization"
             android:id="@+id/BackPageBtn"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 
-
-        <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
-
-            <pl.droidsonroids.gif.GifImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:src="@drawable/normal_ac"
-                android:id="@+id/carImageView"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
-
-        </RelativeLayout>
-
-
-
     </RelativeLayout>
-
 
 </LinearLayout>
