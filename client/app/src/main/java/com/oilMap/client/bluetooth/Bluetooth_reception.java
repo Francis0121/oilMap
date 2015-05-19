@@ -297,9 +297,9 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         TextView runingText = (TextView) findViewById(R.id.carRunTextView);
 
         // 연결 후 메인 액티비티로 복귀!!!/////
-      /*  Intent intent = new Intent(getBaseContext(), OilInfoActivity.class);
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
-        startActivity(intent);*/
+        startActivity(intent);
         ///////////////////////////////////////////
 
     }
@@ -424,19 +424,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
-                /********************** Bluetooth 재실행*************************************/
 
-                mBA = BluetoothAdapter.getDefaultAdapter();
-                initListView();  // ListView 초기화
-                // 블루투스 사용 가능상태 판단
-                boolean isBlue = canUseBluetooth();
-                if( isBlue )
-                    // 페어링된 원격 디바이스 목록 구하기
-                    getParedDevice();
-                /******************************************************************************/
-//                Intent stop = new Intent(Bluetooth_reception.this, MainActivity.class);
-//                startActivity(stop);
-//                finish();
 
                 return false;
             }
