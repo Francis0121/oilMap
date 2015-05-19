@@ -12,22 +12,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.oilMap.client.R;
-import com.oilMap.client.auth.Auth;
 import com.oilMap.client.gps.MapsActivity;
 import com.oilMap.client.ranking.Efficiency;
 import com.oilMap.client.ranking.Ranking;
 import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-05-16.
@@ -39,6 +35,8 @@ public class RankingActivity extends Activity {
     private ListView listView;
     private List<RankingItem> rankingItemData = new ArrayList<>();
 
+    private int myPosition;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
@@ -48,7 +46,6 @@ public class RankingActivity extends Activity {
         this.listView = (ListView) findViewById(R.id.rankingListView);
         new RankingAsnycTask().execute();
     }
-
 
     private class RankingAsnycTask extends AsyncTask<Void, Void, RankingResponse> {
 
@@ -80,7 +77,6 @@ public class RankingActivity extends Activity {
                 DecimalFormat df = new DecimalFormat("#,##0.0");
                 String strEfficiency= df.format(efficiency);
 
-
                 if(count < 3) {
                     switch (count) {
                         case 1:
@@ -109,13 +105,28 @@ public class RankingActivity extends Activity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    myPosition = position;
                     String authId = rankingItemData.get(position).getKey();
                     Intent map = new Intent(RankingActivity.this, MapsActivity.class);
                     map.putExtra("id", authId);
                     startActivity(map);
                 }
             });
+
+//            TextView myRankText = (TextView)findViewById(R.id.myRanking);
+//
+//            myRankText.setOnClickListener(new View.OnClickListener() {
+//
+//                public void onClick(View v) {
+//                    if (v.isClickable()) {
+//                        // Toast.makeText(PhoneUsefull.this, R.string.phoneusefull_kr1, 1).show();
+//                        String authId = rankingItemData.get(myPosition).getKey();
+//                        Intent map = new Intent(RankingActivity.this, MapsActivity.class);
+//                        map.putExtra("id", authId);
+//                        startActivity(map);
+//                    }
+//                }
+//            });
         }
     }
-
 }
