@@ -41,8 +41,8 @@ public class tester_Activity extends Activity {
     ////////////////////////////////////////////////////*/
     /*RPM*/
     final static double BASIC_RPM = 500;
-    final static double RPM_RANGE = 50.0; //rpm 증가값(연료증가량)
-    final static double FASTER_RPM_RANGE = 150.0; //rpm증가값(연료증가량)
+    final static double RPM_RANGE = 30.0; //rpm 증가값(연료증가량)
+    final static double FASTER_RPM_RANGE = 90.0; //rpm증가값(연료증가량)
     final static double DECREASE_RPM = 200; // 감소되는 rpm
 
     public double car_rpm = BASIC_RPM; // 기본 500 rpm
@@ -238,13 +238,13 @@ public class tester_Activity extends Activity {
                 } else if (faster_acc_flag) {
                     car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
                     fuel_use = (fuel_use < (RPM_LIMIT - FASTER_RPM_RANGE)) ? fuel_use + FASTER_RPM_RANGE : fuel_use;
-                    fuel_efficiency = (fuel_efficiency < FUEL_EFFICIENCY_UP_LIMIT) ? fuel_efficiency-0.3:fuel_efficiency; //연비 떨어짐
+                    fuel_efficiency = (fuel_efficiency > FUEL_EFFICIENCY_DOWN_LIMIT) ? fuel_efficiency-0.3:fuel_efficiency; //연비 떨어짐
                 }
                 // 가속중이지 않다면 rpm은 줄어든다.
                 else {
                     car_rpm = (car_rpm < BASIC_RPM + DECREASE_RPM / GEAR_RATIO[current_gear]) ? BASIC_RPM : car_rpm - DECREASE_RPM / GEAR_RATIO[current_gear];
                     fuel_use = (fuel_use < BASIC_RPM + DECREASE_RPM) ? BASIC_RPM : fuel_use - DECREASE_RPM;
-                    fuel_efficiency = (fuel_efficiency > FUEL_EFFICIENCY_DOWN_LIMIT) ? fuel_efficiency+0.1:fuel_efficiency; //연비 상승
+                    fuel_efficiency = (fuel_efficiency < FUEL_EFFICIENCY_UP_LIMIT) ? fuel_efficiency+0.1:fuel_efficiency; //가속 안한다면 연비 상승
                 }
             }
         }
@@ -290,7 +290,7 @@ public class tester_Activity extends Activity {
 
             // rpm따른 남은 기름량이 0보다 커야 계산가능
             if ((car_rpm > 0) && (oil_capacity > 0)) {
-                oil_capacity -= car_speed/ 3600 / fuel_efficiency ;  // 1초당 소비되는 연료량= 속도(km/s) / 연비(km/l)
+                oil_capacity -= car_speed / 3600 / fuel_efficiency ;  // 1초당 소비되는 연료량= 속도(km/s) / 연비(km/l)
             }    // Fuel consumption
             Handler fuelefffiHandler = fuel_use_text.getHandler();
             if (fuelefffiHandler != null) {
