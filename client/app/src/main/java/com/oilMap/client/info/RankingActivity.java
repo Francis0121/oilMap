@@ -2,6 +2,7 @@ package com.oilMap.client.info;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +20,13 @@ import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 김현준 on 2015-05-16.
@@ -43,6 +46,10 @@ public class RankingActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         setContentView(R.layout.ranking_list);
 
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        String id = pref.getString("id", "");
+        rankingFilter.setId(id);
+
         this.listView = (ListView) findViewById(R.id.rankingListView);
         new RankingAsnycTask().execute();
     }
@@ -52,15 +59,33 @@ public class RankingActivity extends Activity {
         @Override
         protected RankingResponse doInBackground(Void... params) {
 
+            String url = getString(R.string.contextPath) + "/select/ranking";
+            Boolean isSuccess = false;
+            RankingResponse rankingResponse = null;
             try {
-                String url = getString(R.string.contextPath) + "/select/ranking";
-                RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<RankingResponse> responseEntity = restTemplate.postForEntity(url, rankingFilter, RankingResponse.class);
-                return responseEntity.getBody();
-            } catch (Exception e) {
+                while (!isSuccess) {
+                    try {
+                        rankingResponse = postTemplate(url);
+                        if(rankingResponse != null) {
+                            isSuccess = true;
+                        }
+                    } catch (ResourceAccessException e) {
+                        Log.e("Error", e.getMessage(), e);
+                        isSuccess = false;
+                    }
+                }
+            }catch (Exception e){
                 Log.e("Error", e.getMessage(), e);
-                throw new RuntimeException("Communication error occur");
+                rankingResponse = new RankingResponse();
             }
+
+            return  rankingResponse;
+        }
+
+        private RankingResponse postTemplate(String url){
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<RankingResponse> responseEntity = restTemplate.postForEntity(url, rankingFilter, RankingResponse.class);
+            return responseEntity.getBody();
         }
 
         @Override
@@ -68,7 +93,7 @@ public class RankingActivity extends Activity {
             Log.d(TAG, rankingResponse.toString());
 
             List<Ranking> rankings = rankingResponse.getRankingList();
-
+            Double avsGasoline = rankingResponse.getAvgGasoline();
             Integer count = 1;
             for(Ranking ranking : rankings){
                 RankingItem rankingItem = null;
@@ -77,20 +102,24 @@ public class RankingActivity extends Activity {
                 DecimalFormat df = new DecimalFormat("#,##0.0");
                 String strEfficiency= df.format(efficiency);
 
+                Double cash = avsGasoline * efficiency;
+                DecimalFormat dfCash = new DecimalFormat("#,##0");
+                String strCash = dfCash.format(cash);
+
                 if(count < 3) {
                     switch (count) {
                         case 1:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, "Efficiency " + strEfficiency  + "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking01, strEfficiency  + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 2:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking02, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                         case 3:
-                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, "Efficiency " + strEfficiency+ "km/L", ranking.getAuth().getId());
+                            rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking03, strEfficiency+ "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
                     }
                 }else{
-                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, "Efficiency " + strEfficiency + "km/L", ranking.getAuth().getId());
+                    rankingItem = new RankingItem(R.drawable.effeicency, e.getRanking() + "."+ranking.getAuth().getName(), R.drawable.ranking04, strEfficiency + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                 }
 
                 if(rankingItem != null) {

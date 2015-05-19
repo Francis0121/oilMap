@@ -368,7 +368,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 처음 자료 보내기
             while (true) {
                 // 첫 데이터가 정상적이면서 rpm이 0보다 크면 초기 값으로 설정과 전송후 반복문나간다
-                if(dataParsingSet(mmInStream) && (i.obd.getRpm() > 0)  ) {
+                if(dataParsingSet(mmInStream) && (i.obd.getRpm() > 0) && (i.obd.getDistance() > 0) && (i.obd.getFuel() > 0 )) {
                     rpm_last = i.obd.getRpm(); //처음 rpm 구하기
                     time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
 

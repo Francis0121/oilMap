@@ -57,9 +57,11 @@ public class HostController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/select/ranking", method = RequestMethod.POST)
-	public Map<String, Object> selectRanking(@RequestBody RankingFilter rankingFilter){
+	public Map<String, Object> selectRanking(@RequestBody RankingFilter rankingFilter) throws Exception {
 		Map<String, Object> response = new HashMap<String, Object>();
 		response.put("rankingList", batchService.selectRanking(rankingFilter));
+		response.put("avgGasoline", http.sendGet());
+		response.put("myRanking", batchService.selectRankingMy(rankingFilter.getId()));
 		return response;
 	}
 }

@@ -9,7 +9,27 @@ public class RankingResponse {
 
     private List<Ranking> rankingList;
 
+    private Double avgGasoline;
+
+    private Ranking myRanking;
+
     public RankingResponse() {
+    }
+
+    public Double getAvgGasoline() {
+        return avgGasoline;
+    }
+
+    public void setAvgGasoline(Double avgGasoline) {
+        this.avgGasoline = avgGasoline;
+    }
+
+    public Ranking getMyRanking() {
+        return myRanking;
+    }
+
+    public void setMyRanking(Ranking myRanking) {
+        this.myRanking = myRanking;
     }
 
     public List<Ranking> getRankingList() {
@@ -24,6 +44,8 @@ public class RankingResponse {
     public String toString() {
         return "RankingResponse{" +
                 "rankingList=" + rankingList +
+                ", avgGasoline=" + avgGasoline +
+                ", myRanking=" + myRanking +
                 '}';
     }
 }

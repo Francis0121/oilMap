@@ -82,7 +82,7 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
                 e.setRanking(rank);
             }
             
-            if(e.getEfficiency() == null || e.getEfficiency() < 0){
+            if(e.getEfficiency() == null || e.getEfficiency() < 0.0 || e.getEfficiency() == Double.NaN){
                 e.setEfficiency(0.0);
             }
             logger.debug(e.toString());
@@ -101,6 +101,11 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
             return new ArrayList<Ranking>();
         }
         return getSqlSession().selectList("batch.selectRanking", rankingFilter);
+    }
+
+    @Override
+    public Ranking selectRankingMy(String id) {
+        return getSqlSession().selectOne("batch.selectRakingMy", id);
     }
 
     private int selectRankingCount(RankingFilter rankingFilter) {
