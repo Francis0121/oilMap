@@ -33,8 +33,10 @@ public class DrivingAsyncTask  extends AsyncTask<Object, Void, Map<String, Objec
 
     @Override
     protected Map<String, Object> doInBackground(Object... params) {
+        Map<String, Object> map = new HashMap<>();
         if(params[0] == null || params[1] == null){
-            throw new RuntimeException("Parameter return error");
+            map.put("result", false);
+            return map;
         }
 
         try {
@@ -56,7 +58,8 @@ public class DrivingAsyncTask  extends AsyncTask<Object, Void, Map<String, Objec
             return messages;
         } catch (Exception e) {
             Log.e("Error", e.getMessage(), e);
-            throw new RuntimeException("Driving async task communication error occur");
+            map.put("result", false);
+            return map;
         }
 
     }

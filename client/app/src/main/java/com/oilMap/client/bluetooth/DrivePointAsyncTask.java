@@ -33,8 +33,14 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
 
     @Override
     protected Map<String, Object> doInBackground(Object... params) {
+        Map<String, Object> map = new HashMap<>();
         if(params[0] == null || params[1] == null || params[2] == null || params[3] == null ){
-            return null;
+            map.put("result", false);
+            return map;
+        }
+        if(mContext == null){
+            map.put("result", false);
+            return map;
         }
 
 
@@ -62,7 +68,8 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
             return messages;
         } catch (Exception e) {
             Log.e("Error", e.getMessage(), e);
-            throw new RuntimeException("Driving async task communication error occur");
+            map.put("result", false);
+            return map;
         }
     }
 
