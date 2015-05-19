@@ -79,8 +79,6 @@ public class DataHandling {
     급가속 위치 정보 서버로 보냄
      */
     public void sending_data_for_location(double latitude, double longitude, double startSpeed, double endSpeed) {
-        //Double startSpeed = 0.0;
-        //Double endSpeed = 0.0;
         new DrivePointAsyncTask(this.mContext).execute(latitude, longitude, startSpeed, endSpeed);
         //급가속 이미지
 

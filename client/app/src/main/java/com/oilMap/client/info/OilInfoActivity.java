@@ -133,9 +133,10 @@ public class OilInfoActivity extends Activity {
 
         mTimer = new Timer();
         mTimer.schedule(mTask, 100, 100);
+        setSharedPreference("0", "1");
     }
 
-    private int imageType = 1;
+
     private void runOil() {
 
         SharedPreferences socket = getSharedPreferences("socket", 0);
