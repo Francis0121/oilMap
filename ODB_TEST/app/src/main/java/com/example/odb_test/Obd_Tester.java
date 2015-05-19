@@ -25,7 +25,7 @@ public class Obd_Tester extends Activity {
         intoTesterPage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent tester_Intent = new Intent(getBaseContext(), tester_Activity.class);
-                //tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
+                tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
             }
         });

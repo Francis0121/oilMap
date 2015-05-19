@@ -75,7 +75,6 @@ public class tester_Activity extends Activity {
     public int current_gear = 0;
     public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
-
     //double GEAR_RATIO[] = {4.5, 3.5, 2.5, 1,5, 1};    // 5단 기어비 기어의 톱니수 비율
     public double REDUCTION_GEAR_RATIO = 2.890;
     public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
@@ -206,14 +205,18 @@ public class tester_Activity extends Activity {
                 Toast.makeText(getApplicationContext(), "Back",
                         Toast.LENGTH_SHORT).show();
 
-                /*clear 기름량, 거리 데이터*/
+                /*clear 기름량, 거리 데이터 초기화*/
+                oil_capacity = OIL_FULL_CAPACITY;
+                distance = DISTANCE_INIT;
                 prefEdit.remove("oil_capacity");
                 prefEdit.remove("distance");
                 prefEdit.commit();
 
+
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
+                finish();
                 //
             }
         });
@@ -380,7 +383,7 @@ public class tester_Activity extends Activity {
         super.onDestroy();
         //////////Preference/////////////
         prefEdit.putString("oil_capacity",Double.toString(oil_capacity));
-        prefEdit.putString("distance",Double.toString(distance));
+        prefEdit.putString("distance", Double.toString(distance));
         prefEdit.commit();
 
         ///////////Bluetooth/////////////
@@ -561,8 +564,16 @@ public class tester_Activity extends Activity {
                             showMessage("Send: " + jd.getFuelEfficiency()+"/ "
                                     + jd.getFuel() +"/ " + jd.getRpm() + "/ " +jd.getFuelLevel() + "/ "
                                     + jd.getTime() + "/ " + jd.getDistance() );
-                        else
+                        else {
                             showMessage("Socket Disconnected");
+                            /*******************다시 수신 쓰레드 실행***************************/
+                            // 블루투스 사용 가능상태 판단
+                            boolean isBlue = bt.canUseBluetooth();
+                            if (isBlue)
+                                // 블루투스 수신 서버쓰레드 생성
+                                bt.getServerThread();
+                            /**************************************************/
+                        }
                         SystemClock.sleep(1000);
                     } catch (NullPointerException e) {
                         ;
