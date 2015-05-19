@@ -214,10 +214,6 @@ public class tester_Activity extends Activity {
                 Intent tester_Intent = new Intent(getBaseContext(), Obd_Tester.class);
                 tester_Intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(tester_Intent);
-
-                android.os.Process.killProcess(android.os.Process.myPid());
-                //moveTaskToBack(true);
-               // finish();
                 //
             }
         });
