@@ -13,6 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -473,6 +476,10 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 setSharedPreference("2", "1");
+                //알림음 설정
+                Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
+                ringtone.play();
             }
             else{
                 data_handling.showMessage("Receive: " + "연비:"+ i.obd.getFuelEfficiency()+"/ 연료:"
