@@ -52,7 +52,7 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
         Map<String, Object> map = new HashMap<String, Object>();
         DrivePointFilter drivePointFilter = new DrivePointFilter(id);
         Pagination pagination = drivePointFilter.getPagination();
-        pagination.setNumItemsPerPage(30);
+        pagination.setNumItemsPerPage(200);
         int count = selectPositionCount(drivePointFilter);
         pagination.setNumItems(count);
         

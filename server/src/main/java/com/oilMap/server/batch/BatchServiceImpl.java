@@ -74,13 +74,15 @@ public class BatchServiceImpl extends SqlSessionDaoSupport implements BatchServi
         
         int rank = 0;
         Double beforeEfficiency = 0.0;
+        int beforeRank = 0;
         for(Efficiency e : efficiencies){
-
+            rank++;
             if(!beforeEfficiency.equals(e.getEfficiency())){
-                e.setRanking(++rank);
-                beforeEfficiency = e.getEfficiency();
-            }else{
                 e.setRanking(rank);
+                beforeEfficiency = e.getEfficiency();
+                beforeRank = rank;
+            }else{
+                e.setRanking(beforeRank);
             }
             
             if(e.getEfficiency() == null || e.getEfficiency() < 0.0 || Double.isNaN(e.getEfficiency())){
