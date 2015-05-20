@@ -95,7 +95,7 @@ public class RankingActivity extends Activity {
 
             List<Ranking> rankings = rankingResponse.getRankingList();
             Double avsGasoline = rankingResponse.getAvgGasoline();
-            Integer count = 1;
+
             for(Ranking ranking : rankings){
                 RankingItem rankingItem = null;
                 Efficiency e = ranking.getEfficiency();
@@ -107,8 +107,8 @@ public class RankingActivity extends Activity {
                 DecimalFormat dfCash = new DecimalFormat("#,##0");
                 String strCash = dfCash.format(cash);
 
-                if(count < 3) {
-                    switch (count) {
+                if(e.getRanking() <= 3) {
+                    switch (e.getRanking()) {
                         case 1:
                             rankingItem= new RankingItem(R.drawable.effeicency, e.getRanking() + ". "+ranking.getAuth().getName(), R.drawable.ranking01, strEfficiency  + "km/L  -  "+ strCash + "￦", ranking.getAuth().getId());
                             break;
@@ -126,7 +126,6 @@ public class RankingActivity extends Activity {
                 if(rankingItem != null) {
                     rankingItemData.add(rankingItem);
                 }
-                count++;
             }
 
             RankingviewAdapter adapter = new RankingviewAdapter(RankingActivity.this, R.layout.ranking_item, rankingItemData);
