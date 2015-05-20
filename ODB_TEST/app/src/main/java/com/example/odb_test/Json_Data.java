@@ -75,8 +75,8 @@ public class Json_Data implements Serializable {
         //Json객체 셋팅 후 그 객체의 스트링 반환
         try {
             jsonOb = new JSONObject();
-            jsonOb.put("fuel_efficiency", getFuelEfficiency());     // 연비
-            jsonOb.put("fuel_level", getFuelLevel());               // 기름량 (%)
+           // jsonOb.put("fuel_efficiency", getFuelEfficiency());     // 연비
+            //jsonOb.put("fuel_level", getFuelLevel());               // 기름량 (%)
             jsonOb.put("rpm", getRpm());                             // RPM
             jsonOb.put("fuel", getFuel());                           // 기름량 (L)
             jsonOb.put("distance", getDistance());                  // 총 거리

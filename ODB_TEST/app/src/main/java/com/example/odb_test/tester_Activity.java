@@ -41,8 +41,8 @@ public class tester_Activity extends Activity {
     ////////////////////////////////////////////////////*/
     /*RPM*/
     final static double BASIC_RPM = 500;
-    final static double RPM_RANGE = 30.0; //rpm 증가값(연료증가량)
-    final static double FASTER_RPM_RANGE = 90.0; //rpm증가값(연료증가량)
+    final static double RPM_RANGE = 20.0; //rpm 증가값(연료증가량)
+    final static double FASTER_RPM_RANGE = 150.0; //rpm증가값(연료증가량)
     final static double DECREASE_RPM = 200; // 감소되는 rpm
 
     public double car_rpm = BASIC_RPM; // 기본 500 rpm
@@ -543,18 +543,19 @@ public class tester_Activity extends Activity {
             // 소켓에서 수신된 데이터를 화면에 표시한다
             public void run() {
                 while (true) {
-                    jd.setFuelEfficiency(Double.parseDouble(String.format("%.2f", fuel_efficiency))); // 평균연비 15km/l 기준으로 랜덤계산
+                //    jd.setFuelEfficiency(Double.parseDouble(String.format("%.2f", fuel_efficiency))); // 평균연비 15km/l 기준으로 랜덤계산
                     jd.setFuel(Double.parseDouble(String.format("%.3f", oil_capacity)));
                     jd.setRpm(Double.parseDouble(String.format("%.3f", car_rpm)));
-                    jd.setFuelLevel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
+                 //   jd.setFuelLevel(Double.parseDouble(String.format("%.3f", (oil_capacity / OIL_FULL_CAPACITY) * 100))); // %
                     jd.setDistance(Double.parseDouble(String.format("%.3f", distance)));
                     jd.setTime(time);
                     // 아웃 스트림 json 객체의 스트링을 반환받아 작성
                     try {
                         str=jd.retJson();
                         if (mSocketThread.write( str + "\0"))
-                            showMessage("Send: " + jd.getFuelEfficiency()+"/ "
-                                    + jd.getFuel() +"/ " + jd.getRpm() + "/ " +jd.getFuelLevel() + "/ "
+                            showMessage("Send: " +// jd.getFuelEfficiency()+"/ "
+                                    + jd.getFuel() +"/ " + jd.getRpm() + "/ "
+                                    //+jd.getFuelLevel() + "/ "
                                     + jd.getTime() + "/ " + jd.getDistance() );
                         else {
                             showMessage("Socket Disconnected");
