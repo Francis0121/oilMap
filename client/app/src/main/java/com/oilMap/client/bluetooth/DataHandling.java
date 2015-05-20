@@ -49,7 +49,7 @@ public class DataHandling {
         time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
 //
 //        // 1초차이 있음
-        if((rpm_sub >= 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*2.5)))) { //급가속 했을 때
+        if((rpm_sub > 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*7)))) { //급가속 했을 때
            bool=true;
        }
         return bool;

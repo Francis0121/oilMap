@@ -482,9 +482,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
                 ringtone.play();
             }
             else{
-                data_handling.showMessage("Receive: " + "연비:"+ i.obd.getFuelEfficiency()+"/ 연료:"
-                        + i.obd.getFuel() +"/ RPM:" + i.obd.getRpm() + "/ 연료%" +i.obd.getFuelLevel() + "/ 시간:"
-                        + i.obd.getTime() + "/ 거리:" + i.obd.getDistance() +"/" +rpm_sub);
+                data_handling.showMessage("Receive: "
+                        //+ "연비:"+ i.obd.getFuelEfficiency()
+                        +"/ 연료:" + i.obd.getFuel() +"/ RPM:" + i.obd.getRpm()
+                        //+ "/ 연료%" +i.obd.getFuelLevel()
+                        + "/ 시간:" + i.obd.getTime() + "/ 거리:" + i.obd.getDistance() +"/" +rpm_sub);
             }
 
             // 다음 연산을 위함
