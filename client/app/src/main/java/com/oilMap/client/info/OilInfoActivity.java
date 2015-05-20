@@ -149,6 +149,29 @@ public class OilInfoActivity extends Activity {
             if (status.equals("0")) {
                 Log.d(TAG, "GONE");
                 gifImageView.setVisibility(View.GONE);
+            }else if(status.equals("2")){
+                if(!imageType.equals("2")) {
+                    Log.d(TAG, "FAST_VISIBLE");
+                    gifImageView.setImageResource(R.drawable.large_ac);
+                    setSharedPreference("2", "2");
+
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            setSharedPreference("1", "2");
+                        }
+                    };
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(runnable, 5000);
+                }
+            }else if(status.equals("1")){
+                if(!imageType.equals("1")) {
+                    Log.d(TAG, "NORMAL_VISIBLE");
+                    gifImageView.setVisibility(View.VISIBLE);
+                    gifImageView.setImageResource(R.drawable.normal_ac);
+                    setSharedPreference("1", "1");
+                }
             }
         } else {
             if (status.equals("1")) {
@@ -158,23 +181,6 @@ public class OilInfoActivity extends Activity {
                     gifImageView.setImageResource(R.drawable.normal_ac);
                     setSharedPreference("1", "1");
                 }
-            } else if (status.equals("2")) {
-                if(!imageType.equals("2")) {
-                    Log.d(TAG, "FAST_VISIBLE");
-                    gifImageView.setVisibility(View.VISIBLE);
-                    gifImageView.setImageResource(R.drawable.large_ac);
-                    setSharedPreference("2", "2");
-                }
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        setSharedPreference("1", "2");
-                        gifImageView.setVisibility(View.GONE);
-                    }
-                };
-
-                Handler handler = new Handler();
-                handler.postDelayed(runnable, 5000);
             }
         }
     }
