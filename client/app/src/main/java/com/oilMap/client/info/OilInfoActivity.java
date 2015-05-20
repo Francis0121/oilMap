@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -65,6 +66,9 @@ public class OilInfoActivity extends Activity {
 
     private TimerTask mTask;
     private Timer mTimer;
+    private TimerTask mProgressTask;
+    private Timer mProgressTimer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +224,9 @@ public class OilInfoActivity extends Activity {
     protected void onDestroy() {
         setSharedPreference("0", "1");
         mTimer.cancel();
+        if(mProgressTimer != null){
+            mProgressTimer.cancel();
+        }
         super.onDestroy();
     }
 
@@ -315,7 +322,7 @@ public class OilInfoActivity extends Activity {
                     String strBill = df.format(bill);
 
                     dateTextView.setText(date);
-                    moneyTextView.setText(strBill);
+                    moneyTextView.setText(strBill+"￦");
                     circleProgress.setMax(bill);
                 }
                 Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
@@ -350,15 +357,49 @@ public class OilInfoActivity extends Activity {
                 final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
 
-                circleProgress.setProgress(bill- totalCash.intValue());
+                final int cash = bill- totalCash.intValue();
+                //circleProgress.setProgress(cash);
+                Log.d(TAG, "CASH " +cash);
                 circleProgress.setOnClickListener(new View.OnClickListener(){
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
+
+                        circleAnimation(cash);
                         new OilInfoAsyncTask().execute();
                     }
                 });
+                circleAnimation(cash);
             }
-
         }
+    }
+
+    private void circleAnimation(final int cash){
+        if(mProgressTimer != null) {
+            mProgressTimer.cancel();
+        }
+
+        circleProgress.setProgress(0);
+        // ~ Oil Visibilty
+        mProgressTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int value = circleProgress.getProgress()+(cash/15);
+
+                        if(value >= cash){
+                            value = cash;
+                            mProgressTimer.cancel();
+                        }
+
+                        circleProgress.setProgress(value);
+                    }
+                });
+            }
+        };
+
+        mProgressTimer = new Timer();
+        mProgressTimer.schedule(mProgressTask, 200, 200);
     }
 }
