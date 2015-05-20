@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.oilMap.client.R;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
@@ -43,24 +44,40 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
         if(params[0] ==null){
             return null;
         }
+        Map<String, Object> request = new HashMap<>();
+        request.put("id", params[0]);
+        Log.d(TAG, request.toString());
 
+        String url = context.getString(R.string.contextPath) + "/drive/position";
+
+        Boolean isSuccess = false;
+        Map<String, Object> response =  null;
         try {
-            Map<String, Object> request = new HashMap<>();
-            request.put("id", params[0]);
-            Log.d(TAG, request.toString());
-
-            String url = context.getString(R.string.contextPath) + "/drive/position";
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
-            Map<String, Object> messages = responseEntity.getBody();
-            return messages;
-        } catch (Exception e) {
+            while (!isSuccess) {
+                try {
+                    response = postTemplate(url, request);
+                    if ((Boolean) response.get("result")) {
+                        isSuccess = true;
+                    }
+                } catch (ResourceAccessException e) {
+                    Log.e("Error", e.getMessage(), e);
+                    isSuccess = false;
+                }
+            }
+        }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
-            throw new RuntimeException("Driving async task communication error occur");
+            response.put("result", false);
         }
+
+        return  response;
     }
 
-
+    private Map<String, Object> postTemplate(String url, Map<String, Object> request){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
+        Map<String, Object> messages = responseEntity.getBody();
+        return messages;
+    }
 
     @Override
     protected void onPostExecute(Map<String, Object> response) {
