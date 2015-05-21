@@ -14,6 +14,8 @@ public class DataHandling {
     private Context mContext;
     private TextView mTextView;
     //private GifImageView mGifImageView;
+    final private int FIXED_SUB_RPM=300; //급가속을 결정하는 rpm차이
+
 
     public DataHandling(Context mContext, TextView mTextView) {
         this.mTextView = mTextView;
@@ -43,13 +45,12 @@ public class DataHandling {
     /**
     * 급가속시 실행
     */
-    public boolean sending_acceleration(int rpm_sub, long time_now, long time_last, double rpm_now, double rpm_last) {
+    public boolean sending_acceleration(int rpm_sub) {
         boolean bool=false;
-        long time_interval =0;
-        time_interval = (time_now-time_last)>1 ? (time_now-time_last):1;
 //
-//        // 1초차이 있음
-        if((rpm_sub > 0.0) && ((rpm_now-rpm_last > ((rpm_sub/time_interval)*7)))) { //급가속 했을 때
+//        // RPM 증가값이 정해논 수치를 넘는다면
+        if(rpm_sub > FIXED_SUB_RPM ){
+        //((rpm_sub*8)))) { //급가속 했을 때
            bool=true;
        }
         return bool;

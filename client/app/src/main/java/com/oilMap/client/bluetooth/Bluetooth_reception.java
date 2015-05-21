@@ -68,6 +68,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     //급가속 시 서버로 보냄/////
     ////지우기
     public double rpm_last=0.0;
+    public long time_interval =0; // 이전,현재 rpm 시간차이
     public int rpm_sub=999;
     public long time_last=0;
     public Date d=new Date();
@@ -464,10 +465,12 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         }
         // rpm 증가 차이를 비교하여 급가속 위치 구분
         public void rpmCompare(){
+            time_interval = (i.obd.getTime()-time_last)>1 ? (i.obd.getTime()-time_last):1;
+            rpm_sub = (int)((i.obd.getRpm()-rpm_last)/time_interval); // 이전rpm과 현재rpm차이
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
-            if(data_handling.sending_acceleration(rpm_sub,i.obd.getTime(),time_last,i.obd.getRpm(),rpm_last)) {
+            if(data_handling.sending_acceleration(rpm_sub)) {
                 i.obd.setLatitude(latitude);
                 i.obd.setLongitude(longitude);
                 data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" +rpm_last+"/"+i.obd.getRpm()+"/"+ rpm_sub );
@@ -490,7 +493,6 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             }
 
             // 다음 연산을 위함
-            rpm_sub = (int)(i.obd.getRpm()-rpm_last);
             rpm_last = i.obd.getRpm();
             time_last = i.obd.getTime();
         }
