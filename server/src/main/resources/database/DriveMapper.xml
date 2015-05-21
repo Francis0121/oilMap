@@ -73,4 +73,31 @@
         LIMIT #{pagination.itemSeqBegin}, #{pagination.numItemsPerPage}
     </select>
     
+    <select id="selectPositionOther" parameterType="OtherDrivePointFilter" resultType="DrivePoint">
+        SELECT
+          `latitude`, `longitude`, `startSpeed`, `endSpeed`
+        FROM
+          `drive_point`
+        WHERE
+          `id` != #{id}
+        AND
+          `latitude` != 0
+        AND
+          `longitude` != 0
+        AND
+          `latitude` BETWEEN #{latitude} - 0.01 AND #{latitude} + 0.01
+        AND
+          `longitude` BETWEEN #{longitude} - 0.01 AND #{longitude} + 0.01
+        AND
+          `startSpeed` != 0
+        AND
+          `endSpeed` != 0
+        <![CDATA[
+        AND
+          (TO_DAYS( NOW( ) ) - TO_DAYS(`inputDate` ) -7 ) < 0
+        ]]>
+        ORDER BY
+          `inputDate` DESC
+    </select>
+    
 </mapper>

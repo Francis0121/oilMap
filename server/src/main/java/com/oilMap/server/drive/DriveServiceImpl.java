@@ -60,6 +60,20 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
         List<DrivePoint> drivePointList = getSqlSession().selectList("drive.selectPosition", drivePointFilter);
         map.put("drivePointList", drivePointList);
         map.put("drivePointFilter", drivePointFilter);
+        map.put("result", true);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> selectOtherPosition(Map<String, Object> response) {
+        
+        OtherDrivePointFilter drivePointFilter = new OtherDrivePointFilter((String)response.get("id"), (Double)response.get("latitude"), (Double)response.get("longitude"));
+        logger.debug(drivePointFilter.toString());
+        List<DrivePoint> drivePointList  =  getSqlSession().selectList("drive.selectPositionOther", drivePointFilter);
+        logger.debug(drivePointList.toString());
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("drivePointList", drivePointList);
+        map.put("result", true);
         return map;
     }
 

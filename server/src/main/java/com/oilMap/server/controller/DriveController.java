@@ -57,4 +57,13 @@ public class DriveController {
         response.putAll(drivingService.selectPosition((String) request.get("id")));
         return response;
     }
+    
+    @ResponseBody
+    @RequestMapping(value = "/other/position", method = RequestMethod.POST)
+    public Map<String, Object> otherPosition(@RequestBody Map<String, Object> request) throws Exception{
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.putAll(drivingService.selectOtherPosition(response));
+        return response;
+    }
+    
 }

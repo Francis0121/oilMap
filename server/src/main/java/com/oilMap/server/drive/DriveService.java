@@ -19,4 +19,7 @@ public interface DriveService {
     List<Driving> selectDrivingFromFuelBillPn(Integer fuelBillPn);
 
     Map<String, Object> selectPosition(String id);
+
+    Map<String, Object> selectOtherPosition(Map<String, Object> response);
+    
 }

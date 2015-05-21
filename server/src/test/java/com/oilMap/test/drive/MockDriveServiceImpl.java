@@ -59,4 +59,9 @@ public class MockDriveServiceImpl implements DriveService{
     public Map<String, Object> selectPosition(String id) {
         return null;
     }
+
+    @Override
+    public Map<String, Object> selectOtherPosition(Map<String, Object> response) {
+        return null;
+    }
 }
