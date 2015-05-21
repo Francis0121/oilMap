@@ -1,28 +1,20 @@
 package com.oilMap.client.info;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,8 +24,11 @@ import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
-import com.oilMap.client.user.SMSReceiver;
 import com.oilMap.client.util.BackPressCloseHandler;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -42,12 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.oilMap.client.R;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -108,6 +97,12 @@ public class OilInfoActivity extends Activity {
 
                         Intent idCheck = new Intent(OilInfoActivity.this, MainActivity.class);
                         startActivity(idCheck);
+                        OilInfoActivity.this.finish();
+                        break;
+
+                    case R.id.inputfuel:
+                        Intent inputFuel = new Intent(OilInfoActivity.this, InputFuelActivity.class);
+                        startActivity(inputFuel);
                         OilInfoActivity.this.finish();
                         break;
                 }
