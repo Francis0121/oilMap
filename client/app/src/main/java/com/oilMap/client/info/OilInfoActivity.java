@@ -103,7 +103,6 @@ public class OilInfoActivity extends Activity {
                     case R.id.inputfuel:
                         Intent inputFuel = new Intent(OilInfoActivity.this, InputFuelActivity.class);
                         startActivity(inputFuel);
-                        OilInfoActivity.this.finish();
                         break;
                 }
             }
