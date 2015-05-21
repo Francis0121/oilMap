@@ -42,7 +42,7 @@ public class tester_Activity extends Activity {
     /*RPM*/
     final static double BASIC_RPM = 500;
     final static double RPM_RANGE = 20.0; //rpm 증가값(연료증가량)
-    final static double FASTER_RPM_RANGE = 150.0; //rpm증가값(연료증가량)
+    final static double FASTER_RPM_RANGE = 300.0; //rpm증가값(연료증가량)
     final static double DECREASE_RPM = 200; // 감소되는 rpm
 
     public double car_rpm = BASIC_RPM; // 기본 500 rpm
@@ -71,8 +71,8 @@ public class tester_Activity extends Activity {
     public int current_gear = 0;
     public double GEAR_RATIO[] = {4.580, 2.960, 1.910, 1.450, 1.000};    // 5단 기어비 기어의 톱니수 비율
     /////예를 들어 1단의 기어비가 4:1이고 여기에 종감속비가 4:1이라면 전체기어비는 16:1이 되고 이는 엔진이 16번 회전해야 타이어가 1번 회전한다고 볼 수 있다.
-    //double GEAR_RATIO[] = {4.5, 3.5, 2.5, 1,5, 1};    // 5단 기어비 기어의 톱니수 비율
-    public double REDUCTION_GEAR_RATIO = 2.890;
+    //double GEAR_RATIO[] = {2.2, 1.9, 1.6, 1.3, 1.0};    // 5단 기어비 기어의 톱니수 비율
+    public double REDUCTION_GEAR_RATIO = 3;//2.890;
     public double SHIFT_GEAR_SPEED[] = {0, 20, 40, 60, 80}; // 0~20 1단 , 20~40 2단..
 
     /*Time*/
@@ -254,7 +254,7 @@ public class tester_Activity extends Activity {
 
             if (brk_flag) {
                 car_speed = (car_speed > DECREASE_SPEED) ? car_speed - DECREASE_SPEED : 0;
-            } else {
+            } else { // 급가속은 속도에 반영 NO
                 car_speed = (car_speed > rpm_speed) ? car_speed : rpm_speed; // 현재속도와 엔진이 주는 속도 비교하여 빠른속도 선택
             }
 
