@@ -14,20 +14,20 @@ public class Json_Data implements Serializable {
 
     JSONObject jsonOb = null;
     String str=null;
-    private double fuel_efficiency=0.0;
+    private double fuel_consumption=0.0;
     private double fuel = 0.0;
     private double rpm = 0.0;
-    private double fuel_level = 0.0;
+    private double speed = 0.0;
     private double distance = 0.0;
     private long time = 0;
 
 
-    public double getFuelEfficiency() {
-        return fuel_efficiency;
+    public double getFuelConsumption() {
+        return fuel_consumption;
     }
 
-    public void setFuelEfficiency(double fuel_efficiency) {
-        this.fuel_efficiency = fuel_efficiency;
+    public void setFuelConsumption(double fuel_consumption) {
+        this.fuel_consumption = fuel_consumption;
     }
 
     public double getFuel() {
@@ -46,12 +46,12 @@ public class Json_Data implements Serializable {
         this.rpm = rpm;
     }
 
-    public double getFuelLevel() {
-        return fuel_level;
+    public double getSpeed() {
+        return speed;
     }
 
-    public void setFuelLevel(double fuel_level) {
-        this.fuel_level = fuel_level;
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     public double getDistance() {
@@ -77,10 +77,11 @@ public class Json_Data implements Serializable {
             jsonOb = new JSONObject();
            // jsonOb.put("fuel_efficiency", getFuelEfficiency());     // 연비
             //jsonOb.put("fuel_level", getFuelLevel());               // 기름량 (%)
-            jsonOb.put("rpm", getRpm());                             // RPM
+            //jsonOb.put("rpm", getRpm());                             // RPM
             jsonOb.put("fuel", getFuel());                           // 기름량 (L)
             jsonOb.put("distance", getDistance());                  // 총 거리
             jsonOb.put("time", getTime());                           // 시간
+            jsonOb.put("fuel_consumption", getFuelConsumption());                 // 시간
             // java.util.ConcurrentModificationException 예외처리
             if(jsonOb.toString()==null)
                 return "";
