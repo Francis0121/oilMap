@@ -11,7 +11,7 @@ import android.widget.TextView;
  */
 public class DataHandling {
 
-    final private double OVER_ACCEL_FUEL_CONSUMPTION = 100.0;
+    final private double OVER_ACCEL_FUEL_CONSUMPTION_MULTIPLE = 4;  // (현재연료소비/이전연료소비차이) 값이 4이상이라면 급가속
     private Context mContext;
     private TextView mTextView;
     //private GifImageView mGifImageView;
@@ -46,10 +46,10 @@ public class DataHandling {
     /**
     * 급가속시 실행
     */
-    public boolean sending_acceleration(double fuel_consumption_gap) {
+    public boolean sending_acceleration(double fuel_consumption_gap, double last_fuel_consumption_gap) {
         boolean bool=false;
         //
-        if( fuel_consumption_gap > OVER_ACCEL_FUEL_CONSUMPTION  ){
+        if( fuel_consumption_gap/last_fuel_consumption_gap >= 5  ){
            bool=true;
        }
         return bool;

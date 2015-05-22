@@ -68,6 +68,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     //급가속 시 서버로 보냄/////
     ////지우기
     public double last_fuel_consumption=0.0;
+    public double last_fuel_consumption_gap=0.0;
     public long time_interval =0; // 이전,현재 rpm 시간차이
     public long time_last=0;
     public Date d=new Date();
@@ -471,11 +472,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
             // 속도가 감속하지 않고 rpm이 증가할 때 급가속을 검사한다
-            if( data_handling.sending_acceleration(fuel_consumption_gap)) {
+            if( (fuel_consumption_gap!=0) && ((last_fuel_consumption_gap!=0) )&& (data_handling.sending_acceleration(fuel_consumption_gap,last_fuel_consumption_gap ))) {
                 i.obd.setLatitude(latitude);
                 i.obd.setLongitude(longitude);
-                data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")"+fuel_consumption_gap);
-                data_handling.sending_data_for_location(latitude,longitude, 100.0, 200.0);
+                data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")"+fuel_consumption_gap + "/");
+                data_handling.sending_data_for_location(latitude,longitude, 100.0, 200.0); //숫자 지우기
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,6 +499,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 다음 연산을 위함
             last_fuel_consumption = i.obd.getFuelConsumption();
             time_last = i.obd.getTime();
+            last_fuel_consumption_gap = fuel_consumption_gap;
         }
     }
     // 원격 디바이스와 접속되었으면 데이터 송수신 스레드를 시작
