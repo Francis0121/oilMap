@@ -67,9 +67,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     //급가속 시 서버로 보냄/////
     ////지우기
-    public double rpm_last=0.0;
+    public double last_fuel_consumption=0.0;
     public long time_interval =0; // 이전,현재 rpm 시간차이
-    public int rpm_sub=999;
     public long time_last=0;
     public Date d=new Date();
     double latitude;
@@ -415,8 +414,8 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             // 처음 자료 보내기
             while (true) {
                 // 첫 데이터가 정상적이면서 rpm이 0보다 크면 초기 값으로 설정과 전송후 반복문나간다
-                if(dataParsingSet(mmInStream) && (i.obd.getRpm() > 0) && (i.obd.getDistance() > 0) && (i.obd.getFuel() > 0 )) {
-                    rpm_last = i.obd.getRpm(); //처음 rpm 구하기
+                if(dataParsingSet(mmInStream) && (i.obd.getFuelConsumption() > 0) && (i.obd.getDistance() > 0) && (i.obd.getFuel() > 0 )) {
+                    last_fuel_consumption = i.obd.getFuelConsumption(); //처음 기름소비량 구하기
                     time_last=d.getTime(); // 처음 수신 시간구하기 ///연비
 
                     //처음 연비 보내기!!!!!!//////////////////////////////////////
@@ -465,16 +464,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         }
         // rpm 증가 차이를 비교하여 급가속 위치 구분
         public void rpmCompare(){
+
             time_interval = (i.obd.getTime()-time_last)>1 ? (i.obd.getTime()-time_last):1;
-            rpm_sub = (int)((i.obd.getRpm()-rpm_last)/time_interval); // 이전rpm과 현재rpm차이
+            double fuel_consumption_gap = ((i.obd.getFuelConsumption()-last_fuel_consumption)/time_interval) <= 0 ? 0 : (int)((i.obd.getFuelConsumption()-last_fuel_consumption)/time_interval) ;
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             // 급가속시 위치 데이터 셋팅//////////////////////////////////////////////////////////////////////////
-            if(data_handling.sending_acceleration(rpm_sub)) {
+            // 속도가 감속하지 않고 rpm이 증가할 때 급가속을 검사한다
+            if( data_handling.sending_acceleration(fuel_consumption_gap)) {
                 i.obd.setLatitude(latitude);
                 i.obd.setLongitude(longitude);
-                data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")" +rpm_last+"/"+i.obd.getRpm()+"/"+ rpm_sub );
-                data_handling.sending_data_for_location(latitude,longitude, rpm_last,i.obd.getRpm());
+                data_handling.showMessage(" [ Acc! (" + i.obd.getLongitude() + ", " + i.obd.getLatitude() + ")"+fuel_consumption_gap);
+                data_handling.sending_data_for_location(latitude,longitude, 100.0, 200.0);
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -487,13 +488,15 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
             else{
                 data_handling.showMessage("Receive: "
                         //+ "연비:"+ i.obd.getFuelEfficiency()
-                        +"/ 연료:" + i.obd.getFuel() +"/ RPM:" + i.obd.getRpm()
-                        //+ "/ 연료%" +i.obd.getFuelLevel()
-                        + "/ 시간:" + i.obd.getTime() + "/ 거리:" + i.obd.getDistance() +"/" +rpm_sub);
+                        +"/ 연료:" + i.obd.getFuel()
+                        + "/ 연료소비량" +i.obd.getFuelConsumption()
+                        + "/ 시간:" + i.obd.getTime()
+                        + "/ 거리:" + i.obd.getDistance()
+                        +"/" +fuel_consumption_gap);
             }
 
             // 다음 연산을 위함
-            rpm_last = i.obd.getRpm();
+            last_fuel_consumption = i.obd.getFuelConsumption();
             time_last = i.obd.getTime();
         }
     }

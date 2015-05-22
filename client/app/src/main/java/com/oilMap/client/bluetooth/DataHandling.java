@@ -11,10 +11,11 @@ import android.widget.TextView;
  */
 public class DataHandling {
 
+    final private double OVER_ACCEL_FUEL_CONSUMPTION = 100.0;
     private Context mContext;
     private TextView mTextView;
     //private GifImageView mGifImageView;
-    final private int FIXED_SUB_RPM=300; //급가속을 결정하는 rpm차이
+    //final private int FIXED_SUB_RPM=300; //급가속을 결정하는 rpm차이
 
 
     public DataHandling(Context mContext, TextView mTextView) {
@@ -45,12 +46,10 @@ public class DataHandling {
     /**
     * 급가속시 실행
     */
-    public boolean sending_acceleration(int rpm_sub) {
+    public boolean sending_acceleration(double fuel_consumption_gap) {
         boolean bool=false;
-//
-//        // RPM 증가값이 정해논 수치를 넘는다면
-        if(rpm_sub > FIXED_SUB_RPM ){
-        //((rpm_sub*8)))) { //급가속 했을 때
+        //
+        if( fuel_consumption_gap > OVER_ACCEL_FUEL_CONSUMPTION  ){
            bool=true;
        }
         return bool;

@@ -10,10 +10,11 @@ public class Obd{
 
    // private double fuel_efficiency=0.0;
     private double fuel = 0.0;
-    private double rpm = 0.0;
+    private double fuel_consumption = 0.0;
     //private double fuel_level = 0.0;
     private double distance = 0.0;
     private long time = 0;
+    //private double speed = 0.0;
 
 
     /*
@@ -33,12 +34,12 @@ public class Obd{
         this.fuel = fuel;
     }
 
-    public double getRpm() {
-        return rpm;
+    public double getFuelConsumption() {
+        return fuel_consumption;
     }
 
-    public void setRpm(double rpm) {
-        this.rpm = rpm;
+    public void setFuelConsumption(double fuel_consumption) {
+        this.fuel_consumption = fuel_consumption;
     }
 /*
     public double getFuelLevel() {
@@ -64,7 +65,14 @@ public class Obd{
     public long getTime() {
         return time;
     }
+   /* public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
+    public double getSpeed() {
+        return speed;
+    }
+*/
     public double getLatitude() { return latitude; }
 
     public void setLatitude(double latitude) {
