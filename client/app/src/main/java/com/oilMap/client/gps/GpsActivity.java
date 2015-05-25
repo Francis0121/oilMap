@@ -205,7 +205,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
 
                 if( (beforeSpeed != null && beforeSpeed.compareTo(0.0) > 0) && (currentSpeed != null && currentSpeed.compareTo(0.0) > 0)){
                     Double diffSpeed = currentSpeed - beforeSpeed;
-                    if(diffSpeed.compareTo(20.0) > 0) {
+                    if(diffSpeed.compareTo(10.0) > 0) {
                         // Acceleator position
                         new DrivePointAsyncTask(GpsActivity.this).execute(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), beforeSpeed, currentSpeed, 1);
                     }
