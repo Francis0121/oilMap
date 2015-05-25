@@ -14,9 +14,9 @@
     <insert id="insertDrivePoint" parameterType="DrivePoint">
         INSERT INTO
           `drive_point`
-          ( `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate` )
+          ( `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate`, `type` )
         VALUES
-          ( #{id}, #{latitude}, #{longitude}, #{startSpeed}, #{endSpeed}, SYSDATE() )
+          ( #{id}, #{latitude}, #{longitude}, #{startSpeed}, #{endSpeed}, SYSDATE(), #{type} )
     </insert>
     
     <select id="selectDrivingInfo" parameterType="String" resultType="Driving">
@@ -30,7 +30,7 @@
     
     <select id="selectDrivePoint" parameterType="String" resultType="DrivePoint">
         SELECT
-          `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate`
+          `id`, `latitude`, `longitude`, `startSpeed`, `endSpeed`, `inputDate`, `type`
         FROM
           `drive_point`
         WHERE
@@ -61,7 +61,7 @@
     
     <select id="selectPosition" parameterType="DrivePointFilter" resultType="DrivePoint">
         SELECT
-            `latitude`, `longitude`, `startSpeed`, `endSpeed`
+            `latitude`, `longitude`, `startSpeed`, `endSpeed`, `type`
         FROM
             `drive_point`
         WHERE
@@ -75,7 +75,7 @@
     
     <select id="selectPositionOther" parameterType="OtherDrivePointFilter" resultType="DrivePoint">
         SELECT
-          `latitude`, `longitude`, `startSpeed`, `endSpeed`
+          `latitude`, `longitude`, `startSpeed`, `endSpeed`, `type`
         FROM
           `drive_point`
         WHERE

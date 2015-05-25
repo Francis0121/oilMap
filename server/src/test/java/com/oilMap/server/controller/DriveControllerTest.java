@@ -67,7 +67,7 @@ public class DriveControllerTest {
 
     @Test
     public void 가속도_지점_확인() throws Exception{
-        DrivePoint drivePoint = new DrivePoint(auth.getId(), 10.1, 10.2, 10.3, 10.4);
+        DrivePoint drivePoint = new DrivePoint(auth.getId(), 10.1, 10.2, 10.3, 10.4, 0);
         Map<String, Object> request = new HashMap<String, Object>();
         request.put("id", drivePoint.getId());
         request.put("latitude", drivePoint.getLatitude());

@@ -16,17 +16,20 @@ public class DrivePoint {
     private Double endSpeed;
     
     private String inputDate;
+    
+    private Integer type;
 
     public DrivePoint() {
     
     }
 
-    public DrivePoint(String id, Double latitude, Double longitude, Double startSpeed, Double endSpeed) {
+    public DrivePoint(String id, Double latitude, Double longitude, Double startSpeed, Double endSpeed, Integer type) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.startSpeed = startSpeed;
         this.endSpeed = endSpeed;
+        this.type = type;
     }
 
     public Double getLatitude() {
@@ -77,6 +80,14 @@ public class DrivePoint {
         this.id = id;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "DrivePoint{" +
@@ -86,6 +97,7 @@ public class DrivePoint {
                 ", startSpeed=" + startSpeed +
                 ", endSpeed=" + endSpeed +
                 ", inputDate='" + inputDate + '\'' +
+                ", type=" + type +
                 '}';
     }
 }

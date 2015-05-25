@@ -35,7 +35,7 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
     @Override
     protected Map<String, Object> doInBackground(Object... params) {
         Map<String, Object> map = new HashMap<>();
-        if(params[0] == null || params[1] == null || params[2] == null || params[3] == null ){
+        if(params[0] == null || params[1] == null || params[2] == null || params[3] == null || params[4] == null){
             map.put("result", false);
             return map;
         }
@@ -51,6 +51,7 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
         Double longitude = (Double) params[1];
         Double rpmNow = (Double) params[2];
         Double rpmLast = (Double) params[3];
+        Integer type = (Integer) params[4];
 
         Map<String, Object> request = new HashMap<>();
         request.put("id", id);
@@ -58,6 +59,7 @@ public class DrivePointAsyncTask extends AsyncTask<Object, Void, Map<String, Obj
         request.put("longitude", longitude);
         request.put("startSpeed", rpmNow);
         request.put("endSpeed", rpmLast);
+        request.put("type", type);
         String url = mContext.getString(R.string.contextPath) + "/drive/drivePoint";
 
         Boolean isSuccess = false;

@@ -181,7 +181,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
                 Log.d(TAG, "Location move " + distance.toString() + " m ");
                 Double speed = (distance/1000) / (UPDATE_INTERVAL_IN_MILLISECONDS/1000 * 3600);
                 Log.d(TAG, "Speed " + speed.toString() + " km/h");
-                if(speed > 0.0){
+                if(speed.compareTo(0.0) > 0){
                     TextView textView = (TextView) findViewById(R.id.gpsSpeedTextView);
                     textView.setText(""+speed.intValue());
                     if(currentSpeed != null) {
@@ -190,10 +190,11 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
                     currentSpeed = speed;
                 }
 
-                if(beforeSpeed > 1.0 && currentSpeed > 1.0){
-                    if(currentSpeed - beforeSpeed > 30.0) {
+                if( (beforeSpeed != null && beforeSpeed.compareTo(0.0) > 0) && (currentSpeed != null && currentSpeed.compareTo(0.0) > 0)){
+                    Double diffSpeed = currentSpeed - beforeSpeed;
+                    if(diffSpeed.compareTo(20.0) > 0) {
                         // 급가속 지점
-                        new DrivePointAsyncTask(GpsActivity.this).execute(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), beforeSpeed, currentSpeed);
+                        new DrivePointAsyncTask(GpsActivity.this).execute(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), beforeSpeed, currentSpeed, 1);
                     }
                 }
             }

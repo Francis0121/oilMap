@@ -44,7 +44,7 @@ public class DriveController {
     @RequestMapping(value = "/drivePoint", method = RequestMethod.POST)
     public Map<String, Object> drivePoint(@RequestBody Map<String, Object> request){
         Map<String, Object> response = new HashMap<String, Object>();
-        DrivePoint drivePoint = new DrivePoint((String)request.get("id"), (Double) request.get("latitude"), (Double) request.get("longitude"), (Double) request.get("startSpeed"), (Double) request.get("endSpeed"));
+        DrivePoint drivePoint = new DrivePoint((String)request.get("id"), (Double) request.get("latitude"), (Double) request.get("longitude"), (Double) request.get("startSpeed"), (Double) request.get("endSpeed"), (Integer) request.get("type"));
         drivingService.insertDrivePoint(drivePoint);
         response.put("result", true);
         return response;

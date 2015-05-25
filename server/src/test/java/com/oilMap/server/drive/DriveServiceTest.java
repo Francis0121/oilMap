@@ -52,7 +52,7 @@ public class DriveServiceTest {
     @Test
     @Transactional
     public void 가속도_지점_입력() throws Exception{
-        driveService.insertDrivePoint(new DrivePoint(auth.getId(), 10.1, 10.2, 10.3, 10.4));
+        driveService.insertDrivePoint(new DrivePoint(auth.getId(), 10.1, 10.2, 10.3, 10.4, 0));
         List<DrivePoint> drivePointList = driveService.selectDrivePoint(auth.getId());
         assertThat(drivePointList.size(), is(1));
     }
