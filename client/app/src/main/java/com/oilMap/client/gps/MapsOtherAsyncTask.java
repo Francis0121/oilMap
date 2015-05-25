@@ -93,6 +93,7 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
             Double longitude = (Double) drivePointMap.get("longitude");
             Double startSpeed = (Double) drivePointMap.get("startSpeed");
             Double endSpeed = (Double) drivePointMap.get("endSpeed");
+            Integer type = (Integer) drivePointMap.get("type");
 
             DecimalFormat df = new DecimalFormat("#,##0.0");
             String strSpeed = df.format( (endSpeed - startSpeed));
@@ -102,7 +103,14 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
             option.position(latLng);
             option.title("Position");
             option.snippet("Diff RPM " +  strSpeed);
-            option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));
+            switch (type){
+                case 0:
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));
+                    break;
+                case 1:
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.other_gps_position));
+                    break;
+            }
 
             this.googleMap.addMarker(option).showInfoWindow();
             Log.d(TAG, latLng.toString());
