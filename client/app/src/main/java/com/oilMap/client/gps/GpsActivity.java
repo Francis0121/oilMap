@@ -177,8 +177,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         Log.d(TAG, "Latitude " + String.valueOf(mCurrentLocation.getLatitude()) + "Longitude " + String.valueOf(mCurrentLocation.getLongitude())+ " " + mLastUpdateTime);
         if(mGoogleMap != null){
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f));
             if(mPolylineOptions == null) {
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f));
                 mPolylineOptions = new PolylineOptions().add(latLng);
                 mPolylineOptions.color(Color.rgb(241,140,36));
             }else{
@@ -192,8 +192,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
             Double distance = DistanceCalculator.distance(mBeforeLocation, mCurrentLocation);
             if(distance.compareTo(0.0) > 0){
                 Log.d(TAG, "Location move " + distance.toString() + " m ");
-                Double speed = (distance/1000) / (UPDATE_INTERVAL_IN_MILLISECONDS/1000 * 3600);
-                Log.d(TAG, "Speed " + speed.toString() + " km/h");
+                Double speed = distance / (UPDATE_INTERVAL_IN_MILLISECONDS/1000);
+                Log.d(TAG, "Speed " + speed.toString() + " m/s");
                 if(speed.compareTo(0.0) > 0){
                     TextView textView = (TextView) findViewById(R.id.gpsSpeedTextView);
                     textView.setText(""+speed.intValue());
@@ -203,7 +203,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
                     currentSpeed = speed;
                 }
 
-                if( (beforeSpeed != null && beforeSpeed.compareTo(0.0) > 0) && (currentSpeed != null && currentSpeed.compareTo(0.0) > 0)){
+                if( (beforeSpeed != null && beforeSpeed.compareTo(5.0) > 0) && (currentSpeed != null && currentSpeed.compareTo(5.0) > 0)){
                     Double diffSpeed = currentSpeed - beforeSpeed;
                     if(diffSpeed.compareTo(10.0) > 0) {
                         // Acceleator position
