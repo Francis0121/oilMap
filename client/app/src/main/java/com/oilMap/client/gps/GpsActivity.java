@@ -173,7 +173,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         if(mBeforeLocation != null && mCurrentLocation != null){
             Double distance = DistanceCalculator.distance(mBeforeLocation, mCurrentLocation);
             if(distance.compareTo(0.0) > 0){
-                Log.d(TAG, "Location move " + distance.toString());
+                Log.d(TAG, "Location move " + distance.toString() + " m ");
+                Log.d(TAG, "Speed " + ( (distance/1000) / (UPDATE_INTERVAL_IN_MILLISECONDS/1000 * 3600)) + " km/h");
             }
         }
     }
