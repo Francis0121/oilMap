@@ -61,6 +61,15 @@ public class DriveController {
     }
     
     @ResponseBody
+    @RequestMapping(value = "/gpsPosition/select", method = RequestMethod.POST)
+    public Map<String, Object> gpsPositionSelect(@RequestBody Map<String,Object> request){
+        Map<String, Object> response = new HashMap<String, Object>();
+        response.putAll(drivingService.selectGpsPositionToday((String)request.get("id")));
+        response.put("result", true);
+        return response;
+    }
+    
+    @ResponseBody
     @RequestMapping(value ="/position", method = RequestMethod.POST)
     public Map<String, Object> position(@RequestBody Map<String, Object> request) throws Exception {
         Map<String, Object> response = new HashMap<String, Object>();

@@ -27,6 +27,19 @@
           ( #{id}, #{latitude}, #{longitude}, SYSDATE() )
     </insert>
     
+    <select id="selectGpsPositionToday" parameterType="String" resultType="GpsPosition">
+        SELECT
+          `pn`, `id`, `latitude`, `longitude`, `time`
+        FROM
+          `gps_position`
+        WHERE
+          `id` = #{value}
+        AND
+	      DATE_FORMAT(`time`, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')
+        ORDER BY
+          `pn` DESC
+    </select>
+    
     <select id="selectDrivingInfo" parameterType="String" resultType="Driving">
         SELECT
           `id`, `fuelBillPn`, `distance`, `fuelQuantity`, `inputDate`

@@ -23,5 +23,7 @@ public interface DriveService {
     Map<String, Object> selectPosition(String id);
 
     Map<String, Object> selectOtherPosition(Map<String, Object> response);
+
+    Map<String, Object> selectGpsPositionToday(String id);
     
 }

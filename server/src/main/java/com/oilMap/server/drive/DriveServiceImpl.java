@@ -82,6 +82,13 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
         return map;
     }
 
+    @Override
+    public Map<String, Object> selectGpsPositionToday(String id) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("gpsPositionList", getSqlSession().selectList("drive.selectGpsPositionToday", id));
+        return map;
+    }
+
     private int selectPositionCount(DrivePointFilter drivePointFilter) {
         return getSqlSession().selectOne("drive.selectPositionCount", drivePointFilter);
     }

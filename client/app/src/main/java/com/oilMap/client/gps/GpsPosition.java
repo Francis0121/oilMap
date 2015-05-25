@@ -13,6 +13,8 @@ public class GpsPosition {
     
     private Double longitude;
 
+    private String time;
+
     public GpsPosition() {
     }
 
@@ -20,6 +22,14 @@ public class GpsPosition {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public Integer getPn() {
@@ -61,6 +71,7 @@ public class GpsPosition {
                 ", id='" + id + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
+                ", time='" + time + '\'' +
                 '}';
     }
 }

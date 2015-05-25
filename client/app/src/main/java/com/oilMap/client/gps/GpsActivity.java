@@ -7,8 +7,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -81,6 +83,14 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         }
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         id = pref.getString("id", "");
+
+        ImageButton imageBtn = (ImageButton) findViewById(R.id.gpsImageButton);
+        imageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GpsSelectDrivingAsyncTask(GpsActivity.this, GpsActivity.this.mGoogleMap).execute(id);
+            }
+        });
     }
 
     // ~ Location Request
