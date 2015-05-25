@@ -11,6 +11,8 @@ public interface DriveService {
     void insertDriving(Driving driving);
     
     void insertDrivePoint(DrivePoint drivePoint);
+    
+    void insertGpsPosition(GpsPosition gpsPosition);
 
     List<Driving> selectDrivingInfo(String id);
 

@@ -3,6 +3,7 @@ package com.oilMap.server.controller;
 import com.oilMap.server.drive.DrivePoint;
 import com.oilMap.server.drive.Driving;
 import com.oilMap.server.drive.DriveService;
+import com.oilMap.server.drive.GpsPosition;
 import com.oilMap.server.util.Http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,15 @@ public class DriveController {
         Map<String, Object> response = new HashMap<String, Object>();
         DrivePoint drivePoint = new DrivePoint((String)request.get("id"), (Double) request.get("latitude"), (Double) request.get("longitude"), (Double) request.get("startSpeed"), (Double) request.get("endSpeed"), (Integer) request.get("type"));
         drivingService.insertDrivePoint(drivePoint);
+        response.put("result", true);
+        return response;
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/gpsPosition", method = RequestMethod.POST)
+    public Map<String, Object> gpsPosition(@RequestBody GpsPosition gpsPosition){
+        Map<String, Object> response = new HashMap<String, Object>();
+        drivingService.insertGpsPosition(gpsPosition);
         response.put("result", true);
         return response;
     }

@@ -33,6 +33,11 @@ public class DriveServiceImpl extends SqlSessionDaoSupport implements DriveServi
     }
 
     @Override
+    public void insertGpsPosition(GpsPosition gpsPosition) {
+        getSqlSession().insert("drive.insertGpsPosition", gpsPosition);
+    }
+
+    @Override
     public List<Driving> selectDrivingInfo(String id) {
         return getSqlSession().selectList("drive.selectDrivingInfo", id);
     }

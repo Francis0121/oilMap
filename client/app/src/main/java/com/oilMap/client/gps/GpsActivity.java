@@ -1,5 +1,6 @@
 package com.oilMap.client.gps;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,7 +26,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.DrivePointAsyncTask;
-import com.oilMap.client.bluetooth.DrivingAsyncTask;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -33,6 +33,7 @@ import java.util.Date;
 public class GpsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = "GpsActivity";
+    private String id = "";
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -78,6 +79,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
             mGoogleMap.setMyLocationEnabled(true);
         }
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        id = pref.getString("id", "");
     }
 
     // ~ Location Request
@@ -193,10 +196,12 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
                 if( (beforeSpeed != null && beforeSpeed.compareTo(0.0) > 0) && (currentSpeed != null && currentSpeed.compareTo(0.0) > 0)){
                     Double diffSpeed = currentSpeed - beforeSpeed;
                     if(diffSpeed.compareTo(20.0) > 0) {
-                        // 급가속 지점
+                        // Acceleator position
                         new DrivePointAsyncTask(GpsActivity.this).execute(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), beforeSpeed, currentSpeed, 1);
                     }
                 }
+
+                new GpsPositionAsyncTask(GpsActivity.this).execute(new GpsPosition(id, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
             }
         }
     }

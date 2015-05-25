@@ -3,6 +3,7 @@ package com.oilMap.test.drive;
 import com.oilMap.server.drive.DrivePoint;
 import com.oilMap.server.drive.DriveService;
 import com.oilMap.server.drive.Driving;
+import com.oilMap.server.drive.GpsPosition;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +27,11 @@ public class MockDriveServiceImpl implements DriveService{
     @Override
     public void insertDrivePoint(DrivePoint drivePoint) {
         drivePointList.add(drivePoint);
+    }
+
+    @Override
+    public void insertGpsPosition(GpsPosition gpsPosition) {
+
     }
 
     @Override

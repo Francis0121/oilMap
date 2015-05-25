@@ -19,6 +19,14 @@
           ( #{id}, #{latitude}, #{longitude}, #{startSpeed}, #{endSpeed}, SYSDATE(), #{type} )
     </insert>
     
+    <insert id="insertGpsPosition" parameterType="GpsPosition">
+        INSERT INTO
+          `gps_position`
+          ( `id`, `latitude`, `longitude`, `time`)
+        VALUES
+          ( #{id}, #{latitude}, #{longitude}, SYSDATE() )
+    </insert>
+    
     <select id="selectDrivingInfo" parameterType="String" resultType="Driving">
         SELECT
           `id`, `fuelBillPn`, `distance`, `fuelQuantity`, `inputDate`
