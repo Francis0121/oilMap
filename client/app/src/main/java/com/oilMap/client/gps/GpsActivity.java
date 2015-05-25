@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -23,6 +24,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.oilMap.client.R;
+import com.oilMap.client.bluetooth.DrivePointAsyncTask;
+import com.oilMap.client.bluetooth.DrivingAsyncTask;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -91,6 +94,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
     private Location mCurrentLocation;
     private PolylineOptions mPolylineOptions;
     private Location mBeforeLocation;
+    private Double beforeSpeed;
+    private Double currentSpeed;
 
     /**
      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
@@ -174,7 +179,23 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
             Double distance = DistanceCalculator.distance(mBeforeLocation, mCurrentLocation);
             if(distance.compareTo(0.0) > 0){
                 Log.d(TAG, "Location move " + distance.toString() + " m ");
-                Log.d(TAG, "Speed " + ( (distance/1000) / (UPDATE_INTERVAL_IN_MILLISECONDS/1000 * 3600)) + " km/h");
+                Double speed = (distance/1000) / (UPDATE_INTERVAL_IN_MILLISECONDS/1000 * 3600);
+                Log.d(TAG, "Speed " + speed.toString() + " km/h");
+                if(speed > 0.0){
+                    TextView textView = (TextView) findViewById(R.id.gpsSpeedTextView);
+                    textView.setText(""+speed.intValue());
+                    if(currentSpeed != null) {
+                        beforeSpeed = currentSpeed;
+                    }
+                    currentSpeed = speed;
+                }
+
+                if(beforeSpeed > 1.0 && currentSpeed > 1.0){
+                    if(currentSpeed - beforeSpeed > 30.0) {
+                        // 급가속 지점
+                        new DrivePointAsyncTask(GpsActivity.this).execute(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), beforeSpeed, currentSpeed);
+                    }
+                }
             }
         }
     }

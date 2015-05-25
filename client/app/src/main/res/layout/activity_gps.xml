@@ -25,7 +25,8 @@
         android:layout_height="55dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:src="@drawable/actionbar_icon"/>
+        android:src="@drawable/actionbar_icon"
+        android:id="@+id/imageView3" />
 
     <fragment
         android:id="@+id/activityGpsMap"
@@ -36,5 +37,34 @@
         android:layout_below="@+id/textView24"
         android:layout_alignParentStart="true">
     </fragment>
+
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="0"
+        android:id="@+id/gpsSpeedTextView"
+        android:textColor="#000"
+        android:shadowColor="#0f1c27"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="1.5"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_below="@+id/textView24"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="km/h"
+        android:id="@+id/textView25"
+        android:shadowColor="#0f1c27"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="1.5"
+        android:layout_alignBottom="@+id/gpsSpeedTextView"
+        android:layout_toEndOf="@+id/gpsSpeedTextView"
+        android:layout_marginBottom="15dp" />
 
 </RelativeLayout>
