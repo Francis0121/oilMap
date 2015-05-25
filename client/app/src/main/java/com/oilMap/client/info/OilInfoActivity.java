@@ -24,6 +24,7 @@ import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.gps.GpsActivity;
 import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.springframework.http.ResponseEntity;
@@ -103,6 +104,11 @@ public class OilInfoActivity extends Activity {
                     case R.id.inputfuel:
                         Intent inputFuel = new Intent(OilInfoActivity.this, InputFuelActivity.class);
                         startActivity(inputFuel);
+                        break;
+
+                    case R.id.googleMap:
+                        Intent gpsIntent = new Intent(OilInfoActivity.this, GpsActivity.class);
+                        startActivity(gpsIntent);
                         break;
                 }
             }
