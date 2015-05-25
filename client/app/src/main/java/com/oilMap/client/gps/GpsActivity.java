@@ -1,5 +1,6 @@
 package com.oilMap.client.gps;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,9 +19,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.oilMap.client.R;
 
 import java.text.DateFormat;
@@ -33,7 +34,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2000;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -52,7 +53,6 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
 
         MapsInitializer.initialize(getApplicationContext());
         init();
-
         buildGoogleApiClient();
     }
 
@@ -73,28 +73,9 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
             LatLng latLng = new LatLng(latitude, longitude);// Creating a LatLng object for the current location
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));// Showing the current location in Google Map
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
-
             mGoogleMap.setMyLocationEnabled(true);
-            mGoogleMap.setOnMyLocationChangeListener(myLocationChangeListener);
         }
     }
-
-    private GoogleMap.OnMyLocationChangeListener myLocationChangeListener = new GoogleMap.OnMyLocationChangeListener() {
-        @Override
-        public void onMyLocationChange(Location location) {
-            Log.d(TAG, "Call on my location change listener");
-            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.d(TAG, loc.toString());
-
-            if(mGoogleMap != null){
-                MarkerOptions option = new MarkerOptions();
-                option.position(loc);// 위도 • 경도
-                option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));
-                mGoogleMap.addMarker(option);
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-            }
-        }
-    };
 
     // ~ Location Request
 
@@ -108,6 +89,8 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
     private LocationRequest mLocationRequest;
     private String mLastUpdateTime;
     private Location mCurrentLocation;
+    private PolylineOptions mPolylineOptions;
+    private Location mBeforeLocation;
 
     /**
      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
@@ -123,7 +106,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         createLocationRequest();
     }
 
-    private void createLocationRequest() {
+    protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         // Sets the desired interval for active location updates. This interval is
         // inexact. You may not receive updates at all if no location sources are available, or
@@ -134,12 +117,16 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         // Sets the fastest rate for active location updates. This interval is exact, and your
         // application will never receive updates faster than this value.
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
     }
 
     @Override
@@ -154,20 +141,41 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        Log.i(TAG, "Connection suspended");
+        mGoogleApiClient.connect();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        mBeforeLocation = mCurrentLocation;
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
     }
 
     private void updateUI() {
-        Log.d(TAG, String.valueOf(mCurrentLocation.getLatitude()));
-        Log.d(TAG, String.valueOf(mCurrentLocation.getLongitude()));
-        Log.d(TAG, mLastUpdateTime);
+        Log.d(TAG, "Latitude " + String.valueOf(mCurrentLocation.getLatitude()) + "Longitude " + String.valueOf(mCurrentLocation.getLongitude())+ " " + mLastUpdateTime);
+        if(mGoogleMap != null){
+            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f));
+            if(mPolylineOptions == null) {
+                mPolylineOptions = new PolylineOptions().add(latLng);
+                mPolylineOptions.color(Color.rgb(241,140,36));
+            }else{
+                mPolylineOptions.add(latLng);
+            }
+            mGoogleMap.clear();
+            Polyline polyline = mGoogleMap.addPolyline(mPolylineOptions);
+        }
+
+        if(mBeforeLocation != null && mCurrentLocation != null){
+            Double distance = DistanceCalculator.distance(mBeforeLocation, mCurrentLocation);
+            if(distance.compareTo(0.0) > 0){
+                Log.d(TAG, "Location move " + distance.toString());
+            }
+        }
     }
 
     @Override
