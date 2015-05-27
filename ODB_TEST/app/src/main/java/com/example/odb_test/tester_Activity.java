@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,6 +60,7 @@ public class tester_Activity extends Activity {
     final static double OVER_ACCEL_FUEL_CONSUMPTION_RANGE = 150.0; //급가속시 연료증가량
     final static double DECREASE_FUEL_CONSUPMTION_RANGE =200;
 
+    public boolean first_faster_acc_flag = false;
     public double fuel_use = BASIC_RPM; // 엔진에 주입되는 기름소비량
 
     /*Speed*/
@@ -166,10 +166,12 @@ public class tester_Activity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 static_flag = false;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    first_faster_acc_flag = true;
                     faster_acc_flag = true;
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     faster_acc_flag = false;
+                    first_faster_acc_flag=false;
                     return true;
                 }
                 return false;
@@ -230,11 +232,12 @@ public class tester_Activity extends Activity {
             // 정속주행이 아니라면
             if (!static_flag) {
                 // 악셀중일때
-                if (acc_flag) {
+                if (acc_flag || first_faster_acc_flag) {
                     //rpm은 최대치를 넘지 않는다.
                     car_rpm = (car_rpm < (RPM_LIMIT - RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;
                     // 엔진에 주입되는 기름
                     fuel_use = (fuel_use < (RPM_LIMIT - RPM_RANGE)) ? fuel_use + FUEL_CONSUMPTION_RANGE : fuel_use;
+                    first_faster_acc_flag=false;
                     // 가속구간
                 } else if (faster_acc_flag) {
                     car_rpm = (car_rpm < (RPM_LIMIT - FASTER_RPM_RANGE * GEAR_RATIO[current_gear])) ? car_rpm + FASTER_RPM_RANGE * GEAR_RATIO[current_gear] : car_rpm;// 기름 소비량
