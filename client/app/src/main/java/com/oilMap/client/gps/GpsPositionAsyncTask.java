@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,6 +50,7 @@ public class GpsPositionAsyncTask extends AsyncTask<GpsPosition, Void, Map<Strin
             }
         }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
+            response = new HashMap<>();
             response.put("result", false);
         }
 

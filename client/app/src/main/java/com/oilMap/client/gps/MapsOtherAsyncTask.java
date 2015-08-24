@@ -67,6 +67,7 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
             }
         }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
+            response = new HashMap<>();
             response.put("result", false);
         }
 
@@ -84,6 +85,9 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
     protected void onPostExecute(Map<String, Object> response) {
 
         List<Map<String, Object>> drivePointListMap = (List<Map<String, Object>>) response.get("drivePointList");
+        if(drivePointListMap == null){
+            return;
+        }
         Log.d(TAG, drivePointListMap.toString());
 
         int count = 0;

@@ -16,6 +16,7 @@ import android.provider.Settings;
  * Created by 김현준 on 2015-05-16.
  *///s//
 public class GpsInfo extends Service implements LocationListener {
+
     private final Context mContext;
 
     // 현재 GPS 사용유무

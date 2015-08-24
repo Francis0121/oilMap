@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Oil Map</string>
-    <string name="contextPath">http://14.49.39.74:8080/</string>
+    <string name="contextPath">http://www.nornenjs.com/oilmap/</string>
     <string name="title_activity_navigation">Oil Map</string>
 
     <string name="regCar_prompt">차량CC</string>
