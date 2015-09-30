@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity;
+import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.gps.GpsActivity;
@@ -96,7 +97,7 @@ public class OilInfoActivity extends Activity {
                         prefEdit.putString("id","");
                         prefEdit.commit();
 
-                        Intent idCheck = new Intent(OilInfoActivity.this, MainActivity.class);
+                        Intent idCheck = new Intent(OilInfoActivity.this, MainActivity_.class);
                         startActivity(idCheck);
                         OilInfoActivity.this.finish();
                         break;

@@ -1,8 +1,11 @@
+def AAVersion = '3.3.2'
+
 apply plugin: 'com.android.application'
+apply plugin: "com.neenbedankt.android-apt"
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23"
 
     defaultConfig {
         applicationId "com.oilMap.client"
@@ -25,6 +28,12 @@ android {
     }
 }
 
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+    }
+}
+
 dependencies {
     compile 'com.android.support:support-v4:22.0.3'
     compile files('libs/jackson-annotations-2.5.0.jar')
@@ -39,4 +48,7 @@ dependencies {
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
     compile 'com.cocosw:bottomsheet:1.1.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
+
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
 }
