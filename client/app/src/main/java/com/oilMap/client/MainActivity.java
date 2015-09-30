@@ -3,12 +3,13 @@ package com.oilMap.client;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.auth.AuthActivity;
+import com.oilMap.client.common.UserInfoPrefs;
+import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.info.OilInfoActivity;
 import com.oilMap.client.rest.AARestProtocol;
 
@@ -16,8 +17,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.rest.RestService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +31,9 @@ public class MainActivity extends Activity {
     @RestService
     AARestProtocol aaRestProtocol;
 
+    @Pref
+    UserInfoPrefs_ userInfoPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,10 @@ public class MainActivity extends Activity {
 
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         String userId = pref.getString("id", "");
+
+        userInfoPrefs.id().exists();
+        String id = userInfoPrefs.id().get();
+        Log.d(TAG, "exists " + userInfoPrefs.id().exists() + " " + id);
 
         if(userId == null || userId.equals("")){
             Intent intent = new Intent(this, AuthActivity.class);
