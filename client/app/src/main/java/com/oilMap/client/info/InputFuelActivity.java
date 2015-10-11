@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // ~ Use Activity
-@EActivity(R.layout.input_fuel)
+@EActivity(R.layout.activity_input_fuel)
 public class InputFuelActivity extends Activity {
 
     private static final String TAG = InputFuelActivity_.class.getSimpleName();
