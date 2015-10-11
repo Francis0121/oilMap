@@ -17,4 +17,11 @@ public interface AARestProtocol {
     @Post(Constants.Host.AUTH_SELECT_URL)
     Map<String, Object> authSelectUrl(Map<String, Object> request);
 
+    @Post(Constants.Host.AUTH_IS_EXIST)
+    Map<String, Object> authIsExistUrl(Map<String, Object> request);
+
+    @Post(Constants.Host.AUTH_INSERT)
+    Map<String, Object> authInsertUrl(Map<String, Object> request);
+
+
 }

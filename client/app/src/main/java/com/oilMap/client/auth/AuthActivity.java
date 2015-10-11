@@ -23,7 +23,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
 import com.oilMap.client.info.NavigationActivity;
 import com.oilMap.client.info.OilInfoActivity;
+import com.oilMap.client.rest.AARestProtocol;
 
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Fullscreen;
+import org.androidannotations.annotations.rest.RestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,9 +42,14 @@ import java.util.Map;
  * In addition see implementations of {@link AbstractGetNameTask} for an illustration of how to use
  * the {@link GoogleAuthUtil}.
  */
+@Fullscreen
+@EActivity(R.layout.activity_loading)
 public class AuthActivity extends Activity {
 
-    private static final String TAG = "AuthActivity";
+    @RestService
+    AARestProtocol aaRestProtocol;
+
+    private static final String TAG = AuthActivity_.class.getSimpleName();
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
 
     static final int REQUEST_CODE_PICK_ACCOUNT = 1000;
@@ -51,11 +61,8 @@ public class AuthActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
-        setContentView(R.layout.activity_loading);
-
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
+//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
         getUsername();
     }
 
@@ -152,9 +159,29 @@ public class AuthActivity extends Activity {
                 auth.setEmail(mEmail);
 
                 // ~ Register Server auth information. And move activity
-                new AuthRegisterAsnycTask().execute(auth);
+                Map<String, Object> request = new HashMap<String, Object>();
+                request.put("id", auth.getId());
+                Map<String, Object> response = aaRestProtocol.authIsExistUrl(request);
+
+                if(!(Boolean)response.get("result")){
+                    // ~ 서버에 ID가 없는 경우에만 ID 등록
+                    request.put("email", auth.getEmail());
+                    request.put("name", auth.getName());
+                    response = aaRestProtocol.authInsertUrl(request);
+                }
+                response.put("auth", auth);
+
+                intentActivity(response);
             }
         });
+    }
+
+    @Background
+    void intentActivity(Map<String, Object> response){
+        Intent intent = new Intent(this, OilInfoActivity.class);
+        intent.putExtra("auth", (Auth)response.get("auth"));
+        startActivity(intent);
+        finish();
     }
 
     /**
