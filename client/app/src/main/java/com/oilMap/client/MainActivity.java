@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.auth.AuthActivity;
+import com.oilMap.client.auth.AuthActivity_;
 import com.oilMap.client.common.UserInfoPrefs;
 import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.info.OilInfoActivity;
@@ -51,8 +52,7 @@ public class MainActivity extends Activity {
         Log.d(TAG, "exists " + userInfoPrefs.id().exists() + " " + id);
 
         if(userId == null || userId.equals("")){
-            Intent intent = new Intent(this, AuthActivity.class);
-            startActivity(intent);
+            AuthActivity_.intent(this).start();
             finish();
         }else{
             Map<String, Object> request = new HashMap<>();

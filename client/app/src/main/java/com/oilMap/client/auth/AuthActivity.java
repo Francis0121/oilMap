@@ -61,12 +61,12 @@ public class AuthActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
-//        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getUsername();
     }
 
-    @Override   //아래코드는 선택된 계정을 선택하여 콜백하는 과정
+    //아래코드는 선택된 계정을 선택하여 콜백하는 과정
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PICK_ACCOUNT) {
             if (resultCode == RESULT_OK) {
@@ -157,23 +157,26 @@ public class AuthActivity extends Activity {
                 prefEdit.commit();
 
                 auth.setEmail(mEmail);
-
-                // ~ Register Server auth information. And move activity
-                Map<String, Object> request = new HashMap<String, Object>();
-                request.put("id", auth.getId());
-                Map<String, Object> response = aaRestProtocol.authIsExistUrl(request);
-
-                if(!(Boolean)response.get("result")){
-                    // ~ 서버에 ID가 없는 경우에만 ID 등록
-                    request.put("email", auth.getEmail());
-                    request.put("name", auth.getName());
-                    response = aaRestProtocol.authInsertUrl(request);
-                }
-                response.put("auth", auth);
-
-                intentActivity(response);
+                requestAuthInfo(auth);
             }
         });
+    }
+
+    @Background
+    void requestAuthInfo(Auth auth){
+        // ~ Register Server auth information. And move activity
+        Map<String, Object> request = new HashMap<String, Object>();
+        request.put("id", auth.getId());
+        Map<String, Object> response = aaRestProtocol.authIsExistUrl(request);
+
+        // ~ If server not have id, app add id to serer.
+        if(!(Boolean)response.get("result")){
+            request.put("email", auth.getEmail());
+            request.put("name", auth.getName());
+            response = aaRestProtocol.authInsertUrl(request);
+        }
+        response.put("auth", auth);
+        intentActivity(response);
     }
 
     @Background
@@ -188,7 +191,6 @@ public class AuthActivity extends Activity {
      * This method is a hook for background threads and async tasks that need to provide the
      * user a response UI when an exception occurs.
      */
-    //예외처리
     public void handleException(final Exception e) {
         runOnUiThread(new Runnable() {
             @Override
@@ -215,71 +217,9 @@ public class AuthActivity extends Activity {
         });
     }
 
-    /**
-     * Note: This approach is for demo purposes only. Clients would normally not get tokens in the
-     * background from a Foreground activity.
-     */
     private AbstractGetNameTask getTask(
             AuthActivity activity, String email, String scope) {
         return new GetNameInForeground(activity, email, scope);
     }
 
-    private class AuthRegisterAsnycTask extends AsyncTask<Auth, Void, Map<String, Object>> {
-
-        private Map<String, Object> request = new HashMap<String, Object>();
-
-        @Override
-        protected Map<String, Object> doInBackground(Auth... auths) {
-            if(auths.length < 1){
-                throw new RuntimeException("Id is null");
-            }
-
-            try {
-                // ~ ID 조회
-                Auth auth = auths[0];
-                String url = getString(R.string.contextPath) +"/auth/isExist";
-                request.put("id", auth.getId());
-                RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
-                Map<String, Object> messages = responseEntity.getBody();
-
-                // ~ 서버에 값이 존재한다면
-                if((Boolean)messages.get("result")){
-                    messages.put("auth", auth);
-                    return messages;
-                }
-
-                // ~ ID 등록
-                url = getString(R.string.contextPath) + "/auth/insert";
-                request.put("email", auth.getEmail());
-                request.put("name", auth.getName());
-                restTemplate = new RestTemplate();
-                responseEntity = restTemplate.postForEntity(url, request, Map.class);
-                messages = responseEntity.getBody();
-                messages.put("auth", auth);
-                return messages;
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage(), e);
-                throw new RuntimeException("Communication error occur");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Map<String, Object> response) {
-            super.onPostExecute(response);
-            Log.d(TAG, response.toString());
-
-            if((Boolean)response.get("result")){
-                Log.d(TAG, "Auth register success");
-
-                // ~ AuthActivity
-                Intent intent = new Intent(AuthActivity.this, OilInfoActivity.class);
-                intent.putExtra("auth", (Auth)response.get("auth"));
-                startActivity(intent);
-                finish();
-            }else{
-                throw new RuntimeException("Auth select communication failed");
-            }
-        }
-    }
 }
