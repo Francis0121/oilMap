@@ -23,5 +23,8 @@ public interface AARestProtocol {
     @Post(Constants.Host.AUTH_INSERT)
     Map<String, Object> authInsertUrl(Map<String, Object> request);
 
+    @Post(Constants.Host.FUEL_BILL_SELECT)
+    Map<String, Object> fuelBillSelectUrl();
+
 
 }

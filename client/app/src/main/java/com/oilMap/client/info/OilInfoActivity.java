@@ -23,13 +23,17 @@ import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.gps.GpsActivity;
+import com.oilMap.client.rest.AARestProtocol;
 import com.oilMap.client.util.BackPressCloseHandler;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.rest.RestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -64,6 +68,9 @@ public class OilInfoActivity extends Activity {
     @ViewById(R.id.moneyTextView)
     TextView moneyTextView;
 
+    @RestService
+    AARestProtocol aaRestProtocol;
+
     private TimerTask mTask;
     private Timer mTimer;
     private TimerTask mProgressTask;
@@ -80,6 +87,9 @@ public class OilInfoActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        requestFuelBillSelect();
+
+        // TODO ShredPreference
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         this.id = pref.getString("id", "");
 
@@ -121,9 +131,6 @@ public class OilInfoActivity extends Activity {
 
         this.backPressCloseHandler = new BackPressCloseHandler(this);
 
-
-        new OilInfoAsyncTask().execute();
-
         // ~ Oil Visibilty
         mTask = new TimerTask() {
             @Override
@@ -141,7 +148,6 @@ public class OilInfoActivity extends Activity {
         mTimer.schedule(mTask, 100, 100);
         setSharedPreference("0", "1");
     }
-
 
     private void runOil() {
 
@@ -202,18 +208,16 @@ public class OilInfoActivity extends Activity {
         prefEdit.commit();
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        new OilInfoAsyncTask().execute();
+        requestFuelBillSelect();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        new OilInfoAsyncTask().execute();
+        requestFuelBillSelect();
     }
 
     @Override
@@ -266,111 +270,79 @@ public class OilInfoActivity extends Activity {
 
     }
 
-    private class OilInfoAsyncTask extends AsyncTask<Void, Void, Map<String, Object>>{
+    @Background
+    void requestFuelBillSelect(){
+        Map<String, Object> response = aaRestProtocol.fuelBillSelectUrl();
+        responseFuelBillSelect(response);
+    }
 
-        private Map<String, Object> request = new HashMap<String, Object>();
+    @UiThread
+    void responseFuelBillSelect(Map<String, Object> response){
+        Log.d(TAG, response.toString());
 
-        @Override
-        protected Map<String, Object> doInBackground(Void... params) {
-            String url = getString(R.string.contextPath) + "/fuelBill/select";
-            request.put("id", id);
+        if((Boolean)response.get("result")){
+            circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
+            Map<String, Object> map = (Map<String, Object>) response.get("fuelBill");
+            Integer bill = 100;
+            if(map == null || map.get("pn") == null){
+                dateTextView.setText("Data doesn't exist.");
+                moneyTextView.setText("Data doesn't exist.");
+                circleProgress.setMax(bill);
+                circleProgress.setProgress(bill);
+            }else{
+                String date = ((String) map.get("billDate")).substring(0, 16);
+                bill = (Integer) map.get("bill");
+                DecimalFormat df = new DecimalFormat("#,##0");
+                String strBill = df.format(bill);
 
-            Boolean isSuccess = false;
-            Map<String, Object> response =  null;
-            try {
-                while (!isSuccess) {
-                    try {
-                        response = postTemplate(url, request);
-                        if ((Boolean) response.get("result")) {
-                            isSuccess = true;
-                        }
-                    } catch (ResourceAccessException e) {
-                        Log.e("Error", e.getMessage(), e);
-                        isSuccess = false;
-                    }
-                }
-            }catch (Exception e) {
-                Log.e("Error", e.getMessage(), e);
-                response.put("result", false);
+                dateTextView.setText(date);
+                moneyTextView.setText(strBill+"￦");
+                circleProgress.setMax(bill);
             }
-            return response;
-        }
+            Double avgGasoline = (Double) response.get("avgGasoline");
 
-        private Map<String, Object> postTemplate(String url, Map<String, Object> request){
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(url, request, Map.class);
-            Map<String, Object> messages = responseEntity.getBody();
-            return messages;
-        }
+            List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) response.get("drivingList");
+            List<String> list = new ArrayList<String>();
 
-        @Override
-        protected void onPostExecute(Map<String, Object> stringObjectMap) {
-            Log.d(TAG, stringObjectMap.toString());
+            Double totalCash = 0.0;
+            if(drivingListMap.size() > 1) {
+                for (int i = 0; i < drivingListMap.size() - 1; i++) {
+                    Map<String, Object> drivingMapBefore = drivingListMap.get(i);
+                    Map<String, Object> drivingMapEnd = drivingListMap.get(i + 1);
 
-            if((Boolean)stringObjectMap.get("result")){
-                circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
-                Map<String, Object> map = (Map<String, Object>) stringObjectMap.get("fuelBill");
-                Integer bill = 100;
-                if(map == null || map.get("pn") == null){
-                    dateTextView.setText("Data doesn't exist.");
-                    moneyTextView.setText("Data doesn't exist.");
-                    circleProgress.setMax(bill);
-                    circleProgress.setProgress(bill);
-                }else{
-                    String date = ((String) map.get("billDate")).substring(0, 16);
-                    bill = (Integer) map.get("bill");
+                    Double calculate = (Double) drivingMapBefore.get("fuelQuantity") - (Double) drivingMapEnd.get("fuelQuantity");
+                    Double distance = ((Double) drivingMapEnd.get("distance") - (Double) drivingMapBefore.get("distance"));
+                    Double cash = (calculate * avgGasoline);
                     DecimalFormat df = new DecimalFormat("#,##0");
-                    String strBill = df.format(bill);
+                    String strCash = df.format(cash);
 
-                    dateTextView.setText(date);
-                    moneyTextView.setText(strBill+"￦");
-                    circleProgress.setMax(bill);
-                }
-                Double avgGasoline = (Double) stringObjectMap.get("avgGasoline");
+                    Double efficiency = + distance / calculate;
+                    DecimalFormat df2 = new DecimalFormat("#,##0.0");
+                    String strEfficiency = df2.format(efficiency);
 
-                List<Map<String, Object>> drivingListMap = (List<Map<String, Object>>) stringObjectMap.get("drivingList");
-                List<String> list = new ArrayList<String>();
-
-                Double totalCash = 0.0;
-                if(drivingListMap.size() > 1) {
-                    for (int i = 0; i < drivingListMap.size() - 1; i++) {
-                        Map<String, Object> drivingMapBefore = drivingListMap.get(i);
-                        Map<String, Object> drivingMapEnd = drivingListMap.get(i + 1);
-
-                        Double calculate = (Double) drivingMapBefore.get("fuelQuantity") - (Double) drivingMapEnd.get("fuelQuantity");
-                        Double distance = ((Double) drivingMapEnd.get("distance") - (Double) drivingMapBefore.get("distance"));
-                        Double cash = (calculate * avgGasoline);
-                        DecimalFormat df = new DecimalFormat("#,##0");
-                        String strCash = df.format(cash);
-
-                        Double efficiency = + distance / calculate;
-                        DecimalFormat df2 = new DecimalFormat("#,##0.0");
-                        String strEfficiency = df2.format(efficiency);
-
-                        if(cash > 0.0) {
-                            list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + strEfficiency + "km/l");
-                            totalCash += cash;
-                        }
+                    if(cash > 0.0) {
+                        list.add("Date : " + ((String) drivingMapEnd.get("inputDate")).substring(0, 10) + " - Cash : " + strCash + "￦ - Efficiency :" + strEfficiency + "km/l");
+                        totalCash += cash;
                     }
-                }else{
-                    list.add("Data doesn't exist");
                 }
-                final StableArrayAdapter adapter = new StableArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, list);
-                listView.setAdapter(adapter);
-
-                final int cash = bill- totalCash.intValue();
-                //circleProgress.setProgress(cash);
-                Log.d(TAG, "CASH " +cash);
-                circleProgress.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(final View v) {
-
-                        circleAnimation(cash);
-                        new OilInfoAsyncTask().execute();
-                    }
-                });
-                circleAnimation(cash);
+            }else{
+                list.add("Data doesn't exist");
             }
+            final StableArrayAdapter adapter = new StableArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, list);
+            listView.setAdapter(adapter);
+
+            final int cash = bill- totalCash.intValue();
+            //circleProgress.setProgress(cash);
+            Log.d(TAG, "CASH " +cash);
+            circleProgress.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(final View v) {
+
+                    circleAnimation(cash);
+                    requestFuelBillSelect();
+                }
+            });
+            circleAnimation(cash);
         }
     }
 
