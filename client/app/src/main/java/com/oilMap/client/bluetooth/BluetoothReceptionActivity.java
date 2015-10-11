@@ -82,7 +82,7 @@ public class BluetoothReceptionActivity extends Activity implements AdapterView.
 
     private void setSharedPreference(String status, String imageType){
         Log.d(TAG, "setSharedPreference " + status + " " + imageType);
-        SharedPreferences pref = getSharedPreferences("socket", 0);
+        SharedPreferences pref = getSharedPreferences("StatusPrefs", 0);
         SharedPreferences.Editor prefEdit = pref.edit();
         prefEdit.putString("status", status);
         if(imageType != null) {
