@@ -22,6 +22,7 @@ import com.oilMap.client.common.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // ~ Use Activity
+@Fullscreen
 @EActivity(R.layout.ranking_list)
 public class RankingActivity extends Activity {
 
