@@ -148,14 +148,11 @@ public class AuthActivity extends Activity {
 
     @UiThread
     public void next(final Auth auth) {
-        // TODO Check sharedPreference
         Log.d(TAG, "next function call?");
         userInfoPrefs.id().put(auth.getId());
         auth.setEmail(mEmail);
         requestAuthInfo(auth);
     }
-
-
 
     @Background
     void requestAuthInfo(Auth auth){
