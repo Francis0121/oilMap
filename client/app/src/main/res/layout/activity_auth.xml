@@ -7,6 +7,7 @@
     tools:context="com.oilMap.client.etc.LoadingActivity"
     android:background="#282828">
 
+    <!-- Use Activity -->
 
     <RelativeLayout
         android:layout_width="50dp"
@@ -28,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Google OAuth"
-        android:id="@+id/simpleTextView01"
         android:layout_below="@+id/relativeLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
@@ -38,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Progress the Google authentication procedures."
-        android:id="@+id/simpleTextView02"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="33dp" />

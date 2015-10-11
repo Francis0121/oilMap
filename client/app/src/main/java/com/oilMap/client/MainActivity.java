@@ -41,7 +41,6 @@ public class MainActivity extends Activity {
 
     @Background(delay = 1000)
     void checkUserInfo(){
-        // TODO Check sharedPreference
         String id = userInfoPrefs.id().get();
         Log.d(TAG, "exists " + userInfoPrefs.id().exists() + " " + id);
 

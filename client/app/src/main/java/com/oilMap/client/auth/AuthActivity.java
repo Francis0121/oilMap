@@ -40,7 +40,7 @@ import java.util.Map;
  * the {@link GoogleAuthUtil}.
  */
 @Fullscreen
-@EActivity(R.layout.activity_loading)
+@EActivity(R.layout.activity_auth)
 public class AuthActivity extends Activity {
 
     @RestService
