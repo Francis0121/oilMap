@@ -37,11 +37,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".auth.AuthActivity_" />
-        <activity android:name=".info.RankingActivity" >
+
+        <activity
+            android:name=".info.OilInfoActivity_"
+            android:label="@string/app_name"
+            android:theme="@style/CustomTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.BLE_START" />
+            </intent-filter>
         </activity>
-        <activity android:name=".info.InputFuelActivity" >
-        </activity>
+
+        <activity android:name=".info.RankingActivity_" />
+
+        <activity android:name=".info.InputFuelActivity" />
+
+        <!-- TODO Not confirm Activity -->
+
         <activity android:name=".bluetooth.Bluetooth_reception" >
         </activity>
         <activity
@@ -61,14 +74,7 @@
             android:name=".gps.MapsActivity"
             android:theme="@style/CustomTheme" >
         </activity>
-        <activity
-            android:name=".info.OilInfoActivity_"
-            android:label="@string/app_name"
-            android:theme="@style/CustomTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.BLE_START" />
-            </intent-filter>
-        </activity>
+
         <activity
             android:name=".gps.GpsActivity"
             android:label="@string/title_activity_gps" >

@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
-import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
@@ -42,8 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -54,14 +51,17 @@ public class OilInfoActivity extends Activity {
 
     private static final String TAG = OilInfoActivity_.class.getSimpleName();
 
-    @ViewById(R.id.listView)
+    @ViewById
     ListView listView;
 
-    @ViewById(R.id.dateTextView)
+    @ViewById
     TextView dateTextView;
 
-    @ViewById(R.id.moneyTextView)
+    @ViewById
     TextView moneyTextView;
+
+    @ViewById
+    TextView remainTextView;
 
     @RestService
     AARestProtocol aaRestProtocol;
@@ -77,16 +77,11 @@ public class OilInfoActivity extends Activity {
 
     private BottomSheet bottomSheet;
     private BackPressCloseHandler backPressCloseHandler;
-    private CircleProgress circleProgress;
     private String id;
-
-    private TimerTask mProgressTask;
-    private Timer mProgressTimer;
 
     @Click
     void rankingBtn(){
-        Intent ranking = new Intent(this, RankingActivity.class);
-        startActivity(ranking);
+        RankingActivity_.intent(this).start();
     }
 
     @Override
@@ -95,10 +90,8 @@ public class OilInfoActivity extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         requestFuelBillSelect();
 
-        // TODO Check sharedPreference
         this.id = userInfoPrefs.id().get();
         changeStatus("0", "1");
-
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
             @Override
@@ -112,10 +105,8 @@ public class OilInfoActivity extends Activity {
                         break;
 
                     case R.id.logout:
-                        // TODO Check sharedPreference
                         userInfoPrefs.id().remove();
-                        Intent idCheck = new Intent(OilInfoActivity.this, MainActivity_.class);
-                        startActivity(idCheck);
+                        MainActivity_.intent(OilInfoActivity.this).start();
                         OilInfoActivity.this.finish();
                         break;
 
@@ -209,9 +200,6 @@ public class OilInfoActivity extends Activity {
     @Override
     protected void onDestroy() {
         changeStatus("0", "1");
-        if(mProgressTimer != null){
-            mProgressTimer.cancel();
-        }
         super.onDestroy();
     }
 
@@ -262,14 +250,13 @@ public class OilInfoActivity extends Activity {
         Log.d(TAG, response.toString());
 
         if((Boolean)response.get("result")){
-            circleProgress = (CircleProgress) findViewById(R.id.circle_progress);
             Map<String, Object> map = (Map<String, Object>) response.get("fuelBill");
             Integer bill = 100;
             if(map == null || map.get("pn") == null){
                 dateTextView.setText("Data doesn't exist.");
                 moneyTextView.setText("Data doesn't exist.");
-                circleProgress.setMax(bill);
-                circleProgress.setProgress(bill);
+                remainTextView.setText("Data doesn't exist.");
+
             }else{
                 String date = ((String) map.get("billDate")).substring(0, 16);
                 bill = (Integer) map.get("bill");
@@ -277,8 +264,7 @@ public class OilInfoActivity extends Activity {
                 String strBill = df.format(bill);
 
                 dateTextView.setText(date);
-                moneyTextView.setText(strBill+"￦");
-                circleProgress.setMax(bill);
+                moneyTextView.setText(strBill + "￦");
             }
             Double avgGasoline = (Double) response.get("avgGasoline");
 
@@ -313,47 +299,11 @@ public class OilInfoActivity extends Activity {
             listView.setAdapter(adapter);
 
             final int cash = bill- totalCash.intValue();
-            //circleProgress.setProgress(cash);
-            Log.d(TAG, "CASH " +cash);
-            circleProgress.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(final View v) {
-
-                    circleAnimation(cash);
-                    requestFuelBillSelect();
-                }
-            });
-            circleAnimation(cash);
+            Log.d(TAG, "CASH " + cash);
+            DecimalFormat df = new DecimalFormat("#,##0");
+            String strBill = df.format(cash);
+            remainTextView.setText(strBill+"￦");
         }
     }
 
-    private void circleAnimation(final int cash){
-        if(mProgressTimer != null) {
-            mProgressTimer.cancel();
-        }
-
-        circleProgress.setProgress(0);
-        // ~ Oil Visibilty
-        mProgressTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int value = circleProgress.getProgress()+(cash/15);
-
-                        if(value >= cash){
-                            value = cash;
-                            mProgressTimer.cancel();
-                        }
-
-                        circleProgress.setProgress(value);
-                    }
-                });
-            }
-        };
-
-        mProgressTimer = new Timer();
-        mProgressTimer.schedule(mProgressTask, 200, 200);
-    }
 }

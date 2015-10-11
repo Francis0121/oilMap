@@ -1,6 +1,8 @@
 package com.oilMap.client.rest;
 
 import com.oilMap.client.common.Constants;
+import com.oilMap.client.ranking.RankingFilter;
+import com.oilMap.client.ranking.RankingResponse;
 
 import org.androidannotations.annotations.rest.Post;
 import org.androidannotations.annotations.rest.Rest;
@@ -26,5 +28,7 @@ public interface AARestProtocol {
     @Post(Constants.Host.FUEL_BILL_SELECT)
     Map<String, Object> fuelBillSelectUrl(Map<String, Object> request);
 
+    @Post(Constants.Host.RANKING_SELECT)
+    RankingResponse rankingSelectUrl(RankingFilter rankingFilter);
 
 }
