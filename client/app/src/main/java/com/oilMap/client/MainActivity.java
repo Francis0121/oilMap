@@ -1,7 +1,6 @@
 package com.oilMap.client;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 
 // ~ Use Activity
 @Fullscreen
-@EActivity(R.layout.main)
+@EActivity(R.layout.activity_main)
 public class MainActivity extends Activity {
 
     static final String TAG = MainActivity.class.getSimpleName();
