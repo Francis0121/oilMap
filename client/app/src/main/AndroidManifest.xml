@@ -23,7 +23,6 @@
         android:label="@string/app_name" >
         <receiver android:name=".user.SMSReceiver" >
             <intent-filter>
-
                 <!-- 문자를 받아올 수 있게 intent-filter 추가 -->
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -79,7 +78,7 @@
             android:theme="@style/CustomTheme" >
         </activity>
         <activity
-            android:name=".info.OilInfoActivity"
+            android:name=".info.OilInfoActivity_"
             android:label="@string/app_name"
             android:theme="@style/CustomTheme" >
             <intent-filter>

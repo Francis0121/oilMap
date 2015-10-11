@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.oilMap.client.auth.Auth;
-import com.oilMap.client.auth.AuthActivity;
 import com.oilMap.client.auth.AuthActivity_;
-import com.oilMap.client.common.UserInfoPrefs;
 import com.oilMap.client.common.UserInfoPrefs_;
-import com.oilMap.client.info.OilInfoActivity;
+import com.oilMap.client.info.OilInfoActivity_;
 import com.oilMap.client.rest.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
@@ -65,7 +63,7 @@ public class MainActivity extends Activity {
             Map<String, Object> authMap = (Map<String, Object>) response.get("auth");
             Auth auth = new Auth((String)authMap.get("id"), (String)authMap.get("email"), (String)authMap.get("name"), "", "");
 
-            Intent intent = new Intent(this, OilInfoActivity.class);
+            Intent intent = new Intent(this, OilInfoActivity_.class);
             intent.putExtra("auth", auth);
             startActivity(intent);
             finish();

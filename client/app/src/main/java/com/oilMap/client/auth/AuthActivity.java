@@ -8,11 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -21,16 +19,13 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
-import com.oilMap.client.info.NavigationActivity;
-import com.oilMap.client.info.OilInfoActivity;
+import com.oilMap.client.info.OilInfoActivity_;
 import com.oilMap.client.rest.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.rest.RestService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -181,7 +176,7 @@ public class AuthActivity extends Activity {
 
     @Background
     void intentActivity(Map<String, Object> response){
-        Intent intent = new Intent(this, OilInfoActivity.class);
+        Intent intent = new Intent(this, OilInfoActivity_.class);
         intent.putExtra("auth", (Auth)response.get("auth"));
         startActivity(intent);
         finish();

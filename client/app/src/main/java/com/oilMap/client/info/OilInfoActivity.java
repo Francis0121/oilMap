@@ -13,21 +13,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
 import com.github.lzyzsd.circleprogress.CircleProgress;
-import com.oilMap.client.MainActivity;
 import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
 import com.oilMap.client.gps.GpsActivity;
 import com.oilMap.client.util.BackPressCloseHandler;
 
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Fullscreen;
+import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.ViewById;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -42,42 +44,44 @@ import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
 
+@Fullscreen
+@EActivity(R.layout.activity_oil_info)
 public class OilInfoActivity extends Activity {
 
-    private static final String TAG = "OilInfoActivity";
+    private static final String TAG = OilInfoActivity_.class.getSimpleName();
 
     private BottomSheet bottomSheet;
     private BackPressCloseHandler backPressCloseHandler;
     private CircleProgress circleProgress;
-    private ListView listView;
     private String id;
 
-    private TextView dateTextView;
-    private TextView moneyTextView;
+    @ViewById(R.id.listView)
+    ListView listView;
+
+    @ViewById(R.id.dateTextView)
+    TextView dateTextView;
+
+    @ViewById(R.id.moneyTextView)
+    TextView moneyTextView;
 
     private TimerTask mTask;
     private Timer mTimer;
     private TimerTask mProgressTask;
     private Timer mProgressTimer;
 
+    @Click
+    void rankingBtn(){
+        Intent ranking = new Intent(this, RankingActivity.class);
+        startActivity(ranking);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
-        setContentView(R.layout.activity_oil_info);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         this.id = pref.getString("id", "");
-
-        ImageButton rankBtn = (ImageButton) findViewById(R.id.rankingBtn);
-        rankBtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                Intent ranking = new Intent(OilInfoActivity.this, RankingActivity.class);
-                startActivity(ranking);
-            }
-        });
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
@@ -117,12 +121,8 @@ public class OilInfoActivity extends Activity {
 
         this.backPressCloseHandler = new BackPressCloseHandler(this);
 
-        dateTextView = (TextView) findViewById(R.id.textView19);
-        moneyTextView = (TextView) findViewById(R.id.textView22);
 
         new OilInfoAsyncTask().execute();
-
-        listView = (ListView) findViewById(R.id.listView);
 
         // ~ Oil Visibilty
         mTask = new TimerTask() {
@@ -273,7 +273,7 @@ public class OilInfoActivity extends Activity {
         @Override
         protected Map<String, Object> doInBackground(Void... params) {
             String url = getString(R.string.contextPath) + "/fuelBill/select";
-            request.put("id", OilInfoActivity.this.id);
+            request.put("id", id);
 
             Boolean isSuccess = false;
             Map<String, Object> response =  null;
@@ -355,7 +355,7 @@ public class OilInfoActivity extends Activity {
                 }else{
                     list.add("Data doesn't exist");
                 }
-                final StableArrayAdapter adapter = new StableArrayAdapter(OilInfoActivity.this, android.R.layout.simple_list_item_1, list);
+                final StableArrayAdapter adapter = new StableArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, list);
                 listView.setAdapter(adapter);
 
                 final int cash = bill- totalCash.intValue();
