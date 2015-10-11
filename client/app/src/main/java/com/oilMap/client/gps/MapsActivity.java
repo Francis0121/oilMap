@@ -1,11 +1,7 @@
 package com.oilMap.client.gps;
 
-import android.annotation.TargetApi;
-import android.app.FragmentManager;
 import android.content.Intent;
-import android.graphics.Point;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -15,12 +11,9 @@ import android.view.WindowManager;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.oilMap.client.R;
 
 public class MapsActivity extends FragmentActivity{
@@ -50,7 +43,7 @@ public class MapsActivity extends FragmentActivity{
         mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
 
-        GpsInfo gps = new GpsInfo(MapsActivity.this);
+        Gpsinfo gps = new Gpsinfo(MapsActivity.this);
         // GPS 사용유무 가져오기
         if (gps.isGetLocation()) {
             double latitude = gps.getLatitude();

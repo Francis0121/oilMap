@@ -67,7 +67,7 @@ public class GpsActivity extends FragmentActivity implements GoogleApiClient.Con
         mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activityGpsMap)).getMap();
 
-        GpsInfo gps = new GpsInfo(GpsActivity.this);
+        Gpsinfo gps = new Gpsinfo(GpsActivity.this);
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);

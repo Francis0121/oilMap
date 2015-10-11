@@ -32,7 +32,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
 import com.oilMap.client.R;
-import com.oilMap.client.gps.GpsInfo;
+import com.oilMap.client.gps.Gpsinfo;
 import com.oilMap.client.info.OilInfoActivity;
 
 import org.json.JSONException;
@@ -79,7 +79,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     TextView mTextMsg, mRunTextView;
     DataHandling data_handling=null;
     /****************GPS*********************/
-    GpsInfo gps = null;
+    Gpsinfo gps = null;
 
 
     private void setSharedPreference(String status, String imageType){
@@ -105,7 +105,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         /********************GPS*************************/
         MapsInitializer.initialize(getApplicationContext());
         init();
-        gps = new GpsInfo(Bluetooth_reception.this);
+        gps = new Gpsinfo(Bluetooth_reception.this);
 
 
 
@@ -157,7 +157,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         // 맵의 이동
         //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
 
-        GpsInfo gps = new GpsInfo(Bluetooth_reception.this);
+        Gpsinfo gps = new Gpsinfo(Bluetooth_reception.this);
         // GPS 사용유무 가져오기
         if (gps.isGetLocation()) {
             latitude = gps.getLatitude();
