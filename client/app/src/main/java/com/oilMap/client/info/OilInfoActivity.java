@@ -113,7 +113,7 @@ public class OilInfoActivity extends Activity {
 
                     case R.id.logout:
                         // TODO Check sharedPreference
-                        userInfoPrefs.id().put("");
+                        userInfoPrefs.id().remove();
                         Intent idCheck = new Intent(OilInfoActivity.this, MainActivity_.class);
                         startActivity(idCheck);
                         OilInfoActivity.this.finish();

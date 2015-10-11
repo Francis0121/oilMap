@@ -51,13 +51,12 @@ public class MainActivity extends Activity {
         }else{
             Map<String, Object> request = new HashMap<>();
             request.put("id", id);
+            Log.d(TAG, request.toString());
             Map<String, Object> response = aaRestProtocol.authSelectUrl(request);
-            Log.d(TAG, request.toString() + " " + response.toString());
-
+            Log.d(TAG, response.toString());
             Map<String, Object> authMap = (Map<String, Object>) response.get("auth");
             Auth auth = new Auth((String)authMap.get("id"), (String)authMap.get("email"), (String)authMap.get("name"), "", "");
             OilInfoActivity_.intent(this).auth(auth).start();
-
             finish();
         }
     }
