@@ -21,6 +21,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import java.util.HashMap;
 import java.util.Map;
 
+// ~ Use Activity
 @Fullscreen
 @EActivity(R.layout.main)
 public class MainActivity extends Activity {

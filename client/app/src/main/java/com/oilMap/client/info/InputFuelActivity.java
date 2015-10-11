@@ -24,9 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by 김현준 on 2015-05-21.
- */
+// ~ Use Activity
 public class InputFuelActivity extends Activity {
 
     private static final String TAG = "InputFuelActivity";

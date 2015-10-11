@@ -35,20 +35,21 @@ apt {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:22.0.3'
-    compile files('libs/jackson-annotations-2.5.0.jar')
-    compile files('libs/jackson-core-2.5.0.jar')
-    compile files('libs/jackson-databind-2.5.0.jar')
-    compile files('libs/spring-android-auth-2.0.0.M2.jar')
-    compile files('libs/spring-android-core-2.0.0.M2.jar')
-    compile files('libs/spring-android-rest-template-2.0.0.M2.jar')
-    compile files('libs/achartengine-0.7.0.jar')
-    compile project(':achartengine-0.7.0')
-    compile 'com.google.android.gms:play-services:7.3.0'
+    // jar
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // apt
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+
+    // ui
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
     compile 'com.cocosw:bottomsheet:1.1.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
 
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.google.android.gms:play-services-location:8.1.0'
+    compile 'com.google.android.gms:play-services-maps:8.1.0'
+//    compile 'com.google.android.gms:play-services-gps:8.1.0'
+//    compile 'com.google.android.gms:play-services-identity:8.1.0'
+//    compile 'com.google.android.gms:play-services-gcm:8.1.0'1.0'
 }

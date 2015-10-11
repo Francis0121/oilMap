@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -30,13 +29,9 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
-import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -48,16 +43,12 @@ import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
 
+// ~ Use Activity
 @Fullscreen
 @EActivity(R.layout.activity_oil_info)
 public class OilInfoActivity extends Activity {
 
     private static final String TAG = OilInfoActivity_.class.getSimpleName();
-
-    private BottomSheet bottomSheet;
-    private BackPressCloseHandler backPressCloseHandler;
-    private CircleProgress circleProgress;
-    private String id;
 
     @ViewById(R.id.listView)
     ListView listView;
@@ -71,8 +62,11 @@ public class OilInfoActivity extends Activity {
     @RestService
     AARestProtocol aaRestProtocol;
 
-    private TimerTask mTask;
-    private Timer mTimer;
+    private BottomSheet bottomSheet;
+    private BackPressCloseHandler backPressCloseHandler;
+    private CircleProgress circleProgress;
+    private String id;
+
     private TimerTask mProgressTask;
     private Timer mProgressTimer;
 
@@ -92,6 +86,7 @@ public class OilInfoActivity extends Activity {
         // TODO ShredPreference
         SharedPreferences pref = getSharedPreferences("userInfo", 0);
         this.id = pref.getString("id", "");
+        setSharedPreference("0", "1");
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
@@ -128,29 +123,11 @@ public class OilInfoActivity extends Activity {
                 }
             }
         }).build();
-
         this.backPressCloseHandler = new BackPressCloseHandler(this);
-
-        // ~ Oil Visibilty
-        mTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        runOil();
-                    }
-                });
-            }
-        };
-
-        mTimer = new Timer();
-        mTimer.schedule(mTask, 100, 100);
-        setSharedPreference("0", "1");
     }
 
-    private void runOil() {
-
+    @UiThread(delay = 100)
+    void runOil() {
         SharedPreferences socket = getSharedPreferences("socket", 0);
         String status = socket.getString("status", "0");
         String imageType = socket.getString("imageType", "1");
@@ -195,6 +172,7 @@ public class OilInfoActivity extends Activity {
                 }
             }
         }
+        runOil();
     }
 
     private void setSharedPreference(String status, String imageType){
@@ -228,7 +206,6 @@ public class OilInfoActivity extends Activity {
     @Override
     protected void onDestroy() {
         setSharedPreference("0", "1");
-        mTimer.cancel();
         if(mProgressTimer != null){
             mProgressTimer.cancel();
         }
@@ -251,7 +228,6 @@ public class OilInfoActivity extends Activity {
             View view =super.getView(position, convertView, parent);
 
             TextView textView=(TextView) view.findViewById(android.R.id.text1);
-            /*YOUR CHOICE OF COLOR*/
             textView.setTextColor(Color.WHITE);
             textView.setTextSize(12);
             return view;
@@ -272,7 +248,9 @@ public class OilInfoActivity extends Activity {
 
     @Background
     void requestFuelBillSelect(){
-        Map<String, Object> response = aaRestProtocol.fuelBillSelectUrl();
+        Map<String, Object> request = new HashMap<>();
+        request.put("id", id);
+        Map<String, Object> response = aaRestProtocol.fuelBillSelectUrl(request);
         responseFuelBillSelect(response);
     }
 

@@ -91,7 +91,7 @@ public class AuthActivity extends Activity {
             return;
         }
         if (resultCode == RESULT_CANCELED) {
-            show("User rejected authorization.");
+            show("Auth rejected authorization.");
             return;
         }
         show("Unknown error, click the button again");

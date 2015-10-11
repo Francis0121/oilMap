@@ -1,2 +1,0 @@
-configurations.create("default")
-artifacts.add("default", file('google-api-client-googleapis-1.4.1-beta-sources.jar'))
