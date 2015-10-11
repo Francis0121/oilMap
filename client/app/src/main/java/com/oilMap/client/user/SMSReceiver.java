@@ -21,7 +21,9 @@ import com.oilMap.client.common.UserInfoPrefs;
 import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.rest.AARestProtocol;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EReceiver;
+import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -75,32 +77,38 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
                 Integer price = Integer.parseInt(msg.substring(stopLength,idx + 4).replace(",", ""));
                 Log.d(TAG, "PRICE : " + price + " Message : " + msg);
-
-                Map<String, Object> request = new HashMap<>();
-                request.put("id", userInfoPrefs.id());
-                request.put("bill", price);
-                request.put("title", msg);
-                aaRestProtocol.fuelBillInsert(request);
-
-                DecimalFormat df = new DecimalFormat("#,##0");
-                String strCash = df.format(price);
-                PendingIntent mPendingIntent = PendingIntent.getActivity(
-                        context.getApplicationContext(), 0,
-                        new Intent(context.getApplicationContext(), MainActivity_.class),
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-                Notification notification = new NotificationCompat.Builder(context.getApplicationContext())
-                        .setContentTitle("OilMap")
-                        .setContentText(strCash + "원이 주유되었습니다.")
-                        .setSmallIcon(R.drawable.notification_icon)
-                        .setColor(context.getResources().getColor(R.color.orange_bg_color))
-                        .setTicker("주유정보가 입력되었습니다.")
-                        .setAutoCancel(true)
-                        .setContentIntent(mPendingIntent)
-                        .build();
-                notificationManager.notify(NOTIFICATION_SMS, notification);
+                fuelBillInsert(context, price, msg);
             }
         }
+    }
+
+    @Background
+    void fuelBillInsert(Context context, Integer price, String msg){
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("id", userInfoPrefs.id().get());
+        request.put("bill", price);
+        request.put("title", msg);
+
+        aaRestProtocol.fuelBillInsert(request);
+
+        DecimalFormat df = new DecimalFormat("#,##0");
+        String strCash = df.format(price);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(
+                context.getApplicationContext(), 0,
+                new Intent(context.getApplicationContext(), MainActivity_.class),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        Notification notification = new NotificationCompat.Builder(context.getApplicationContext())
+                .setContentTitle("OilMap")
+                .setContentText(strCash + "원이 주유되었습니다.")
+                .setSmallIcon(R.drawable.notification_icon)
+                .setColor(context.getResources().getColor(R.color.orange_bg_color))
+                .setTicker("주유정보가 입력되었습니다.")
+                .setAutoCancel(true)
+                .setContentIntent(mPendingIntent)
+                .build();
+        notificationManager.notify(NOTIFICATION_SMS, notification);
     }
 }
