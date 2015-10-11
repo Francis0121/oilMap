@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +19,10 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
+import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.common.StatusPrefs_;
+import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.gps.GpsActivity;
 import com.oilMap.client.rest.AARestProtocol;
 import com.oilMap.client.util.BackPressCloseHandler;
@@ -28,10 +30,12 @@ import com.oilMap.client.util.BackPressCloseHandler;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -62,6 +66,15 @@ public class OilInfoActivity extends Activity {
     @RestService
     AARestProtocol aaRestProtocol;
 
+    @Pref
+    UserInfoPrefs_ userInfoPrefs;
+
+    @Pref
+    StatusPrefs_ statusPrefs;
+
+    @Extra
+    Auth auth;
+
     private BottomSheet bottomSheet;
     private BackPressCloseHandler backPressCloseHandler;
     private CircleProgress circleProgress;
@@ -80,13 +93,11 @@ public class OilInfoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         requestFuelBillSelect();
 
-        // TODO ShredPreference
-        SharedPreferences pref = getSharedPreferences("userInfo", 0);
-        this.id = pref.getString("id", "");
-        setSharedPreference("0", "1");
+        // TODO Check sharedPreference
+        this.id = userInfoPrefs.id().get();
+        changeStatus("0", "1");
 
         // ~ BottomSheet
         bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
@@ -101,11 +112,8 @@ public class OilInfoActivity extends Activity {
                         break;
 
                     case R.id.logout:
-                        SharedPreferences pref = OilInfoActivity.this.getSharedPreferences("userInfo", 0);
-                        SharedPreferences.Editor prefEdit = pref.edit();
-                        prefEdit.putString("id","");
-                        prefEdit.commit();
-
+                        // TODO Check sharedPreference
+                        userInfoPrefs.id().put("");
                         Intent idCheck = new Intent(OilInfoActivity.this, MainActivity_.class);
                         startActivity(idCheck);
                         OilInfoActivity.this.finish();
@@ -128,9 +136,8 @@ public class OilInfoActivity extends Activity {
 
     @UiThread(delay = 100)
     void runOil() {
-        SharedPreferences socket = getSharedPreferences("socket", 0);
-        String status = socket.getString("status", "0");
-        String imageType = socket.getString("imageType", "1");
+        String status = statusPrefs.status().get();
+        String imageType = statusPrefs.imageType().get();
 
         final GifImageView gifImageView = (GifImageView) findViewById(R.id.oilInfoCarGif);
 
@@ -142,15 +149,14 @@ public class OilInfoActivity extends Activity {
                 if(!imageType.equals("2")) {
                     Log.d(TAG, "FAST_VISIBLE");
                     gifImageView.setImageResource(R.drawable.large_ac);
-                    setSharedPreference("2", "2");
+                    changeStatus("2", "2");
 
                     Runnable runnable = new Runnable() {
                         @Override
                         public void run() {
-                            setSharedPreference("1", "2");
+                            changeStatus("1", "2");
                         }
                     };
-
                     Handler handler = new Handler();
                     handler.postDelayed(runnable, 5000);
                 }
@@ -159,7 +165,7 @@ public class OilInfoActivity extends Activity {
                     Log.d(TAG, "NORMAL_VISIBLE");
                     gifImageView.setVisibility(View.VISIBLE);
                     gifImageView.setImageResource(R.drawable.normal_ac);
-                    setSharedPreference("1", "1");
+                    changeStatus("1", "1");
                 }
             }
         } else {
@@ -168,22 +174,19 @@ public class OilInfoActivity extends Activity {
                     Log.d(TAG, "NORMAL_VISIBLE");
                     gifImageView.setVisibility(View.VISIBLE);
                     gifImageView.setImageResource(R.drawable.normal_ac);
-                    setSharedPreference("1", "1");
+                    changeStatus("1", "1");
                 }
             }
         }
         runOil();
     }
 
-    private void setSharedPreference(String status, String imageType){
-        Log.d(TAG, "setSharedPreference status " + status + " " + imageType);
-        SharedPreferences pref = getSharedPreferences("socket", 0);
-        SharedPreferences.Editor prefEdit = pref.edit();
-        prefEdit.putString("status", status);
+    private void changeStatus(String status, String imageType){
+        Log.d(TAG, "changeStatus status " + status + " " + imageType);
+        statusPrefs.status().put(status);
         if(imageType != null) {
-            prefEdit.putString("imageType", imageType);
+            statusPrefs.imageType().put(imageType);
         }
-        prefEdit.commit();
     }
 
     @Override
@@ -205,7 +208,7 @@ public class OilInfoActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        setSharedPreference("0", "1");
+        changeStatus("0", "1");
         if(mProgressTimer != null){
             mProgressTimer.cancel();
         }

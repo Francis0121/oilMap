@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,13 +18,16 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.oilMap.client.R;
+import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.info.OilInfoActivity_;
 import com.oilMap.client.rest.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Fullscreen;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.rest.RestService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,9 @@ public class AuthActivity extends Activity {
 
     @RestService
     AARestProtocol aaRestProtocol;
+
+    @Pref
+    UserInfoPrefs_ userInfoPrefs;
 
     private static final String TAG = AuthActivity_.class.getSimpleName();
     private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
@@ -141,21 +146,16 @@ public class AuthActivity extends Activity {
         });
     }
 
+    @UiThread
     public void next(final Auth auth) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // ~ SharedPreference Register
-                SharedPreferences pref = getSharedPreferences("userInfo", 0);
-                SharedPreferences.Editor prefEdit = pref.edit();
-                prefEdit.putString("id", auth.getId());
-                prefEdit.commit();
-
-                auth.setEmail(mEmail);
-                requestAuthInfo(auth);
-            }
-        });
+        // TODO Check sharedPreference
+        Log.d(TAG, "next function call?");
+        userInfoPrefs.id().put(auth.getId());
+        auth.setEmail(mEmail);
+        requestAuthInfo(auth);
     }
+
+
 
     @Background
     void requestAuthInfo(Auth auth){
@@ -176,9 +176,7 @@ public class AuthActivity extends Activity {
 
     @Background
     void intentActivity(Map<String, Object> response){
-        Intent intent = new Intent(this, OilInfoActivity_.class);
-        intent.putExtra("auth", (Auth)response.get("auth"));
-        startActivity(intent);
+        OilInfoActivity_.intent(this).auth((Auth) response.get("auth")).start();
         finish();
     }
 

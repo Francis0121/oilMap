@@ -4,11 +4,15 @@ import org.androidannotations.annotations.sharedpreferences.DefaultString;
 import org.androidannotations.annotations.sharedpreferences.SharedPref;
 
 /**
- * Created by SungGeun on 2015-10-01.
+ * Created by SungGeun on 2015-10-11.
  */
 @SharedPref(value=SharedPref.Scope.UNIQUE)
-public interface UserInfoPrefs {
+public interface StatusPrefs {
 
-    @DefaultString("")
-    String id();
+    @DefaultString("0")
+    String status();
+
+    @DefaultString("1")
+    String imageType();
+
 }

@@ -2,7 +2,6 @@ package com.oilMap.client;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -37,36 +36,28 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUserInformationFromSharedPreference();
+        checkUserInfo();
     }
 
     @Background(delay = 1000)
-    void getUserInformationFromSharedPreference(){
-
-        SharedPreferences pref = getSharedPreferences("userInfo", 0);
-        String userId = pref.getString("id", "");
-
-        userInfoPrefs.id().exists();
+    void checkUserInfo(){
+        // TODO Check sharedPreference
         String id = userInfoPrefs.id().get();
         Log.d(TAG, "exists " + userInfoPrefs.id().exists() + " " + id);
 
-        if(userId == null || userId.equals("")){
+        if(!userInfoPrefs.id().exists()){
             AuthActivity_.intent(this).start();
             finish();
         }else{
             Map<String, Object> request = new HashMap<>();
-            request.put("id", userId);
-            Log.d(TAG, request.toString());
-
+            request.put("id", id);
             Map<String, Object> response = aaRestProtocol.authSelectUrl(request);
-            Log.d(TAG, response.toString());
+            Log.d(TAG, request.toString() + " " + response.toString());
 
             Map<String, Object> authMap = (Map<String, Object>) response.get("auth");
             Auth auth = new Auth((String)authMap.get("id"), (String)authMap.get("email"), (String)authMap.get("name"), "", "");
+            OilInfoActivity_.intent(this).auth(auth).start();
 
-            Intent intent = new Intent(this, OilInfoActivity_.class);
-            intent.putExtra("auth", auth);
-            startActivity(intent);
             finish();
         }
     }
