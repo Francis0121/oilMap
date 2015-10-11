@@ -1,4 +1,4 @@
-package com.oilMap.client.gps;
+package com.oilMap.client.bluetooth;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -13,9 +13,9 @@ import android.os.IBinder;
 import android.provider.Settings;
 
 /**
- * Created by 김현준 on 2015-05-16.
- *///s//
-public class Gpsinfo extends Service implements LocationListener {
+ * Created by SungGeun on 2015-10-11.
+ */
+public class GpsInfo extends Service implements LocationListener {
 
     private final Context mContext;
 
@@ -40,7 +40,7 @@ public class Gpsinfo extends Service implements LocationListener {
 
     protected LocationManager locationManager;
 
-    public Gpsinfo(Context context) {
+    public GpsInfo(Context context) {
         this.mContext = context;
         getLocation();
     }
@@ -107,7 +107,7 @@ public class Gpsinfo extends Service implements LocationListener {
      * */
     public void stopUsingGPS() {
         if (locationManager != null) {
-            locationManager.removeUpdates(Gpsinfo.this);
+            locationManager.removeUpdates(GpsInfo.this);
         }
     }
 
@@ -194,5 +194,3 @@ public class Gpsinfo extends Service implements LocationListener {
 
     }
 }
-
-

@@ -13,12 +13,12 @@ import android.widget.TextView;
 
 import com.oilMap.client.R;
 import com.oilMap.client.common.UserInfoPrefs_;
-import com.oilMap.client.gps.MapsActivity;
+import com.oilMap.client.map.MapsActivity;
 import com.oilMap.client.ranking.Efficiency;
 import com.oilMap.client.ranking.Ranking;
 import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
-import com.oilMap.client.rest.AARestProtocol;
+import com.oilMap.client.common.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;

@@ -1,4 +1,4 @@
-package com.oilMap.client.gps;
+package com.oilMap.client.map;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,36 +20,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Francis on 2015-05-21.
+ * Created by Francis on 2015-05-17.
  */
-public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Object>> {
+public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
 
-    private static final String TAG = "MapsOtherAsyncTask";
+    private static final String TAG = "MapsAsyncTask";
 
     private Context context;
     private GoogleMap googleMap;
-    private String id;
 
-    public MapsOtherAsyncTask(Context context, GoogleMap googleMap, String id) {
+    public MapsAsyncTask(Context context, GoogleMap googleMap) {
         this.context = context;
         this.googleMap = googleMap;
-        this.id = id;
     }
 
     @Override
-    protected Map<String, Object> doInBackground(LatLng... latLng) {
-        if(latLng[0] ==null){
+    protected Map<String, Object> doInBackground(String... params) {
+        if(params[0] ==null){
             return null;
         }
-
-        LatLng lat = latLng[0];
         Map<String, Object> request = new HashMap<>();
-        request.put("longitude", lat.longitude);
-        request.put("latitude", lat.latitude);
-        request.put("id", id);
+        request.put("id", params[0]);
         Log.d(TAG, request.toString());
 
-        String url = context.getString(R.string.contextPath) + "/drive/other/position";
+        String url = context.getString(R.string.contextPath) + "/drive/position";
 
         Boolean isSuccess = false;
         Map<String, Object> response =  null;
@@ -67,6 +61,7 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
             }
         }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
+
             response = new HashMap<>();
             response.put("result", false);
         }
@@ -85,7 +80,7 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
     protected void onPostExecute(Map<String, Object> response) {
 
         List<Map<String, Object>> drivePointListMap = (List<Map<String, Object>>) response.get("drivePointList");
-        if(drivePointListMap == null){
+        if(drivePointListMap == null) {
             return;
         }
         Log.d(TAG, drivePointListMap.toString());
@@ -102,17 +97,17 @@ public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Obje
             DecimalFormat df = new DecimalFormat("#,##0.0");
             String strSpeed = df.format( (endSpeed - startSpeed));
 
-            LatLng latLng = new LatLng(latitude, longitude);
+           LatLng latLng = new LatLng(latitude, longitude);
             MarkerOptions option = new MarkerOptions();
             option.position(latLng);
             option.title("Position");
             option.snippet("Diff RPM " +  strSpeed);
             switch (type){
                 case 0:
-                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
                     break;
                 case 1:
-                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.other_gps_position));
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.gps_position));
                     break;
             }
 

@@ -1,4 +1,4 @@
-package com.oilMap.client.user;
+package com.oilMap.client.common;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -6,29 +6,19 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
-import com.oilMap.client.MainActivity;
 import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
-import com.oilMap.client.common.Constants;
-import com.oilMap.client.common.UserInfoPrefs;
-import com.oilMap.client.common.UserInfoPrefs_;
-import com.oilMap.client.rest.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EReceiver;
-import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;

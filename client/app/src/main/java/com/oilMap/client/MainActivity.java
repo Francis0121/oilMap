@@ -8,7 +8,7 @@ import com.oilMap.client.auth.Auth;
 import com.oilMap.client.auth.AuthActivity_;
 import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.info.OilInfoActivity_;
-import com.oilMap.client.rest.AARestProtocol;
+import com.oilMap.client.common.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;

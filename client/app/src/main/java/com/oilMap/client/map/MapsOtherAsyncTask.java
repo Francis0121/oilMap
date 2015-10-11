@@ -1,17 +1,12 @@
-package com.oilMap.client.gps;
+package com.oilMap.client.map;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.oilMap.client.R;
 
@@ -25,30 +20,36 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Francis on 2015-05-17.
+ * Created by Francis on 2015-05-21.
  */
-public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
+public class MapsOtherAsyncTask  extends AsyncTask<LatLng, Void, Map<String,Object>> {
 
-    private static final String TAG = "MapsAsyncTask";
+    private static final String TAG = "MapsOtherAsyncTask";
 
     private Context context;
     private GoogleMap googleMap;
+    private String id;
 
-    public MapsAsyncTask(Context context, GoogleMap googleMap) {
+    public MapsOtherAsyncTask(Context context, GoogleMap googleMap, String id) {
         this.context = context;
         this.googleMap = googleMap;
+        this.id = id;
     }
 
     @Override
-    protected Map<String, Object> doInBackground(String... params) {
-        if(params[0] ==null){
+    protected Map<String, Object> doInBackground(LatLng... latLng) {
+        if(latLng[0] ==null){
             return null;
         }
+
+        LatLng lat = latLng[0];
         Map<String, Object> request = new HashMap<>();
-        request.put("id", params[0]);
+        request.put("longitude", lat.longitude);
+        request.put("latitude", lat.latitude);
+        request.put("id", id);
         Log.d(TAG, request.toString());
 
-        String url = context.getString(R.string.contextPath) + "/drive/position";
+        String url = context.getString(R.string.contextPath) + "/drive/other/position";
 
         Boolean isSuccess = false;
         Map<String, Object> response =  null;
@@ -66,7 +67,6 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
             }
         }catch (Exception e){
             Log.e("Error", e.getMessage(), e);
-
             response = new HashMap<>();
             response.put("result", false);
         }
@@ -85,7 +85,7 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
     protected void onPostExecute(Map<String, Object> response) {
 
         List<Map<String, Object>> drivePointListMap = (List<Map<String, Object>>) response.get("drivePointList");
-        if(drivePointListMap == null) {
+        if(drivePointListMap == null){
             return;
         }
         Log.d(TAG, drivePointListMap.toString());
@@ -102,17 +102,17 @@ public class MapsAsyncTask extends AsyncTask<String, Void, Map<String,Object>> {
             DecimalFormat df = new DecimalFormat("#,##0.0");
             String strSpeed = df.format( (endSpeed - startSpeed));
 
-           LatLng latLng = new LatLng(latitude, longitude);
+            LatLng latLng = new LatLng(latitude, longitude);
             MarkerOptions option = new MarkerOptions();
             option.position(latLng);
             option.title("Position");
             option.snippet("Diff RPM " +  strSpeed);
             switch (type){
                 case 0:
-                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.position));
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.curr_position));
                     break;
                 case 1:
-                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.gps_position));
+                    option.icon(BitmapDescriptorFactory.fromResource(R.drawable.other_gps_position));
                     break;
             }
 

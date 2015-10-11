@@ -1,9 +1,5 @@
 package com.oilMap.client.bluetooth;
 
-/**
- * Created by 정성진 on 2015-04-15.
- */
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -32,7 +28,6 @@ import android.widget.TextView;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
 import com.oilMap.client.R;
-import com.oilMap.client.gps.Gpsinfo;
 import com.oilMap.client.info.OilInfoActivity;
 
 import org.json.JSONException;
@@ -45,9 +40,12 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class Bluetooth_reception extends Activity implements AdapterView.OnItemClickListener {
+/**
+ * Created by 정성진 on 2015-04-15.
+ */
+public class BluetoothReceptionActivity extends Activity implements AdapterView.OnItemClickListener {
 
-    private static final String TAG = "Bluetooth_reception";
+    private static final String TAG = "bluetoothReception";
 
     public DataParsing i = new DataParsing(); // Data Parsing Class
 
@@ -79,7 +77,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
     TextView mTextMsg, mRunTextView;
     DataHandling data_handling=null;
     /****************GPS*********************/
-    Gpsinfo gps = null;
+    GpsInfo gps = null;
 
 
     private void setSharedPreference(String status, String imageType){
@@ -100,18 +98,18 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); //Remove notification bar
-        setContentView(R.layout.gps_main);
+        setContentView(R.layout.activity_bluetooth);
 
         /********************GPS*************************/
         MapsInitializer.initialize(getApplicationContext());
         init();
-        gps = new Gpsinfo(Bluetooth_reception.this);
+        gps = new GpsInfo(BluetoothReceptionActivity.this);
 
 
 
         /*************************DataHandling**********************/
         mTextMsg = (TextView)findViewById(R.id.textMessage);
-        data_handling=new DataHandling(Bluetooth_reception.this, mTextMsg);
+        data_handling=new DataHandling(BluetoothReceptionActivity.this, mTextMsg);
 
         /********************** Bluetooth *************************************/
 
@@ -130,7 +128,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         initBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Intent initIntent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+                Intent initIntent = new Intent(BluetoothReceptionActivity.this, OilInfoActivity.class);
                 initIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(initIntent);
                 finish();
@@ -142,7 +140,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Intent backIntent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+                Intent backIntent = new Intent(BluetoothReceptionActivity.this, OilInfoActivity.class);
                 backIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
                 startActivity(backIntent);
                 //
@@ -153,11 +151,11 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
 
     private void init() {
 
-        GooglePlayServicesUtil.isGooglePlayServicesAvailable(Bluetooth_reception.this);
+        GooglePlayServicesUtil.isGooglePlayServicesAvailable(BluetoothReceptionActivity.this);
         // 맵의 이동
         //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
 
-        Gpsinfo gps = new Gpsinfo(Bluetooth_reception.this);
+        GpsInfo gps = new GpsInfo(BluetoothReceptionActivity.this);
         // GPS 사용유무 가져오기
         if (gps.isGetLocation()) {
             latitude = gps.getLatitude();
@@ -332,7 +330,7 @@ public class Bluetooth_reception extends Activity implements AdapterView.OnItemC
         relativeLayoutListView.setVisibility(View.GONE);
 
         /************************* 연결 후 메인 액티비티로 복귀!!!/////************************/
-        Intent intent = new Intent(Bluetooth_reception.this, OilInfoActivity.class);
+        Intent intent = new Intent(BluetoothReceptionActivity.this, OilInfoActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // 이미실행중이면 이어서
         startActivity(intent);
         ///////////////////////////////////////////

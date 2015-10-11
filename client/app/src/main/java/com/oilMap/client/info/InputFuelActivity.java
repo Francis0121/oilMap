@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.oilMap.client.R;
 import com.oilMap.client.common.UserInfoPrefs_;
-import com.oilMap.client.rest.AARestProtocol;
+import com.oilMap.client.common.AARestProtocol;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;

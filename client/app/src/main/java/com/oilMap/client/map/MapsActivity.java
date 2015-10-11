@@ -1,4 +1,4 @@
-package com.oilMap.client.gps;
+package com.oilMap.client.map;
 
 import android.content.Intent;
 import android.location.Location;
@@ -15,6 +15,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.oilMap.client.R;
+import com.oilMap.client.bluetooth.GpsInfo;
 
 public class MapsActivity extends FragmentActivity{
 
@@ -43,7 +44,7 @@ public class MapsActivity extends FragmentActivity{
         mGoogleMap = ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
 
-        Gpsinfo gps = new Gpsinfo(MapsActivity.this);
+        GpsInfo gps = new GpsInfo(MapsActivity.this);
         // GPS 사용유무 가져오기
         if (gps.isGetLocation()) {
             double latitude = gps.getLatitude();

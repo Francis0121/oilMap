@@ -19,11 +19,10 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
-import com.oilMap.client.bluetooth.Bluetooth_reception;
+import com.oilMap.client.bluetooth.BluetoothReceptionActivity;
 import com.oilMap.client.common.StatusPrefs_;
 import com.oilMap.client.common.UserInfoPrefs_;
-import com.oilMap.client.gps.GpsActivity;
-import com.oilMap.client.rest.AARestProtocol;
+import com.oilMap.client.common.AARestProtocol;
 import com.oilMap.client.util.BackPressCloseHandler;
 
 import org.androidannotations.annotations.Background;
@@ -93,13 +92,13 @@ public class OilInfoActivity extends Activity {
         this.id = userInfoPrefs.id().get();
         changeStatus("0", "1");
         // ~ BottomSheet
-        bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.list).listener(new DialogInterface.OnClickListener() {
+        bottomSheet = new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).title("Option").sheet(R.menu.oli_info_activity_list).listener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
 
                     case R.id.bluetooth:
-                        Intent blue_exe = new Intent(OilInfoActivity.this, Bluetooth_reception.class);
+                        Intent blue_exe = new Intent(OilInfoActivity.this, BluetoothReceptionActivity.class);
                         blue_exe.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(blue_exe);
                         break;
@@ -112,11 +111,6 @@ public class OilInfoActivity extends Activity {
 
                     case R.id.inputfuel:
                         InputFuelActivity_.intent(OilInfoActivity.this).start();
-                        break;
-
-                    case R.id.googleMap:
-                        Intent gpsIntent = new Intent(OilInfoActivity.this, GpsActivity.class);
-                        startActivity(gpsIntent);
                         break;
                 }
             }

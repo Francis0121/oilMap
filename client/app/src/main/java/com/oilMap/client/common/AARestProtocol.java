@@ -1,6 +1,5 @@
-package com.oilMap.client.rest;
+package com.oilMap.client.common;
 
-import com.oilMap.client.common.Constants;
 import com.oilMap.client.ranking.RankingFilter;
 import com.oilMap.client.ranking.RankingResponse;
 
