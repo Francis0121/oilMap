@@ -111,8 +111,7 @@ public class OilInfoActivity extends Activity {
                         break;
 
                     case R.id.inputfuel:
-                        Intent inputFuel = new Intent(OilInfoActivity.this, InputFuelActivity.class);
-                        startActivity(inputFuel);
+                        InputFuelActivity_.intent(OilInfoActivity.this).start();
                         break;
 
                     case R.id.googleMap:

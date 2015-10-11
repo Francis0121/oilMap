@@ -16,6 +16,8 @@ import java.util.Map;
 @Rest(rootUrl = Constants.Host.CONTEXT_PATH, converters = {MappingJackson2HttpMessageConverter.class})
 public interface AARestProtocol {
 
+    // ~ Auth
+
     @Post(Constants.Host.AUTH_SELECT_URL)
     Map<String, Object> authSelectUrl(Map<String, Object> request);
 
@@ -25,10 +27,17 @@ public interface AARestProtocol {
     @Post(Constants.Host.AUTH_INSERT)
     Map<String, Object> authInsertUrl(Map<String, Object> request);
 
-    @Post(Constants.Host.FUEL_BILL_SELECT)
-    Map<String, Object> fuelBillSelectUrl(Map<String, Object> request);
+    // ~ Ranking
 
     @Post(Constants.Host.RANKING_SELECT)
     RankingResponse rankingSelectUrl(RankingFilter rankingFilter);
+
+    // ~ Fuel
+
+    @Post(Constants.Host.FUEL_BILL_INSERT)
+    Map<String, Object> fuelBillInsert(Map<String, Object> request);
+
+    @Post(Constants.Host.FUEL_BILL_SELECT)
+    Map<String, Object> fuelBillSelectUrl(Map<String, Object> request);
 
 }

@@ -51,7 +51,7 @@
 
         <activity android:name=".info.RankingActivity_" />
 
-        <activity android:name=".info.InputFuelActivity" />
+        <activity android:name=".info.InputFuelActivity_" />
 
         <!-- TODO Not confirm Activity -->
 

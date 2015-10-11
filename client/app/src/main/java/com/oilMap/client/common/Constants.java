@@ -11,6 +11,7 @@ public class Constants {
         public static final String AUTH_IS_EXIST = "/auth/isExist";
         public static final String AUTH_INSERT = "/auth/insert";
 
+        public static final String FUEL_BILL_INSERT = "/fuelBill/insert";
         public static final String FUEL_BILL_SELECT = "/fuelBill/select";
         public static final String RANKING_SELECT = "/select/ranking";
     }

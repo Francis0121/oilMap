@@ -37,6 +37,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+// ~ Use Activity
 @EActivity(R.layout.ranking_list)
 public class RankingActivity extends Activity {
 
