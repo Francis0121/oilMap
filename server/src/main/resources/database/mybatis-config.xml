@@ -19,5 +19,7 @@
 
 		<typeAlias type="com.oilMap.server.batch.Ranking" alias="Ranking"/>
 		<typeAlias type="com.oilMap.server.batch.RankingFilter" alias="RankingFilter"/>
+
+		<typeAlias type="com.oilMap.server.bsfc.Bsfc" alias="Bsfc"/>
  	</typeAliases>
 </configuration>
