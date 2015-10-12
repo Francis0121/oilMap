@@ -11,7 +11,7 @@ public class BsfcServiceImpl extends SqlSessionDaoSupport implements BsfcSerivce
 
     @Override
     public Bsfc select(Bsfc bsfc) {
-        return getSqlSession().selectOne("bsfc.selec");
+        return getSqlSession().selectOne("bsfc.select", bsfc);
     }
 
 }

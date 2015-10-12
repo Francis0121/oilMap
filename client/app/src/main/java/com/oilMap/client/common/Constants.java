@@ -15,6 +15,8 @@ public class Constants {
 
         public static final String FUEL_BILL_INSERT = "/fuelBill/insert";
         public static final String FUEL_BILL_SELECT = "/fuelBill/select";
+
+        public static final String BSFC_SELECT = "/bsfc/select";
     }
 
 }

@@ -20,6 +20,7 @@ import com.oilMap.client.MainActivity_;
 import com.oilMap.client.R;
 import com.oilMap.client.auth.Auth;
 import com.oilMap.client.bluetooth.BluetoothReceptionActivity;
+import com.oilMap.client.common.Bsfc;
 import com.oilMap.client.common.StatusPrefs_;
 import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.common.AARestProtocol;
@@ -32,6 +33,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -88,6 +90,8 @@ public class OilInfoActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         requestFuelBillSelect();
+        // ~ Bsfc Confirm UiThread
+        scheduleBsfc();
 
         this.id = userInfoPrefs.id().get();
         changeStatus("0", "1");
@@ -299,4 +303,115 @@ public class OilInfoActivity extends Activity {
         }
     }
 
+    // RPM, Engine Load variable and event
+
+    @ViewById
+    TextView engineLoadTextView;
+
+    @Click
+    void engineUpButton(){
+        Integer engineLoad = Integer.parseInt((String) engineLoadTextView.getText());
+        if(engineLoad < 100){
+            engineLoad+=5;
+        }
+        engineLoadTextView.setText(engineLoad.toString());
+    }
+
+    @Click
+    void engineDownButton(){
+        Integer engineLoad = Integer.parseInt((String) engineLoadTextView.getText());
+        if(engineLoad > 25){
+            engineLoad-=5;
+        }
+        engineLoadTextView.setText(engineLoad.toString());
+    }
+
+    @ViewById
+    TextView rpmTextView;
+
+    @Click
+    void rpmUpButton(){
+        Integer rpm = Integer.parseInt((String) rpmTextView.getText());
+        if(rpm < 3500){
+            rpm+=100;
+        }
+        rpmTextView.setText(rpm.toString());
+    }
+
+    @Click
+    void rpmDownButton(){
+        Integer rpm = Integer.parseInt((String) rpmTextView.getText());
+        if(rpm > 1100){
+            rpm-=100;
+        }
+        rpmTextView.setText(rpm.toString());
+    }
+
+    @UiThread(delay = 3000)
+    void scheduleBsfc(){
+
+        Integer rpm = Integer.parseInt((String) rpmTextView.getText());
+        Integer engineLoad = Integer.parseInt((String) engineLoadTextView.getText());
+
+        requestBsfcInfo(new Bsfc(rpm, engineLoad));
+        scheduleBsfc();
+    }
+
+    @Background
+    void requestBsfcInfo(Bsfc bsfc){
+        responseBsfcInfo(aaRestProtocol.bsfcSelectUrl(bsfc));
+    }
+
+    @ViewById
+    TextView levelTextView;
+
+    @UiThread
+    void responseBsfcInfo(Bsfc bsfc){
+        // TODO UPDATE RPM, ENGINE_LAOAD, LEVEL
+        Log.d(TAG, bsfc.toString());
+        changeLevelTextView(bsfc.getLevel());
+    }
+
+    @ColorRes(R.color.level7)
+    int level7;
+    @ColorRes(R.color.level6)
+    int level6;
+    @ColorRes(R.color.level5)
+    int level5;
+    @ColorRes(R.color.level4)
+    int level4;
+    @ColorRes(R.color.level3)
+    int level3;
+    @ColorRes(R.color.level2)
+    int level2;
+    @ColorRes(R.color.level1)
+    int level1;
+
+    private void changeLevelTextView(Integer level){
+        String text = "Level " + level;
+        levelTextView.setText(text);
+        switch (level){
+            case 1:
+                levelTextView.setBackgroundColor(level1);
+                break;
+            case 2:
+                levelTextView.setBackgroundColor(level2);
+                break;
+            case 3:
+                levelTextView.setBackgroundColor(level3);
+                break;
+            case 4:
+                levelTextView.setBackgroundColor(level4);
+                break;
+            case 5:
+                levelTextView.setBackgroundColor(level5);
+                break;
+            case 6:
+                levelTextView.setBackgroundColor(level6);
+                break;
+            case 7:
+                levelTextView.setBackgroundColor(level7);
+                break;
+        }
+    }
 }

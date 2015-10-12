@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.oilMap.client.info.OilInfoActivity">
+    tools:context="com.oilMap.client.info.OilInfoActivity"
+                android:background="#282828">
 
     <TextView
         android:layout_width="match_parent"
@@ -98,6 +99,116 @@
         android:layout_toEndOf="@+id/remainOfMoneyTv"
         />
 
+    <!-- EngineLoad -->
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="Engine"
+        android:textSize="14dp"
+        android:id="@+id/engineLoadTv"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@+id/remainOfMoneyTv"
+        />
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="25"
+        android:textSize="14dp"
+        android:id="@+id/engineLoadTextView"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/remainOfMoneyTv"
+        android:layout_toEndOf="@+id/engineLoadTv"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/engineUpButton"
+        android:src="@drawable/up"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/remainOfMoneyTv"
+        android:layout_toEndOf="@+id/engineLoadTextView"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/engineDownButton"
+        android:src="@drawable/down"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@+id/remainOfMoneyTv"
+        android:layout_toEndOf="@+id/engineUpButton"
+        android:background="@android:color/transparent"/>
+
+    <!-- Engine Load -->
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="Rpm"
+        android:textSize="14dp"
+        android:id="@+id/rpmTv"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@+id/engineLoadTv"
+        />
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="1100"
+        android:textSize="14dp"
+        android:id="@+id/rpmTextView"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/engineLoadTv"
+        android:layout_toEndOf="@+id/rpmTv"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rpmUpButton"
+        android:src="@drawable/up"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/engineLoadTv"
+        android:layout_toEndOf="@+id/rpmTextView"
+        android:background="@android:color/transparent"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rpmDownButton"
+        android:src="@drawable/down"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/engineLoadTv"
+        android:layout_toEndOf="@+id/rpmUpButton"
+        android:background="@android:color/transparent"/>
+
+    <TextView
+        android:text="Level 7"
+        android:textColor="#ffffff"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/level7"
+        android:id="@+id/levelTextView"
+        android:layout_below="@+id/rpmTv"
+        android:gravity="center_vertical|center_horizontal"/>
+
+    <!-- Image Btn -->
 
     <ImageView
         android:layout_width="55dp"
@@ -149,5 +260,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/moneyTextView"
         android:layout_marginBottom="128dp"/>
+
+
+
 
 </RelativeLayout>

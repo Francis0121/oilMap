@@ -5,10 +5,14 @@ package com.oilMap.client.info;
  */
 public class RankingItem {
 
-    private String key = "여기에 ID키값 넣을 것";
+    private String key;
+
     private String efficiency;
+
     private int icon;
+
     private String Id;
+
     private int rankingIcon;
 
     public RankingItem(String Id){

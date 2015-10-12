@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="level7">#292928</color>
+    <color name="level6">#c00000</color>
+    <color name="level5">#cc6600</color>
+    <color name="level4">#ffc000</color>
+    <color name="level3">#ffff00</color>
+    <color name="level2">#95d552</color>
+    <color name="level1">#00b050</color>
+    
     <color name="orange_bg_color">#f18c24</color>
     <color name="custom_bg_color">#282828</color>
     <color name="circle_finished_color">#01568c</color>
@@ -18,19 +26,8 @@
         <item name="bs_numColumns">3</item>
     </style>
 
-    <style name="CustomTheme" parent="android:Theme.Holo.Light">
+    <style name="CustomTheme" parent="android:Theme.Holo">
         <item name="android:windowBackground">@color/custom_bg_color</item>
     </style>
-
-    <declare-styleable name="CircleProgress">
-        <attr name="circle_progress" format="integer"/>
-        <attr name="circle_max" format="integer"/>
-        <attr name="circle_unfinished_color" format="color"/>
-        <attr name="circle_finished_color" format="color"/>
-        <attr name="circle_text_size" format="dimension"/>
-        <attr name="circle_text_color" format="color"/>
-        <attr name="circle_prefix_text" format="string"/>
-        <attr name="circle_suffix_text" format="string"/>
-    </declare-styleable>
 
 </resources>

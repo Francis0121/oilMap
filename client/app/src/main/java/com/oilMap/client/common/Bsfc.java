@@ -1,4 +1,4 @@
-package com.oilMap.server.bsfc;
+package com.oilMap.client.common;
 
 /**
  * Created by SungGeun on 2015-10-12.
@@ -16,11 +16,12 @@ public class Bsfc {
     private Integer level;
 
     public Bsfc() {
-        rpm = 0;
-        engineLoad = 0;
-        rpmChange = 0;
-        elChange = 0;
-        level = 0;
+
+    }
+
+    public Bsfc(Integer rpm, Integer engineLoad) {
+        this.rpm = rpm;
+        this.engineLoad = engineLoad;
     }
 
     public Integer getRpm() {

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Created by SungGeun on 2015-10-12.
  */
-@Controller("/bsfc")
+@Controller
+@RequestMapping("/bsfc")
 public class BsfcController {
 
     private static Logger logger = LoggerFactory.getLogger(BsfcController.class);
@@ -26,10 +27,15 @@ public class BsfcController {
     @RequestMapping(value="/select", method = RequestMethod.POST)
     public Bsfc select(@RequestBody Bsfc bsfc){
         logger.debug(bsfc.toString());
+        if(bsfc.getRpm()!= null && bsfc.getEngineLoad() != null){
+            Integer rpm = bsfc.getRpm();
+            Integer engineLoad = bsfc.getEngineLoad();
+            if(rpm >= 1100 && rpm <= 3500 && engineLoad >=25 && engineLoad <= 100){
+                return bsfcSerivce.select(bsfc);
+            }
+        }
 
-        Bsfc getBsfc = bsfcSerivce.select(bsfc);
-        logger.debug(getBsfc.toString());
-        return getBsfc;
+        return new Bsfc();
     }
 
 }

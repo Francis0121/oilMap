@@ -39,4 +39,9 @@ public interface AARestProtocol {
     @Post(Constants.Host.FUEL_BILL_SELECT)
     Map<String, Object> fuelBillSelectUrl(Map<String, Object> request);
 
+    // ~ Bsfc
+
+    @Post(Constants.Host.BSFC_SELECT)
+    Bsfc bsfcSelectUrl(Bsfc bsfc);
+
 }
