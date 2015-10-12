@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -311,8 +313,16 @@ public class OilInfoActivity extends Activity {
     @Click
     void engineUpButton(){
         Integer engineLoad = Integer.parseInt((String) engineLoadTextView.getText());
-        if(engineLoad < 100){
-            engineLoad+=5;
+        if(engineLoad < 100) {
+            if (engineLoad == 80) {
+                engineLoad = 100;
+            } else if (engineLoad == 70) {
+                engineLoad = 80;
+            } else if (engineLoad == 60) {
+                engineLoad = 70;
+            } else {
+                engineLoad += 5;
+            }
         }
         engineLoadTextView.setText(engineLoad.toString());
     }
@@ -321,7 +331,15 @@ public class OilInfoActivity extends Activity {
     void engineDownButton(){
         Integer engineLoad = Integer.parseInt((String) engineLoadTextView.getText());
         if(engineLoad > 25){
-            engineLoad-=5;
+            if(engineLoad == 100){
+                engineLoad = 80;
+            }else if(engineLoad == 80){
+                engineLoad = 70;
+            }else if(engineLoad == 70){
+                engineLoad = 60;
+            }else{
+                engineLoad-=5;
+            }
         }
         engineLoadTextView.setText(engineLoad.toString());
     }
@@ -365,11 +383,25 @@ public class OilInfoActivity extends Activity {
     @ViewById
     TextView levelTextView;
 
+    @ViewById(R.id.engineUpButton)
+    ImageButton engineUpBtn;
+
+    @ViewById(R.id.engineDownButton)
+    ImageButton engineDownBtn;
+
+    @ViewById(R.id.rpmUpButton)
+    ImageButton rpmUpBtn;
+
+    @ViewById(R.id.rpmDownButton)
+    ImageButton rpmDownBtn;
+
     @UiThread
     void responseBsfcInfo(Bsfc bsfc){
         // TODO UPDATE RPM, ENGINE_LAOAD, LEVEL
         Log.d(TAG, bsfc.toString());
         changeLevelTextView(bsfc.getLevel());
+        changeEngineLoad(bsfc.getElChange());
+        changeRpm(bsfc.getRpmChange());
     }
 
     @ColorRes(R.color.level7)
@@ -411,6 +443,40 @@ public class OilInfoActivity extends Activity {
                 break;
             case 7:
                 levelTextView.setBackgroundColor(level7);
+                break;
+        }
+    }
+
+    private void changeEngineLoad(Integer level){
+        switch (level){
+            case 0:
+                engineDownBtn.setImageResource(R.drawable.down);
+                engineUpBtn.setImageResource(R.drawable.up);
+                break;
+            case 1:
+                engineDownBtn.setImageResource(R.drawable.down_blue);
+                engineUpBtn.setImageResource(R.drawable.up_red);
+                break;
+            case 2:
+                engineDownBtn.setImageResource(R.drawable.down_red);
+                engineUpBtn.setImageResource(R.drawable.up_blue);
+                break;
+        }
+    }
+
+    private void changeRpm(Integer level){
+        switch (level){
+            case 0:
+                rpmDownBtn.setImageResource(R.drawable.down);
+                rpmUpBtn.setImageResource(R.drawable.up);
+                break;
+            case 1:
+                rpmDownBtn.setImageResource(R.drawable.down_blue);
+                rpmUpBtn.setImageResource(R.drawable.up_red);
+                break;
+            case 2:
+                rpmDownBtn.setImageResource(R.drawable.down_red);
+                rpmUpBtn.setImageResource(R.drawable.up_blue);
                 break;
         }
     }
