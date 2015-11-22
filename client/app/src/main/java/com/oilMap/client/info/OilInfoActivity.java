@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.oilMap.client.common.StatusPrefs_;
 import com.oilMap.client.common.UserInfoPrefs_;
 import com.oilMap.client.common.AARestProtocol;
 import com.oilMap.client.util.BackPressCloseHandler;
+import com.oilMap.client.util.ExcelUtil;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -122,6 +122,10 @@ public class OilInfoActivity extends Activity {
             }
         }).build();
         this.backPressCloseHandler = new BackPressCloseHandler(this);
+
+        // ~ Read Excel
+        readDataFromExcel();
+        setRpmAndEngineLoadFromExcelUtil();
     }
 
     @UiThread(delay = 100)
@@ -479,5 +483,21 @@ public class OilInfoActivity extends Activity {
                 rpmUpBtn.setImageResource(R.drawable.up_blue);
                 break;
         }
+    }
+
+    // ~ ReadExcel
+
+    @Background
+    public void readDataFromExcel(){
+        ExcelUtil.readDataFromExcel();
+    }
+
+    @UiThread(delay = 2500)
+    public void setRpmAndEngineLoadFromExcelUtil(){
+        rpmTextView.setText(Integer.toString(ExcelUtil.rpm));
+        engineLoadTextView.setText(Integer.toString(ExcelUtil.engineLoad));
+        Log.d(TAG, "setRpmAndEngineLoadFromExcelUtil" +Integer.toString(ExcelUtil.rpm) + " " + Integer.toString(ExcelUtil.engineLoad));
+
+        setRpmAndEngineLoadFromExcelUtil();
     }
 }
