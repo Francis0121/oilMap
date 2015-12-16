@@ -105,7 +105,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:text="Engine"
-        android:textSize="14dp"
+        android:textSize="20dp"
         android:id="@+id/engineLoadTv"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
@@ -117,7 +117,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:text="25"
-        android:textSize="14dp"
+        android:textSize="22dp"
         android:id="@+id/engineLoadTextView"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
@@ -127,10 +127,12 @@
         />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/engineUpButton"
         android:src="@drawable/up"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
         android:layout_below="@+id/remainOfMoneyTv"
@@ -138,10 +140,12 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/engineDownButton"
         android:src="@drawable/down"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="40dp"
         android:layout_below="@+id/remainOfMoneyTv"
@@ -154,7 +158,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:text="Rpm"
-        android:textSize="14dp"
+        android:textSize="20dp"
         android:id="@+id/rpmTv"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
@@ -166,7 +170,7 @@
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:text="1100"
-        android:textSize="14dp"
+        android:textSize="22dp"
         android:id="@+id/rpmTextView"
         android:textColor="#ffffff"
         android:layout_marginTop="40dp"
@@ -176,10 +180,12 @@
         />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/rpmUpButton"
         android:src="@drawable/up"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
         android:layout_below="@+id/engineLoadTv"
@@ -187,10 +193,12 @@
         android:background="@android:color/transparent"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/rpmDownButton"
         android:src="@drawable/down"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="40dp"
         android:layout_below="@+id/engineLoadTv"
@@ -201,7 +209,7 @@
         android:text="Level 7"
         android:textColor="#ffffff"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:layout_marginTop="30dp"
         android:background="@color/level7"
         android:id="@+id/levelTextView"
